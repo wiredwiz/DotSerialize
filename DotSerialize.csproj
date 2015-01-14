@@ -76,10 +76,12 @@
     <Compile Include="Reflection\Caching\SerializationInfoCache.cs" />
     <Compile Include="Reflection\Caching\SerializationInfoCacheBase.cs" />
     <Compile Include="Reflection\Caching\WeakSerializationInfoCache.cs" />
+    <Compile Include="Reflection\TypeHelper.cs" />
     <Compile Include="Reflection\TypeInspector.cs" />
     <Compile Include="Reflection\TypeSerializationInfo.cs" />
     <Compile Include="Reflection\TypeMemberSerializationInfo.cs" />
     <Compile Include="Serializer.cs" />
+    <Compile Include="Serializers\Int16TypeSerializer.cs" />
     <Compile Include="Serializers\ITypeSerializer.cs" />
   </ItemGroup>
   <ItemGroup />
