@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Fasterflect;
+using Org.Edgerunner.DotSerialize.Attributes;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
@@ -19,7 +18,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       {
          string rootName = null;
          string @namespace = null;
-         var rootAttrib = type.Attribute<Attributes.XmlRootAttribute>();
+         List<TypeMemberSerializationInfo> infoList = new List<TypeMemberSerializationInfo>();
+         var rootAttrib = type.Attribute<XmlRootAttribute>();
          if (rootAttrib != null)
          {
             rootName = rootAttrib.GetPropertyValue("name").ToString();
@@ -28,10 +28,41 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          var fieldInfo = type.Fields(Flags.InstanceAnyVisibility | Flags.ExcludeExplicitlyImplemented);
          foreach (var field in fieldInfo)
          {
-            
+            var ignoreAttrib = field.Attribute<XmlIgnoreAttribute>();
+            if (ignoreAttrib == null)
+            {
+               var attributeAttrib = field.Attribute<XmlAttributeAttribute>();
+               var elementAttrib = field.Attribute<XmlElementAttribute>();
+               string entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("name").ToString() : null;
+               if (string.IsNullOrEmpty(entityName))
+                  entityName= field.Name;
+               var encapsulatingPropName = EncapsulatingPropertyName(field);
+               if (!string.IsNullOrEmpty(encapsulatingPropName))
+               {
+                  var property = type.Property(encapsulatingPropName);
+                  attributeAttrib = property.Attribute<XmlAttributeAttribute>();
+                  elementAttrib = property.Attribute<XmlElementAttribute>();
+                  entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("name").ToString() : null;
+                  if (string.IsNullOrEmpty(entityName))
+                     entityName = encapsulatingPropName;
+               }
+               var memberInfo = new TypeMemberSerializationInfo(field.Name,
+                                                                TypeMemberSerializationInfo.MemberType.Field,
+                                                                entityName,
+                                                                field.FieldType,
+                                                                (attributeAttrib != null));
+               infoList.Add(memberInfo);
+            }
          }
-         var typeInfo = new TypeSerializationInfo(type.Name, type, rootName, @namespace);
-         return null;
+         return new TypeSerializationInfo(type.Name, type, rootName, @namespace, infoList);
+      }
+
+      private string EncapsulatingPropertyName(FieldInfo info)
+      {
+         var result = Regex.Match(info.Name, "<(.+)>k__BackingField", RegexOptions.Compiled);
+         if (!result.Success)
+            return null;
+         return result.Groups[1].Value;
       }
    }
 }
