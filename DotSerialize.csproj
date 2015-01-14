@@ -69,6 +69,7 @@
     <Compile Include="Attributes\XmlElementAttribute.cs" />
     <Compile Include="Attributes\XmlIgnoreAttribute.cs" />
     <Compile Include="Attributes\XmlRootAttribute.cs" />
+    <Compile Include="Exceptions\SerializationException.cs" />
     <Compile Include="Exceptions\TypeLayoutException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\Caching\ISerializationInfoCache.cs" />
