@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Org.Edgerunner.DotSerialize.Attributes
 {
-   [AttributeUsageAttribute(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
+   [AttributeUsageAttribute(AttributeTargets.Property | AttributeTargets.Field)]
    public class XmlElementAttribute : Attribute
    {
       public string Name { get; set; }
@@ -15,7 +15,7 @@ namespace Org.Edgerunner.DotSerialize.Attributes
       /// Initializes a new instance of the <see cref="XmlElementAttribute"/> class.
       /// </summary>
       /// <param name="name"></param>
-      public XmlElementAttribute(string name)
+      public XmlElementAttribute(string name = null)
       {
          Name = name;
       }
