@@ -7,6 +7,7 @@ using Org.Edgerunner.DotSerialize.Attributes;
 
 namespace DotSerializeTests.DataClasses
 {
+   [XmlRoot("DogOwner")]
    public class Owner : Person
    {
       [XmlElement]
@@ -15,5 +16,7 @@ namespace DotSerializeTests.DataClasses
          get { return base.Age; }
          set { base.Age = value; }
       }
+
+      public Dog[] Dogs { get; set; }
    }
 }
