@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Org.Edgerunner.DotSerialize.Attributes
 {
-   [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Interface | AttributeTargets.ReturnValue)]
+   [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Interface)]
    public class XmlRootAttribute : Attribute
    {
       public string Name { get; set; }

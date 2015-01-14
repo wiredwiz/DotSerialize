@@ -71,7 +71,10 @@
     <Compile Include="Attributes\XmlRootAttribute.cs" />
     <Compile Include="Exceptions\TypeLayoutException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\Caching\ISerializationInfoCache.cs" />
     <Compile Include="Reflection\Caching\SerializationInfoCache.cs" />
+    <Compile Include="Reflection\Caching\SerializationInfoCacheBase.cs" />
+    <Compile Include="Reflection\Caching\WeakSerializationInfoCache.cs" />
     <Compile Include="Reflection\TypeInspector.cs" />
     <Compile Include="Reflection\TypeSerializationInfo.cs" />
     <Compile Include="Reflection\TypeMemberSerializationInfo.cs" />

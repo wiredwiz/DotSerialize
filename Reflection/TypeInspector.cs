@@ -7,11 +7,31 @@ using System.Text.RegularExpressions;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Attributes;
 using Org.Edgerunner.DotSerialize.Exceptions;
+using Org.Edgerunner.DotSerialize.Reflection.Caching;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public class TypeInspector
    {
+      private readonly ISerializationInfoCache _Cache;
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="TypeInspector"/> class.
+      /// </summary>
+      public TypeInspector()
+      {
+         _Cache = new WeakSerializationInfoCache();
+      }
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="TypeInspector"/> class.
+      /// </summary>
+      /// <param name="cache"></param>
+      internal TypeInspector(ISerializationInfoCache cache)
+      {
+         _Cache = cache;
+      }
+
       public TypeSerializationInfo GetInfo(string fullyQualifiedTypeName)
       {
          return GetInfo(Type.GetType(fullyQualifiedTypeName, true));
@@ -19,6 +39,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 
       public TypeSerializationInfo GetInfo(Type type)
       {
+         TypeSerializationInfo result = _Cache.GetInfo(type);
+         if (result != null)
+            return result;
          string rootName = null;
          string @namespace = null;
          List<TypeMemberSerializationInfo> infoList = null;
@@ -53,7 +76,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             throw new TypeLayoutException(string.Format("Attribute node name \"{0}\" is used for more than one member of Type {1}",
                                                         duplicateAttribs.First(),
                                                         type.Name()));
-         return new TypeSerializationInfo(type.Name, type, rootName, @namespace, infoList);
+         result = new TypeSerializationInfo(type.Name, type, rootName, @namespace, infoList);
+         _Cache.AddInfo(result);
+         return result;
       }
 
       private List<TypeMemberSerializationInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
