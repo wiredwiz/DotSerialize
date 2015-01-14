@@ -15,7 +15,7 @@ namespace Org.Edgerunner.DotSerialize.Attributes
       /// Initializes a new instance of the <see cref="XmlElementAttribute"/> class.
       /// </summary>
       /// <param name="name"></param>
-      public XmlElementAttribute(string name)
+      public XmlElementAttribute(string name = null)
       {
          Name = name;
       }
