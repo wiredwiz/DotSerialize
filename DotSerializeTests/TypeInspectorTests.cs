@@ -10,7 +10,7 @@ namespace DotSerializeTests
       [TestMethod]
       public void InspectDogReturnsInfoWithFiveTypeMembers()
       {
-         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataClasses.Dog));
+         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataTypes.Dog));
          Assert.AreEqual<int>(5, info.MemberInfoByEntityName.Count);
          Assert.AreEqual<int>(5, info.MemberInfoByName.Count);
       }
@@ -18,7 +18,7 @@ namespace DotSerializeTests
       [TestMethod]
       public void InspectOwnerReturnsInfoWithThreeTypeMembers()
       {
-         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataClasses.Owner));
+         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataTypes.Owner));
          Assert.AreEqual<int>(3, info.MemberInfoByEntityName.Count);
          Assert.AreEqual<int>(3, info.MemberInfoByName.Count);
       }
@@ -26,14 +26,14 @@ namespace DotSerializeTests
       [TestMethod]
       public void InspectOwnerReturnsInfoWithRootNodeNameDogOwner()
       {
-         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataClasses.Owner));
+         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataTypes.Owner));
          Assert.AreEqual<string>("DogOwner", info.EntityName);
       }
 
       [TestMethod]
       public void InspectPersonReturnsInfoWithOneTypeMember()
       {
-         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataClasses.Person));
+         var info = new Org.Edgerunner.DotSerialize.Reflection.TypeInspector().GetInfo(typeof(DataTypes.Person));
          Assert.AreEqual<int>(1, info.MemberInfoByEntityName.Count);
          Assert.AreEqual<int>(1, info.MemberInfoByName.Count);
       }

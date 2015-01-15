@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Org.Edgerunner.DotSerialize.Attributes;
 
-namespace DotSerializeTests.DataClasses
+namespace DotSerializeTests.DataTypes
 {
    public class Person
    {
