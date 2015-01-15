@@ -11,7 +11,7 @@ using Org.Edgerunner.DotSerialize.Reflection.Caching;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
-   public class TypeInspector
+   public class TypeInspector : ITypeInspector
    {
       private readonly ISerializationInfoCache _Cache;
 

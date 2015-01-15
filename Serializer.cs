@@ -2,24 +2,49 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Ninject;
+using Org.Edgerunner.DotSerialize.Reflection;
+using Org.Edgerunner.DotSerialize.Serializers.Caching;
+using Org.Edgerunner.DotSerialize.Reflection.Caching;
+using Org.Edgerunner.DotSerialize.Serializers;
 
 namespace Org.Edgerunner.DotSerialize
 {
    public class Serializer
    {
+      public IKernel Kernel { get; set; }
       private static Serializer _Instance;
-      public static Serializer Instance
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="Serializer"/> class.
+      /// </summary>
+      /// <param name="kernel"></param>
+      public Serializer(IKernel kernel)
       {
-         get { return _Instance ?? (_Instance = CreateSerializer()); }
-         set { _Instance = value; }
+         Kernel = kernel;
+      }
+      /// <summary>
+      /// Initializes a new instance of the <see cref="Serializer"/> class.
+      /// </summary>
+      public Serializer()
+      {
+         Kernel = new StandardKernel();
+         Kernel.Load(Assembly.GetExecutingAssembly());
+         // TODO: consider making a custom scope for the reference cache
+         Kernel.Bind<IReferenceCache>().To<ReferenceCache>().InThreadScope();
+         Kernel.Bind<ISerializationInfoCache>().To<WeakSerializationInfoCache>().InSingletonScope();
+         Kernel.Bind<ITypeInspector>().To<TypeInspector>().InSingletonScope();
+         Kernel.Bind<GenericTypeSerializer>().ToSelf().InSingletonScope();
       }
 
-      private static Serializer CreateSerializer()
+      public static Serializer Instance
       {
-         throw new NotImplementedException();
+         get { return _Instance ?? (_Instance = new Serializer()); }
+         set { _Instance = value; }
       }
 
       protected virtual void SerializeObject<T>(Stream stream, T obj)
@@ -64,6 +89,7 @@ namespace Org.Edgerunner.DotSerialize
 
       protected virtual T DeserializeObject<T>(XmlReader reader)
       {
+         Kernel.Release(Kernel.Get<IReferenceCache>());
          throw new NotImplementedException();
       }
 
