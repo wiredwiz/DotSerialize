@@ -15,7 +15,7 @@ namespace Org.Edgerunner.DotSerialize.Attributes
       /// Initializes a new instance of the <see cref="XmlAttributeAttribute"/> class.
       /// </summary>
       /// <param name="name"></param>
-      public XmlAttributeAttribute(string name)
+      public XmlAttributeAttribute(string name = "")
       {
          Name = name;
       }

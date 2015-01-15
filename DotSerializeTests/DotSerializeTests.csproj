@@ -71,9 +71,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="DataClasses\Dog.cs" />
-    <Compile Include="DataClasses\Owner.cs" />
-    <Compile Include="DataClasses\Person.cs" />
+    <Compile Include="DataTypes\Bone.cs" />
+    <Compile Include="DataTypes\Dog.cs" />
+    <Compile Include="DataTypes\Owner.cs" />
+    <Compile Include="DataTypes\Person.cs" />
     <Compile Include="TypeInspectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
