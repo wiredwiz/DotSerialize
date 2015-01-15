@@ -90,9 +90,16 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             var ignoreAttrib = field.Attribute<XmlIgnoreAttribute>();
             if (ignoreAttrib == null)
             {
+               string entityName = null;
+               Attribute elementAttrib = null;
                var attributeAttrib = field.Attribute<XmlAttributeAttribute>();
-               var elementAttrib = field.Attribute<XmlElementAttribute>();
-               string entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
+               if (attributeAttrib != null)
+                  entityName = attributeAttrib.GetPropertyValue("Name") as String;
+               else
+               {
+                  elementAttrib = field.Attribute<XmlElementAttribute>();
+                  entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
+               }
                if (string.IsNullOrEmpty(entityName))
                   entityName = field.Name;
                var encapsulatingPropName = EncapsulatingPropertyName(field);
@@ -104,8 +111,13 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                   if (ignoreAttrib != null)
                      continue;
                   attributeAttrib = property.Attribute<XmlAttributeAttribute>();
-                  elementAttrib = property.Attribute<XmlElementAttribute>();
-                  entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
+                  if (attributeAttrib != null)
+                     entityName = attributeAttrib.GetPropertyValue("Name") as String;
+                  else
+                  {
+                     elementAttrib = property.Attribute<XmlElementAttribute>();
+                     entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
+                  }
                   if (string.IsNullOrEmpty(entityName))
                      entityName = encapsulatingPropName;
                }
