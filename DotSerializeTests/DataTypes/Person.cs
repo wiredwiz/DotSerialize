@@ -18,6 +18,10 @@ namespace DotSerializeTests.DataTypes
       [XmlIgnore]
       public virtual int Age { get; set; }
 
+      public Person Father { get; set; }
+      public Person Mother { get; set; }
+      public Person[] Children { get; set; }      
+
       [XmlElement]
       public virtual string FullName
       {
