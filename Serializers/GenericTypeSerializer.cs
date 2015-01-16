@@ -1,9 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region Apache License 2.0
+
+// Copyright 2015 Thaddeus Ryker
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
+using System;
 using System.Xml;
+using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Serializers.Caching;
@@ -17,30 +32,67 @@ namespace Org.Edgerunner.DotSerialize.Serializers
 
       public virtual T Deserialize<T>(XmlReader reader)
       {
-         T result;
-         while ((reader.NodeType != XmlNodeType.Attribute) && (reader.NodeType != XmlNodeType.Element))
-            reader.Read();
-         if (TypeHelper.IsPrimitive(typeof(T)))
-            return (T)ReadPrimitive<T>(reader);
-         else if (TypeHelper.IsArray(typeof(T)))
-            ; // do stuff
-         else if (TypeHelper.IsEnum(typeof(T)))
-            ; // do stuff
-         Guid refId = TypeHelper.GetReferenceId(reader);
-         if (refId != Guid.Empty)
+         T result = default(T);
+         Type dType = typeof(T);
+
+         // If we are incorrectly positioned, attempt to get the reader back into position
+         while ((reader.NodeType != XmlNodeType.Element) && (reader.NodeType != XmlNodeType.Attribute))
+            if (!reader.Read())
+               throw new SerializationException(
+                  string.Format("Reader was not positioned on a node of type Attribute or Element.\r\n" +
+                                "A custom type serializer probably positioned the reader incorrectly." +
+                                "Unable to deserialize type \"{0}\".",
+                                dType.Name()));
+
+         // Handle attributes
+         if ((reader.NodeType == XmlNodeType.Attribute))
          {
-            result = (T)ReferenceCache.GetObjectById(refId);
-            if (result != null)
-               return result;
+            if (!((TypeHelper.IsPrimitive(dType)) || (TypeHelper.IsEnum(typeof(T)))))
+               throw new SerializationException("Only primitives or enums can be stored in attributes");
+
+            if (TypeHelper.IsPrimitive(dType))
+               result = (T)ReadPrimitive<T>(reader);
+            else if (TypeHelper.IsEnum(dType))
+               result = (T)ReadEnum<T>(reader);
+            throw new SerializationException(string.Format("Unable to deserialize unexpected type \"{0}\"", dType.Name()));
          }
-         // continue deserializing
-         var info = Inspector.GetInfo(TypeHelper.GetReferenceType(reader));
-         return default(T);
+         // Handle Elements
+         if (reader.NodeType == XmlNodeType.Element)
+         {
+            if (TypeHelper.IsPrimitive(dType))
+               result = (T)ReadPrimitive<T>(reader);
+            else if (TypeHelper.IsArray(dType))
+               result = (T)ReadArray<T>(reader);               
+            else if (TypeHelper.IsEnum(dType))
+               result = (T)ReadEnum<T>(reader);
+
+            Guid refId = TypeHelper.GetReferenceId(reader);
+            if (refId != Guid.Empty)
+            {
+               result = (T)ReferenceCache.GetObjectById(refId);
+               if (result != null)
+                  return result;
+            }
+            // continue deserializing
+            var info = Inspector.GetInfo(TypeHelper.GetReferenceType(reader));
+            return default(T);
+         }
+         return result;
       }
 
       public virtual void Serialize<T>(XmlWriter writer, T obj)
       {
-         
+      }
+
+      public T ReadArray<T>(XmlReader reader)
+      {
+         throw new NotImplementedException();
+      }
+
+      public object ReadEnum<T>(XmlReader reader)
+      {
+         return Enum.Parse(typeof(T), reader.ReadContentAsString());
+         ;
       }
 
       public object ReadPrimitive<T>(XmlReader reader)
