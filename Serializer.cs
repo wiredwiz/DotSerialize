@@ -37,6 +37,7 @@ namespace Org.Edgerunner.DotSerialize
          // TODO: consider making a custom scope for the reference cache
          Kernel.Bind<IReferenceCache>().To<ReferenceCache>().InThreadScope();
          Kernel.Bind<ISerializationInfoCache>().To<WeakSerializationInfoCache>().InSingletonScope();
+         Kernel.Bind<ITypeSerializerFactory>().ToConstant(new TypeSerializerFactory(Kernel));
          Kernel.Bind<ITypeInspector>().To<TypeInspector>().InSingletonScope();
          Kernel.Bind<GenericTypeSerializer>().ToSelf().InSingletonScope();
       }

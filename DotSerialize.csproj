@@ -87,7 +87,9 @@
     <Compile Include="Serializers\GenericTypeSerializer.cs" />
     <Compile Include="Serializers\Int16TypeSerializer.cs" />
     <Compile Include="Serializers\ITypeSerializer.cs" />
+    <Compile Include="Serializers\ITypeSerializerFactory.cs" />
     <Compile Include="Serializers\TypeSerializerBase.cs" />
+    <Compile Include="Serializers\TypeSerializerFactory.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -22,27 +22,27 @@ using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Serializers.Caching;
+using Org.Edgerunner.DotSerialize;
 
 namespace Org.Edgerunner.DotSerialize.Serializers
 {
    public class GenericTypeSerializer
    {
-      protected ITypeInspector Inspector { get; set; }
-      protected IReferenceCache ReferenceCache { get; set; }
+      protected Serializer _Serializer;
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="GenericTypeSerializer"/> class.
+      /// </summary>
+      /// <param name="serializer"></param>
+      public GenericTypeSerializer(Serializer serializer)
+      {
+         _Serializer = serializer;
+      }
 
       public virtual T Deserialize<T>(XmlReader reader)
       {
          T result = default(T);
          Type dType = typeof(T);
-
-         // If we are incorrectly positioned, attempt to get the reader back into position
-         while ((reader.NodeType != XmlNodeType.Element) && (reader.NodeType != XmlNodeType.Attribute))
-            if (!reader.Read())
-               throw new SerializationException(
-                  string.Format("Reader was not positioned on a node of type Attribute or Element.\r\n" +
-                                "A custom type serializer probably positioned the reader incorrectly." +
-                                "Unable to deserialize type \"{0}\".",
-                                dType.Name()));
 
          // Handle attributes
          if ((reader.NodeType == XmlNodeType.Attribute))
@@ -62,7 +62,7 @@ namespace Org.Edgerunner.DotSerialize.Serializers
             if (TypeHelper.IsPrimitive(dType))
                result = (T)ReadPrimitive<T>(reader);
             else if (TypeHelper.IsArray(dType))
-               result = (T)ReadArray<T>(reader);               
+               result = ReadArray<T>(reader);
             else if (TypeHelper.IsEnum(dType))
                result = (T)ReadEnum<T>(reader);
 
@@ -77,7 +77,11 @@ namespace Org.Edgerunner.DotSerialize.Serializers
             var info = Inspector.GetInfo(TypeHelper.GetReferenceType(reader));
             return default(T);
          }
-         return result;
+         throw new SerializationException(
+            string.Format("Reader was not positioned on a node of type Attribute or Element.\r\n" +
+                          "A custom type serializer probably positioned the reader incorrectly." +
+                          "Unable to deserialize type \"{0}\".",
+                          dType.Name()));
       }
 
       public virtual void Serialize<T>(XmlWriter writer, T obj)
