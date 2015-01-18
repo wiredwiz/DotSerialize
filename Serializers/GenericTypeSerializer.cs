@@ -21,22 +21,29 @@ using System.Xml;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
-using Org.Edgerunner.DotSerialize.Serializers.Caching;
 using Org.Edgerunner.DotSerialize;
+using Org.Edgerunner.DotSerialize.Reflection.Caching;
+using Org.Edgerunner.DotSerialize.Serializers.Reference;
 
 namespace Org.Edgerunner.DotSerialize.Serializers
 {
    public class GenericTypeSerializer
    {
-      protected Serializer _Serializer;
+      protected ITypeSerializerFactory Factory { get; set; }
+      protected IReferenceManager ReferenceCache { get; set; }
+      public ITypeInspector TypeInspector { get; set; }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="GenericTypeSerializer"/> class.
       /// </summary>
-      /// <param name="serializer"></param>
-      public GenericTypeSerializer(Serializer serializer)
+      /// <param name="factory"></param>
+      /// <param name="referenceCache"></param>
+      /// <param name="typeInspector"></param>
+      public GenericTypeSerializer(ITypeSerializerFactory factory, IReferenceManager referenceCache, ITypeInspector typeInspector)
       {
-         _Serializer = serializer;
+         Factory = factory;
+         ReferenceCache = referenceCache;
+         TypeInspector = typeInspector;
       }
 
       public virtual T Deserialize<T>(XmlReader reader)
@@ -66,15 +73,9 @@ namespace Org.Edgerunner.DotSerialize.Serializers
             else if (TypeHelper.IsEnum(dType))
                result = (T)ReadEnum<T>(reader);
 
-            Guid refId = TypeHelper.GetReferenceId(reader);
-            if (refId != Guid.Empty)
-            {
-               result = (T)ReferenceCache.GetObjectById(refId);
-               if (result != null)
-                  return result;
-            }
+
             // continue deserializing
-            var info = Inspector.GetInfo(TypeHelper.GetReferenceType(reader));
+            var info = TypeInspector.GetInfo(dType);
             return default(T);
          }
          throw new SerializationException(

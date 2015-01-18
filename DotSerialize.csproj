@@ -69,6 +69,7 @@
     <Compile Include="Attributes\XmlElementAttribute.cs" />
     <Compile Include="Attributes\XmlIgnoreAttribute.cs" />
     <Compile Include="Attributes\XmlRootAttribute.cs" />
+    <Compile Include="Exceptions\ReferenceException.cs" />
     <Compile Include="Exceptions\SerializationException.cs" />
     <Compile Include="Exceptions\TypeLayoutException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -82,8 +83,11 @@
     <Compile Include="Reflection\TypeSerializationInfo.cs" />
     <Compile Include="Reflection\TypeMemberSerializationInfo.cs" />
     <Compile Include="Serializer.cs" />
-    <Compile Include="Serializers\Caching\IReferenceCache.cs" />
-    <Compile Include="Serializers\Caching\ReferenceCache.cs" />
+    <Compile Include="Serializers\Reference\IReferenceManager.cs" />
+    <Compile Include="Serializers\Reference\ReferenceNode.cs" />
+    <Compile Include="Serializers\Reference\MemberReference.cs" />
+    <Compile Include="Serializers\Reference\MemberReferenceList.cs" />
+    <Compile Include="Serializers\Reference\ReferenceManager.cs" />
     <Compile Include="Serializers\GenericTypeSerializer.cs" />
     <Compile Include="Serializers\Int16TypeSerializer.cs" />
     <Compile Include="Serializers\ITypeSerializer.cs" />
