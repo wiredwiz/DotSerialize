@@ -25,6 +25,7 @@ using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Serializers;
+using Org.Edgerunner.DotSerialize.Serializers.Generic;
 using Org.Edgerunner.DotSerialize.Serializers.Reference;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -82,7 +83,7 @@ namespace Org.Edgerunner.DotSerialize
 
       protected virtual void BindGenericTypeSerializer()
       {
-         Kernel.Bind<GenericTypeSerializer>().ToSelf().InSingletonScope();
+         Kernel.Bind<DefaultTypeSerializer>().ToSelf().InSingletonScope();
       }
 
       protected virtual void BindIReferenceManager()
@@ -139,17 +140,15 @@ namespace Org.Edgerunner.DotSerialize
 
       protected virtual T DeserializeObject<T>(XmlReader reader)
       {
-         Scope = new object();
+         Scope = new object(); // Create our scope object for ReferenceManager lifetime
          T result;
          IReferenceManager manager = Kernel.Get<IReferenceManager>();
          var type = TypeHelper.GetReferenceType(reader);
          if (typeof(T) != type)
             throw new SerializationException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
          var id = TypeHelper.GetReferenceId(reader);
-
-         Guid refId = TypeHelper.GetReferenceId(reader);
-         if (refId != Guid.Empty)
-            manager.AddRerenceNode(refId, new ReferenceNode(type, null));
+         if (id != Guid.Empty)
+            manager.AddRerenceNode(id, new ReferenceNode(type, null));
 
          // Attempt to fetch a custom type serializer
          var typeSerializer = Kernel.Get<ITypeSerializer<T>>();
@@ -158,12 +157,14 @@ namespace Org.Edgerunner.DotSerialize
          else
          // Since there was no bound custom type serializer we default to the GenericTypeSerializer
          {
-            var genericSerializer = Kernel.Get<GenericTypeSerializer>();
+            var genericSerializer = Kernel.Get<DefaultTypeSerializer>();
             result = genericSerializer.Deserialize<T>(reader);
          }
+
          // Now that we have our object constructed we update any refences that should point to it in our object graph
-         if (refId != Guid.Empty)
-            manager.GetReferenceById(refId).SourceObject = result;
+         if (id != Guid.Empty)
+            manager.GetReferenceById(id).SourceObject = result;
+
          return result;
       }
 
