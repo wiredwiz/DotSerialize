@@ -11,5 +11,6 @@ namespace Org.Edgerunner.DotSerialize.Serializers
    public interface ITypeSerializerFactory
    {
       ITypeSerializer<T> GetTypeSerializer<T>();
+      DefaultTypeSerializer GetDefaultSerializer();
    }
 }

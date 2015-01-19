@@ -20,7 +20,7 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Reference
          References = new MemberReferenceList();
       }
       public MemberReferenceList References { get; private set; }
-      public Type SourceType { get; private set; }
+      public Type SourceType { get; set; }
       private object _SourceObject;
       public object SourceObject
       {
@@ -30,8 +30,8 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Reference
 
       private void UpdateSourceReference(object newValue)
       {
-         SourceObject = newValue;
-         References.UpdateReferences(SourceObject);         
+         _SourceObject = newValue;
+         References.UpdateReferences(_SourceObject);         
       }
    }
 }

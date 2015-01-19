@@ -23,22 +23,22 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Generic
 
       public virtual void Serialize(XmlWriter writer, T obj)
       {
-         SerializeObject(writer, obj);
+         Serialize(writer, typeof(T), obj);
       }
 
-      public virtual object DeserializeObject(XmlReader reader)
+      public virtual object Deserialize(Type type, XmlReader reader)
       {
          throw new NotImplementedException();
       }
 
-      public virtual void SerializeObject(XmlWriter writer, object obj)
+      public virtual void Serialize(XmlWriter writer, Type type, object obj)
       {
          throw new NotImplementedException();
       }
 
       public virtual T Deserialize(XmlReader reader)
       {
-         return (T)DeserializeObject(reader);
+         return (T)Deserialize(typeof(T), reader);
       }
    }
 }

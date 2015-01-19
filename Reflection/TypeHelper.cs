@@ -69,5 +69,18 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             throw new SerializationException(string.Format("Attribute \"{0}\" is missing", typeAttributeName), ex);
          }
       }
+
+      public static bool ReferenceIsNull(XmlReader reader)
+      {
+         if (reader == null) throw new ArgumentNullException("reader");
+         try
+         {
+            return bool.Parse(reader.GetAttribute("reference__isNull"));
+         }
+         catch (ArgumentNullException)
+         {
+            return false;
+         }
+      }
    }
 }
