@@ -143,12 +143,14 @@ namespace Org.Edgerunner.DotSerialize
          Scope = new object(); // Create our scope object for ReferenceManager lifetime
          T result;
          IReferenceManager manager = Kernel.Get<IReferenceManager>();
+         if (!ReadUntilElement(reader))
+            throw new SerializationException("Could not find root node");
          var type = TypeHelper.GetReferenceType(reader);
          if (typeof(T) != type)
             throw new SerializationException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
          var id = TypeHelper.GetReferenceId(reader);
          if (id != Guid.Empty)
-            manager.AddRerenceNode(id, new ReferenceNode(type, null));
+            manager.RegisterId(id, null);
 
          // Attempt to fetch a custom type serializer
          var typeSerializer = Kernel.Get<ITypeSerializer<T>>();
@@ -163,7 +165,10 @@ namespace Org.Edgerunner.DotSerialize
 
          // Now that we have our object constructed we update any refences that should point to it in our object graph
          if (id != Guid.Empty)
-            manager.GetReferenceById(id).SourceObject = result;
+            manager.UpdateObject(id, result);
+
+         if (ReadUntilElement(reader))
+            throw new SerializationException("Document cannot contain more than one root node");
 
          return result;
       }
@@ -176,6 +181,18 @@ namespace Org.Edgerunner.DotSerialize
       protected virtual T DeserializeObjectFromFile<T>(string filePath)
       {
          throw new NotImplementedException();
+      }
+
+      protected virtual bool ReadUntilElement(XmlReader reader)
+      {
+         if (reader.NodeType == XmlNodeType.Element)
+            return true;
+
+         while (reader.Read())
+            if (reader.NodeType == XmlNodeType.Element)
+               return true;
+
+         return false;
       }
 
       public static void Serialize<T>(Stream stream, T obj)

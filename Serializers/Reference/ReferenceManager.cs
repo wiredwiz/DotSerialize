@@ -4,7 +4,7 @@ using Org.Edgerunner.DotSerialize.Exceptions;
 
 namespace Org.Edgerunner.DotSerialize.Serializers.Reference
 {
-   public class ReferenceManager : IReferenceManager 
+   public class ReferenceManager : IReferenceManager
    {
       /// <summary>
       /// Initializes a new instance of the <see cref="ReferenceCache"/> class.
@@ -18,35 +18,85 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Reference
       protected Dictionary<Guid, ReferenceNode> ReferencesByGuid { get; set; }
       protected Dictionary<object, Guid> ReferencesByInstance { get; set; }
 
-      public virtual Guid GetIdOfObject(object obj)
+      //public virtual Guid GetIdOfObject(object obj)
+      //{
+      //   if (!ReferencesByInstance.ContainsKey(obj))
+      //      return Guid.Empty;
+      //   return ReferencesByInstance[obj];
+      //}
+
+      //public void AddMemberReferenceForId(Guid id, MemberReference memberReference)
+      //{
+      //   if (!ReferencesByGuid.ContainsKey(id))
+      //      throw new ReferenceException(string.Format("No reference exists for id {0}", id));
+      //   ReferencesByGuid[id].References.Add(memberReference);
+      //}
+
+      //public ReferenceNode GetReferenceById(Guid id)
+      //{
+      //   if (!ReferencesByGuid.ContainsKey(id))
+      //      throw new ReferenceException(string.Format("No reference exists for id {0}", id));
+      //   return ReferencesByGuid[id];
+      //}
+
+      //public Guid AddObject(object obj)
+      //{
+      //   throw new NotImplementedException();
+      //}
+
+      //public void AddRerenceNode(Guid id, ReferenceNode node)
+      //{
+      //   ReferencesByGuid.Add(id, node);
+      //}
+
+      //public bool IdIsRegistered(Guid id)
+      //{
+      //   return ReferencesByGuid.ContainsKey(id);
+      //}
+      public virtual void RegisterId(Guid id, object obj)
       {
-         if (!ReferencesByInstance.ContainsKey(obj))
-            return Guid.Empty;
+         ReferencesByGuid.Add(id, new ReferenceNode(obj.GetType(), obj));
+      }
+
+      public virtual void RegisterId(Guid id)
+      {
+         ReferencesByGuid.Add(id, new ReferenceNode(typeof(object), null));
+      }
+
+      public virtual bool IsRegistered(Guid id)
+      {
+         return ReferencesByGuid.ContainsKey(id);
+      }
+
+      public virtual bool IsRegistered(object obj)
+      {
+         return ReferencesByInstance.ContainsKey(obj);
+      }
+
+      public object GetObject(Guid id)
+      {
+         if (!ReferencesByGuid.ContainsKey(id))
+            throw new ReferenceException(string.Format("No object exists for id {0}", id));
+         return ReferencesByGuid[id].SourceObject;
+      }
+
+      public virtual Guid GetObjectId(object obj)
+      {
          return ReferencesByInstance[obj];
       }
 
-      public void AddMemberReferenceForId(Guid id, MemberReference memberReference)
+      public virtual void UpdateObject(Guid id, object newObject)
+      {
+         var node = ReferencesByGuid[id];
+         node.SourceObject = newObject;
+         node.SourceType = newObject.GetType();
+      }
+
+      public virtual MemberReferenceList MemberReferences(Guid id)
       {
          if (!ReferencesByGuid.ContainsKey(id))
             throw new ReferenceException(string.Format("No reference exists for id {0}", id));
-         ReferencesByGuid[id].References.Add(memberReference);
-      }
-
-      public ReferenceNode GetReferenceById(Guid id)
-      {
-         if (!ReferencesByGuid.ContainsKey(id))
-            throw new ReferenceException(string.Format("No reference exists for id {0}", id));
-         return ReferencesByGuid[id];
-      }
-
-      public Guid AddObject(object obj)
-      {
-         throw new NotImplementedException();
-      }
-
-      public void AddRerenceNode(Guid id, ReferenceNode node)
-      {
-         ReferencesByGuid.Add(id, node);
+         return ReferencesByGuid[id].References;
       }
    }
 }

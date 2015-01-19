@@ -24,5 +24,10 @@ namespace Org.Edgerunner.DotSerialize.Serializers
       {
          return Kernel.Get<ITypeSerializer<T>>();
       }
+
+      public DefaultTypeSerializer GetDefaultSerializer()
+      {
+         return Kernel.Get<DefaultTypeSerializer>();
+      }
    }
 }

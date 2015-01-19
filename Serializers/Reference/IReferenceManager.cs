@@ -6,10 +6,13 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Reference
 {
    public interface IReferenceManager
    {
-      Guid GetIdOfObject(object obj);
-      void AddMemberReferenceForId(Guid id, MemberReference memberReference);
-      ReferenceNode GetReferenceById(Guid id);
-      Guid AddObject(object obj);
-      void AddRerenceNode(Guid id, ReferenceNode node);
+      void RegisterId(Guid id, object obj);
+      void RegisterId(Guid id);
+      bool IsRegistered(Guid id);
+      bool IsRegistered(object obj);
+      object GetObject(Guid id);
+      Guid GetObjectId(object obj);
+      void UpdateObject(Guid id, object newObject);
+      MemberReferenceList MemberReferences(Guid id);
    }
 }
