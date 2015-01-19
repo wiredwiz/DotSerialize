@@ -82,6 +82,9 @@ namespace Org.Edgerunner.DotSerialize.Serializers
             else
             {
                // Class or struct
+               if (TypeHelper.ReferenceIsNull(reader))
+                  return null;
+
                var info = TypeInspector.GetInfo(type);
 
                // read attributes
@@ -89,10 +92,11 @@ namespace Org.Edgerunner.DotSerialize.Serializers
                   DeserializeAttribMember(reader, info, memberValues);
                reader.MoveToContent();
 
-               // read elements
-               while (ReadNextElement(reader))
-                  if (reader.NodeType == XmlNodeType.Element)
-                     DeserializeElementMember(reader, info, memberValues);
+               if (!reader.IsEmptyElement)
+                  // read child elements
+                  while (ReadNextElement(reader))
+                     if (reader.NodeType == XmlNodeType.Element)
+                        DeserializeElementMember(reader, info, memberValues);
 
                result = type.TryCreateInstance(memberValues);
                if (result == null)
