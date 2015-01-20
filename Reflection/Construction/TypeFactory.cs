@@ -39,12 +39,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
 
       public static object CreateInstance(Type type, IDictionary<TypeMemberSerializationInfo, object> data)
       {
-         //object result = type.TryCreateInstance((from x in data.Keys
-         //                                        select x.ConstructorFriendlyName).ToArray<string>(),
-         //                                       (from x in data.Keys
-         //                                        select x.DataType).ToArray<Type>(),
-         //                                       data.Values.ToArray()
-         //   );
          object result = null;
 
          object[] paramValues;
