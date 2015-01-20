@@ -39,7 +39,7 @@ namespace DotSerializeTests.DataTypes
             _Age = value;
          }
       }
-
+      [XmlIgnore]
       private readonly Owner _Owner;
    }
 }
