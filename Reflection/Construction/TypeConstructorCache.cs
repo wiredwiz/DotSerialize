@@ -20,7 +20,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          _Mappings = new Dictionary<Type, Dictionary<int, ConstructorMap>>();
       }
 
-      public ConstructorMap GetMappingFor(Type type, List<TypeMemberSerializationInfo> info)
+      public ConstructorMap GetMappingFor(Type type, IList<TypeMemberSerializationInfo> info)
       {
          if (type == null) throw new ArgumentNullException("type");
          if (info == null) throw new ArgumentNullException("info");
@@ -35,7 +35,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          return typeMappings[key];
       }
 
-      public void AddMappingFor(Type type, List<TypeMemberSerializationInfo> info, ConstructorMap constructorMap)
+      public void AddMappingFor(Type type, IList<TypeMemberSerializationInfo> info, ConstructorMap constructorMap)
       {
          if (type == null) throw new ArgumentNullException("type");
          if (info == null) throw new ArgumentNullException("info");
@@ -46,7 +46,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          _Mappings[type].Add(GetHash(info), constructorMap);            
       }
 
-      protected int GetHash(List<TypeMemberSerializationInfo> info)
+      protected int GetHash(IList<TypeMemberSerializationInfo> info)
       {
          if (info.Count == 0)
             return 0;
@@ -54,7 +54,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
             return info[0].GetHashCode();
          else
          {
-            info.Sort((x, y) => x.Name.CompareTo(y));
+            info = info.OrderBy(x => x.Name).ToList();
+            //info.Sort((x, y) => x.Name.CompareTo(y));
             int result = info[0].GetHashCode();
             for (int i = 1; i < info.Count; i++)
                result = (result * 397) ^ info[i].GetHashCode();

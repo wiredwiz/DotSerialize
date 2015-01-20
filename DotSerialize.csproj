@@ -78,7 +78,7 @@
     <Compile Include="Reflection\Caching\SerializationInfoCacheBase.cs" />
     <Compile Include="Reflection\Caching\WeakSerializationInfoCache.cs" />
     <Compile Include="Reflection\Construction\ConstructorMap.cs" />
-    <Compile Include="Reflection\Construction\ParameterMap.cs" />
+    <Compile Include="Reflection\Construction\ParameterMapper.cs" />
     <Compile Include="Reflection\Construction\TypeConstructorCache.cs" />
     <Compile Include="Reflection\ITypeInspector.cs" />
     <Compile Include="Reflection\TypeHelper.cs" />
