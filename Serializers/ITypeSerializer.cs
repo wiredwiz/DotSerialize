@@ -9,7 +9,7 @@ namespace Org.Edgerunner.DotSerialize.Serializers
 {
    public interface ITypeSerializer
    {
-      object Deserialize(Type type, XmlReader reader);
+      object Deserialize(XmlReader reader, Type type);
       void Serialize(XmlWriter writer, Type type, object obj);
    }
 }

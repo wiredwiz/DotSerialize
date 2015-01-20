@@ -24,6 +24,7 @@ namespace DotSerializeTests.DataTypes
          _Owner = owner;
          _Age = 0;
       }
+
       public virtual string Name { get; set; }
       public virtual string Breed { get; set; }
       public virtual bool HasCollar { get; set; }

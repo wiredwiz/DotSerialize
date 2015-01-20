@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Serializers.Generic;
 
-namespace Org.Edgerunner.DotSerialize.Serializers
+namespace Org.Edgerunner.DotSerialize.Serializers.Factories
 {
    public class TypeSerializerFactory : ITypeSerializerFactory
    {
@@ -22,12 +18,26 @@ namespace Org.Edgerunner.DotSerialize.Serializers
 
       public ITypeSerializer<T> GetTypeSerializer<T>()
       {
-         return Kernel.Get<ITypeSerializer<T>>();
+         try
+         {
+            return Kernel.Get<ITypeSerializer<T>>();
+         }
+         catch (ActivationException)
+         {
+            return null;
+         }
       }
 
       public DefaultTypeSerializer GetDefaultSerializer()
       {
-         return Kernel.Get<DefaultTypeSerializer>();
+         try
+         {
+            return Kernel.Get<DefaultTypeSerializer>();
+         }
+         catch (ActivationException)
+         {
+            return null;
+         }
       }
    }
 }

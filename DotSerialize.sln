@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotSerialize", "DotSerializ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotSerializeTests", "DotSerializeTests\DotSerializeTests.csproj", "{6521DD78-C79C-4FBB-BB13-0A5284958493}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsTestingApp", "WinFormsTestingApp\WinFormsTestingApp.csproj", "{2146B7BC-7472-433A-A48C-8550C37F7DE4}"
+EndProject
 Global
 	GlobalSection(MercurialSourceControlSolutionProperties) = preSolution
 		SolutionIsControlled = True
@@ -23,6 +25,10 @@ Global
 		{6521DD78-C79C-4FBB-BB13-0A5284958493}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6521DD78-C79C-4FBB-BB13-0A5284958493}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6521DD78-C79C-4FBB-BB13-0A5284958493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2146B7BC-7472-433A-A48C-8550C37F7DE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2146B7BC-7472-433A-A48C-8550C37F7DE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2146B7BC-7472-433A-A48C-8550C37F7DE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2146B7BC-7472-433A-A48C-8550C37F7DE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
