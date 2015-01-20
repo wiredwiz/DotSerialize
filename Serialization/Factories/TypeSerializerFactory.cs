@@ -1,8 +1,8 @@
 ﻿using System;
 using Ninject;
-using Org.Edgerunner.DotSerialize.Serializers.Generic;
+using Org.Edgerunner.DotSerialize.Serialization.Generic;
 
-namespace Org.Edgerunner.DotSerialize.Serializers.Factories
+namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 {
    public class TypeSerializerFactory : ITypeSerializerFactory
    {

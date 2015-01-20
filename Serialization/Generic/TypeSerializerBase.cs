@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Xml;
 using Org.Edgerunner.DotSerialize.Reflection;
-using Org.Edgerunner.DotSerialize.Serializers.Reference;
+using Org.Edgerunner.DotSerialize.Serialization.Reference;
 
-namespace Org.Edgerunner.DotSerialize.Serializers.Generic
+namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 {
    public abstract class TypeSerializerBase<T> : ITypeSerializer<T>
    {

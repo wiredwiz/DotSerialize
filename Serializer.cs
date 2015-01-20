@@ -24,10 +24,9 @@ using Ninject;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
-using Org.Edgerunner.DotSerialize.Serializers;
-using Org.Edgerunner.DotSerialize.Serializers.Factories;
-using Org.Edgerunner.DotSerialize.Serializers.Generic;
-using Org.Edgerunner.DotSerialize.Serializers.Reference;
+using Org.Edgerunner.DotSerialize.Serialization;
+using Org.Edgerunner.DotSerialize.Serialization.Factories;
+using Org.Edgerunner.DotSerialize.Serialization.Reference;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 

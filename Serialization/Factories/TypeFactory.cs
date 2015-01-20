@@ -19,10 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Reflection;
 
-namespace Org.Edgerunner.DotSerialize.Serializers.Factories
+namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 {
    public static class TypeFactory
    {
@@ -39,7 +40,21 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Factories
                                                  select x.DataType).ToArray<Type>(),
                                                 data.Values.ToArray()
             );
+
+         List<ConstructorInfo> constructors = type.Constructors() as List<ConstructorInfo>;
+         constructors.Sort(delegate(ConstructorInfo x, ConstructorInfo y)
+         {
+            return x.Parameters().Count.CompareTo(y);
+         });
+         if (constructors[0].Parameters().Count == 0)
+            result = constructors[0].
+
          return result;
+      }
+
+      public static TypeMemberSerializationInfo FindMatchingMember()
+      {
+         
       }
    }
 }

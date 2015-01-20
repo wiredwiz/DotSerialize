@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 
-namespace Org.Edgerunner.DotSerialize.Serializers.Reference
+namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public sealed class MemberReference : IEquatable<MemberReference>
    {

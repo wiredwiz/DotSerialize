@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
-namespace Org.Edgerunner.DotSerialize.Serializers
+namespace Org.Edgerunner.DotSerialize.Serialization
 {
    public interface ITypeSerializer
    {
