@@ -83,6 +83,7 @@
     <Compile Include="Reflection\TypeSerializationInfo.cs" />
     <Compile Include="Reflection\TypeMemberSerializationInfo.cs" />
     <Compile Include="Serializer.cs" />
+    <Compile Include="Serializers\Factories\TypeFactory.cs" />
     <Compile Include="Serializers\ITypeSerializer.cs" />
     <Compile Include="Serializers\Reference\IReferenceManager.cs" />
     <Compile Include="Serializers\Reference\ReferenceNode.cs" />
@@ -91,9 +92,11 @@
     <Compile Include="Serializers\Reference\ReferenceManager.cs" />
     <Compile Include="Serializers\DefaultTypeSerializer.cs" />
     <Compile Include="Serializers\Generic\ITypeSerializer.cs" />
-    <Compile Include="Serializers\ITypeSerializerFactory.cs" />
+    <Compile Include="Serializers\Factories\ITypeSerializerFactory.cs" />
     <Compile Include="Serializers\Generic\TypeSerializerBase.cs" />
-    <Compile Include="Serializers\TypeSerializerFactory.cs" />
+    <Compile Include="Serializers\Factories\TypeSerializerFactory.cs" />
+    <Compile Include="Utilities\FieldInfoExtensions.cs" />
+    <Compile Include="Utilities\NamingUtils.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -25,6 +25,7 @@ using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Serializers;
+using Org.Edgerunner.DotSerialize.Serializers.Factories;
 using Org.Edgerunner.DotSerialize.Serializers.Generic;
 using Org.Edgerunner.DotSerialize.Serializers.Reference;
 
@@ -97,48 +98,83 @@ namespace Org.Edgerunner.DotSerialize
          set { _Instance = value; }
       }
 
-      protected virtual void SerializeObject<T>(Stream stream, T obj)
+      public virtual void SerializeObject<T>(Stream stream, T obj)
       {
-         throw new NotImplementedException();
+         using (var xmlWriter = XmlWriter.Create(stream))
+         {
+            SerializeObject<T>(xmlWriter, obj);
+         }
       }
 
-      protected virtual void SerializeObject<T>(TextWriter writer, T obj)
+      public virtual void SerializeObject<T>(TextWriter writer, T obj)
       {
-         throw new NotImplementedException();
+         using (var xmlWriter = XmlWriter.Create(writer))
+         {
+            SerializeObject<T>(xmlWriter, obj);
+         }
       }
 
-      protected virtual void SerializeObject<T>(XmlWriter writer, T obj)
+      public virtual void SerializeObject<T>(XmlWriter writer, T obj)
       {
          Scope = new object();
-         throw new NotImplementedException();
+         var inspector = Kernel.Get<ITypeInspector>();
+         var info = inspector.GetInfo(typeof(T));
+         writer.WriteStartDocument();
+         writer.WriteStartElement(info.EntityName);
+         if (!string.IsNullOrEmpty(info.Namespace))
+            writer.WriteAttributeString("xmlns", info.Namespace);
+
+         // Attempt to fetch a custom type serializer
+         ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
+         var typeSerializer = factory.GetTypeSerializer<T>();
+         if (typeSerializer != null)
+            typeSerializer.Serialize(writer, obj);
+         else
+         // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+         {
+            var defaultSerializer = factory.GetDefaultSerializer();
+            defaultSerializer.Serialize<T>(writer, obj);
+         }
+         writer.WriteEndDocument();
       }
 
-      protected virtual void SerializeObject<T>(out XmlDocument document, T obj)
+      public virtual void SerializeObject<T>(out XmlDocument document, T obj)
       {
-         throw new NotImplementedException();
+         StringWriter writer = new StringWriter();
+         SerializeObject<T>(writer, obj);
+         document = new XmlDocument();
+         document.LoadXml(writer.ToString());
       }
 
-      protected virtual void SerializeObjectToFile<T>(string filePath, T obj)
+      public virtual void SerializeObjectToFile<T>(string fileName, T obj)
       {
-         throw new NotImplementedException();
+         var document = new XmlDocument();
+         SerializeObject<T>(out document, obj);
+         document.Save(fileName);
       }
 
-      protected virtual T DeserializeObject<T>(Stream stream)
+      public virtual T DeserializeObject<T>(Stream stream)
       {
-         throw new NotImplementedException();
+         using (var xmlReader = XmlReader.Create(stream))
+         {
+            return DeserializeObject<T>(xmlReader);
+         }
       }
 
-      protected virtual T DeserializeObject<T>(XmlDocument document)
+      public virtual T DeserializeObject<T>(XmlDocument document)
       {
-         throw new NotImplementedException();
+         return DeserializeObject<T>(document.InnerXml);
       }
 
-      protected virtual T DeserializeObject<T>(TextReader reader)
+      public virtual T DeserializeObject<T>(TextReader reader)
       {
-         throw new NotImplementedException();
+         using (var xmlReader = XmlReader.Create(reader))
+         {
+            return DeserializeObject<T>(xmlReader);
+         }
       }
 
-      protected virtual T DeserializeObject<T>(XmlReader reader)
+      public virtual T DeserializeObject<T>(XmlReader reader)
       {
          Scope = new object(); // Create our scope object for ReferenceManager lifetime
          T result;
@@ -150,17 +186,18 @@ namespace Org.Edgerunner.DotSerialize
             throw new SerializationException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
          var id = TypeHelper.GetReferenceId(reader);
          if (id != Guid.Empty)
-            manager.RegisterId(id, null);
+            manager.RegisterId(id);
 
          // Attempt to fetch a custom type serializer
-         var typeSerializer = Kernel.Get<ITypeSerializer<T>>();
+         ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
+         var typeSerializer = factory.GetTypeSerializer<T>();
          if (typeSerializer != null)
             result = typeSerializer.Deserialize(reader);
          else
          // Since there was no bound custom type serializer we default to the GenericTypeSerializer
          {
-            var genericSerializer = Kernel.Get<DefaultTypeSerializer>();
-            result = genericSerializer.Deserialize<T>(reader);
+            var defaultSerializer = factory.GetDefaultSerializer();
+            result = defaultSerializer.Deserialize<T>(reader);
          }
 
          // Now that we have our object constructed we update any refences that should point to it in our object graph
@@ -173,14 +210,20 @@ namespace Org.Edgerunner.DotSerialize
          return result;
       }
 
-      protected virtual T DeserializeObject<T>(string xml)
+      public virtual T DeserializeObject<T>(string xml)
       {
-         throw new NotImplementedException();
+         using (var strReader = new StringReader(xml))         
+         {
+            return DeserializeObject<T>(strReader);
+         }
       }
 
-      protected virtual T DeserializeObjectFromFile<T>(string filePath)
+      public virtual T DeserializeObjectFromFile<T>(string fileName)
       {
-         throw new NotImplementedException();
+         using (var xmlReader = XmlReader.Create(fileName))
+         {
+            return DeserializeObject<T>(xmlReader);
+         }
       }
 
       protected virtual bool ReadUntilElement(XmlReader reader)

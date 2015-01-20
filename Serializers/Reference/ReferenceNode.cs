@@ -15,9 +15,9 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Reference
       /// <param name="sourceObject"></param>
       public ReferenceNode(Type sourceType, object sourceObject)
       {
-         SourceType = sourceType;
-         SourceObject = sourceObject;
          References = new MemberReferenceList();
+         SourceType = sourceType;
+         _SourceObject = sourceObject;         
       }
       public MemberReferenceList References { get; private set; }
       public Type SourceType { get; set; }

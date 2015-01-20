@@ -26,7 +26,7 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Generic
          Serialize(writer, typeof(T), obj);
       }
 
-      public virtual object Deserialize(Type type, XmlReader reader)
+      public virtual object Deserialize(XmlReader reader, Type type)
       {
          throw new NotImplementedException();
       }
@@ -38,7 +38,7 @@ namespace Org.Edgerunner.DotSerialize.Serializers.Generic
 
       public virtual T Deserialize(XmlReader reader)
       {
-         return (T)Deserialize(typeof(T), reader);
+         return (T)Deserialize(reader, typeof(T));
       }
    }
 }

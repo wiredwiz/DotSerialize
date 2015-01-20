@@ -8,6 +8,7 @@ using Fasterflect;
 using Org.Edgerunner.DotSerialize.Attributes;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
+using Org.Edgerunner.DotSerialize.Utilities;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
@@ -102,11 +103,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                }
                if (string.IsNullOrEmpty(entityName))
                   entityName = field.Name;
-               var encapsulatingPropName = EncapsulatingPropertyName(field);
-               if (!string.IsNullOrEmpty(encapsulatingPropName))
+               if (field.IsBackingField())
                {
-                  propertyExclusionList.Add(encapsulatingPropName);
-                  var property = type.Property(encapsulatingPropName);
+                  var property = field.GetEncapsulatingAutoProperty();
+                  propertyExclusionList.Add(property.Name);
                   ignoreAttrib = property.Attribute<XmlIgnoreAttribute>();
                   if (ignoreAttrib != null)
                      continue;
@@ -119,7 +119,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                      entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
                   }
                   if (string.IsNullOrEmpty(entityName))
-                     entityName = encapsulatingPropName;
+                     entityName = property.Name;
                }
                var memberInfo = new TypeMemberSerializationInfo(field.Name,
                                                                 TypeMemberSerializationInfo.MemberType.Field,

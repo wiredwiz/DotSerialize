@@ -75,6 +75,7 @@
     <Compile Include="DataTypes\Dog.cs" />
     <Compile Include="DataTypes\Owner.cs" />
     <Compile Include="DataTypes\Person.cs" />
+    <Compile Include="SerializerTests.cs" />
     <Compile Include="TypeInspectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
