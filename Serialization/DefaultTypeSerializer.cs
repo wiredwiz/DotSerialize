@@ -18,19 +18,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
-using Org.Edgerunner.DotSerialize.Serializers.Reference;
-using System.Reflection;
-using System.Collections;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Org.Edgerunner.DotSerialize.Serializers.Factories;
+using Org.Edgerunner.DotSerialize.Serialization.Factories;
+using Org.Edgerunner.DotSerialize.Serialization.Reference;
 
-namespace Org.Edgerunner.DotSerialize.Serializers
+namespace Org.Edgerunner.DotSerialize.Serialization
 {
    public class DefaultTypeSerializer
    {

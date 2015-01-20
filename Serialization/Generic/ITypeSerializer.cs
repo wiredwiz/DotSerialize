@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml;
 
-namespace Org.Edgerunner.DotSerialize.Serializers.Generic
+namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 {
    public interface ITypeSerializer<T> : ITypeSerializer
    {

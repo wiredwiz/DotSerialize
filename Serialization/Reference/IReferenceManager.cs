@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using Org.Edgerunner.DotSerialize.Exceptions;
 
-namespace Org.Edgerunner.DotSerialize.Serializers.Reference
+namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public interface IReferenceManager
    {
