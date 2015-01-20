@@ -77,14 +77,16 @@
     <Compile Include="Reflection\Caching\SerializationInfoCache.cs" />
     <Compile Include="Reflection\Caching\SerializationInfoCacheBase.cs" />
     <Compile Include="Reflection\Caching\WeakSerializationInfoCache.cs" />
+    <Compile Include="Reflection\Construction\ConstructorMap.cs" />
     <Compile Include="Reflection\Construction\ParameterMap.cs" />
+    <Compile Include="Reflection\Construction\TypeConstructorCache.cs" />
     <Compile Include="Reflection\ITypeInspector.cs" />
     <Compile Include="Reflection\TypeHelper.cs" />
     <Compile Include="Reflection\TypeInspector.cs" />
     <Compile Include="Reflection\TypeSerializationInfo.cs" />
     <Compile Include="Reflection\TypeMemberSerializationInfo.cs" />
     <Compile Include="Serializer.cs" />
-    <Compile Include="Serialization\Factories\TypeFactory.cs" />
+    <Compile Include="Reflection\Construction\TypeFactory.cs" />
     <Compile Include="Serialization\ITypeSerializer.cs" />
     <Compile Include="Serialization\Reference\IReferenceManager.cs" />
     <Compile Include="Serialization\Reference\ReferenceNode.cs" />

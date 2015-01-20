@@ -21,9 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fasterflect;
-using Org.Edgerunner.DotSerialize.Reflection;
 
-namespace Org.Edgerunner.DotSerialize.Serialization.Factories
+namespace Org.Edgerunner.DotSerialize.Reflection.Construction
 {
    public static class TypeFactory
    {
@@ -46,8 +45,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
          {
             return x.Parameters().Count.CompareTo(y);
          });
-         if (constructors[0].Parameters().Count == 0)
-            result = constructors[0].
+         //if (constructors[0].Parameters().Count == 0)
+         //   result = constructors[0].
 
          return result;
       }

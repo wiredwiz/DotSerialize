@@ -24,6 +24,7 @@ using System.Xml;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
+using Org.Edgerunner.DotSerialize.Reflection.Construction;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
 
