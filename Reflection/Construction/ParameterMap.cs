@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Construction
 {
-   internal static class ParameterMap
+   internal class ParameterMap
    {
-      public static IList<TypeMemberSerializationInfo> MapTypeMembersToParameters(IList<ParameterInfo> parameters)
+      public IList<TypeMemberSerializationInfo> MapTypeMembersToParameters(Type type, IList<ParameterInfo> parameters)
       {
          var members = new List<TypeMemberSerializationInfo>();
 
