@@ -34,7 +34,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
    public class DefaultTypeSerializer
    {
       protected ITypeSerializerFactory Factory { get; set; }
-      protected IReferenceManager ReferenceManager { get; set; }
+      protected IReferenceManager RefManager { get; set; }
       public ITypeInspector TypeInspector { get; set; }
 
       /// <summary>
@@ -46,7 +46,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       public DefaultTypeSerializer(ITypeSerializerFactory factory, IReferenceManager referenceManager, ITypeInspector typeInspector)
       {
          Factory = factory;
-         ReferenceManager = referenceManager;
+         RefManager = referenceManager;
          TypeInspector = typeInspector;
       }
 
@@ -65,18 +65,17 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if ((reader.NodeType == XmlNodeType.Attribute))
          {
             if (!((TypeHelper.IsPrimitive(type)) || (TypeHelper.IsEnum(type))))
-               throw new SerializationException("Only primitives or enums can be stored in attributes");
+               throw new SerializationException("Only primitives or enums can be stored in attributes.");
 
             if (TypeHelper.IsPrimitive(type))
                result = DeserializePrimitive(type, reader);
             else if (TypeHelper.IsEnum(type))
                result = DeserializeEnum(type, reader);
             else
-               throw new SerializationException(string.Format("Unable to deserialize unexpected type \"{0}\"", type.Name()));
+               throw new SerializationException(string.Format("Unable to deserialize unexpected type \"{0}\" from an attribute.", type.Name()));
             return result;
          }
          // Handle Elements
-         var lateBoundReferences = new Dictionary<TypeMemberSerializationInfo, Guid>();
          if (reader.NodeType == XmlNodeType.Element)
          {
             if (TypeHelper.IsPrimitive(type))
@@ -92,7 +91,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   return null;
 
                var memberValues = new Dictionary<TypeMemberSerializationInfo, object>();
-               ReferenceManager.StartLateBindingCapture(type);
+               RefManager.StartLateBindingCapture(type);
                var info = TypeInspector.GetInfo(type);
 
                // read attributes
@@ -109,9 +108,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization
 
                result = TypeFactory.CreateInstance(type, memberValues);
                if (result == null)
-                  throw new SerializationException(string.Format("Unable to create an instance of type \"{0}\"", type.Name()));
+                  throw new SerializationException(string.Format("Unable to create an instance of type \"{0}\".", type.Name()));
 
-               ReferenceManager.FinishCaptures(result);
+               RefManager.FinishCaptures(result);
             }
 
             // hand back our new object          
@@ -159,22 +158,23 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if (info.MemberInfoByEntityName[reader.Name].IsAttribute)
             return;
          var memberInfo = info.MemberInfoByEntityName[reader.Name];
+         RefManager.SetWorkingMember(memberInfo);
          Guid id = Guid.Empty;
          bool isReferenceOrStruct = TypeHelper.IsClassOrStruct(memberInfo.DataType);
          if (isReferenceOrStruct)
          {
             var type = TypeHelper.GetReferenceType(reader);
             if (memberInfo.DataType != type)
-               throw new SerializationException(string.Format("Type attribute of element {0} does not match the object's actual member type of {1}",
+               throw new SerializationException(string.Format("Type attribute of element {0} does not match the object's actual member type of {1}.",
                                                               reader.Name,
                                                               memberInfo.DataType));
 
             id = TypeHelper.GetReferenceId(reader);
             if (id != Guid.Empty)
             {
-               if (ReferenceManager.IsRegistered(id) && (ReferenceManager.GetObject(id) != null))
+               if (RefManager.IsRegistered(id) && (RefManager.GetObject(id) != null))
                {
-                  object instance = ReferenceManager.GetObject(id);
+                  object instance = RefManager.GetObject(id);
                   if (memberInfo.DataType != instance.GetType())
                      throw new SerializationException("Instance type for id \"{0}\" does not match member type");
                   memberValues[memberInfo] = instance;
@@ -182,13 +182,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                }
                else
                {
-                  if (!ReferenceManager.IsRegistered(id))
-                     ReferenceManager.RegisterId(id);
+                  if (!RefManager.IsRegistered(id))
+                     RefManager.RegisterId(id);
 
                   if (!TypeHelper.IsReferenceSource(reader))
                   {
                      memberValues[memberInfo] = null;
-                     ReferenceManager.CaptureLateBinding(id, memberInfo);
+                     RefManager.CaptureLateBinding(id, memberInfo);
                      return;
                   }
                }
@@ -210,7 +210,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             result = defaultSerializer.Deserialize(reader, memberInfo.DataType);
             memberValues[memberInfo] = result;
          }
-         ReferenceManager.UpdateObject(id, result);
+         RefManager.UpdateObject(id, result);
       }
 
       protected bool ReadToTextNode(XmlReader reader)
@@ -250,11 +250,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             writer.WriteValue(obj.ToString());
          else if (TypeHelper.IsEnum(type))
             writer.WriteValue(obj.ToString());
-         //else if (TypeHelper.IsArray(type))
-         //   SerializableArray(writer, obj);
          else
          {
-            writer.WriteAttributeString(Properties.Resources.ReferenceType, type.AssemblyQualifiedName);
+            writer.WriteAttributeString(Properties.Resources.ReferenceType, type.FullName);
             // check for null value
             if (obj == null)
             {
@@ -262,18 +260,18 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                return;
             }
             // check for struct before writing reference id
-            if (!type.IsValueType && !type.IsArray)
+            if (!type.IsValueType)
             {
                Guid id;
-               if (ReferenceManager.IsRegistered(obj))
+               if (RefManager.IsRegistered(obj))
                {
-                  id = ReferenceManager.GetObjectId(obj);
+                  id = RefManager.GetObjectId(obj);
                   writer.WriteAttributeString(Properties.Resources.ReferenceId, id.ToString());
                   // since this object has already been serialized once there is no need to write out the rest of the object
                   return;
                }
                // Given that the instance has not already been seen we keep writing
-               id = ReferenceManager.RegisterId(Guid.NewGuid(), obj);
+               id = RefManager.RegisterId(Guid.NewGuid(), obj);
                writer.WriteAttributeString(Properties.Resources.ReferenceId, id.ToString());
                writer.WriteAttributeString(Properties.Resources.ReferenceSource, true.ToString());
             }
@@ -413,21 +411,21 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             id = TypeHelper.GetReferenceId(reader);
             if (id != Guid.Empty)
             {
-               if (ReferenceManager.IsRegistered(id) && (ReferenceManager.GetObject(id) != null))
+               if (RefManager.IsRegistered(id) && (RefManager.GetObject(id) != null))
                {
-                  object instance = ReferenceManager.GetObject(id);
-                  if (memberInfo.DataType != instance.GetType())
-                     throw new SerializationException("Instance type for id \"{0}\" does not match member type");
+                  object instance = RefManager.GetObject(id);
+                  //if (memberInfo.DataType != instance.GetType())
+                  //   throw new SerializationException("Instance type for id \"{0}\" does not match member type");
                   return instance;
                }
                else
                {
-                  if (!ReferenceManager.IsRegistered(id))
-                     ReferenceManager.RegisterId(id);
+                  if (!RefManager.IsRegistered(id))
+                     RefManager.RegisterId(id);
 
                   if (!TypeHelper.IsReferenceSource(reader))
                   {
-                     ReferenceManager.CaptureLateBinding(id, memberInfo);
+                     RefManager.CaptureLateBinding(id);
                      return null;
                   }
                }

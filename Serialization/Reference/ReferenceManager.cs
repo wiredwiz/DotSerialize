@@ -40,6 +40,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       protected Dictionary<Guid, ReferenceNode> ReferencesByGuid { get; set; }
       protected Dictionary<object, Guid> ReferencesByInstance { get; set; }
       protected Type CurrentCaptureType { get; set; }
+      protected TypeMemberSerializationInfo CurrentMember { get; set; }
       protected List<CaptureNode> CaptureNodes { get; set; }
 
       public virtual Guid RegisterId(Guid id, object obj)
@@ -112,12 +113,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 
       public void StartLateBindingCapture(Type type)
       {
+         CurrentMember = null;
          CaptureNodes.Clear();
          CurrentCaptureType = type;
       }
 
       public void FinishCaptures(object source)
       {
+         CurrentMember = null;
          if (source.GetType() != CurrentCaptureType)
             throw new ReferenceException(string.Format("Source object does not match type \"{0}\" specified at the start of the capture.",
                                                        CurrentCaptureType.Name()));
@@ -147,6 +150,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          }
       }
 
+      public void SetWorkingMember(TypeMemberSerializationInfo member)
+      {
+         if (member == null) throw new ArgumentNullException("member");
+
+         CurrentMember = member;
+      }
+
       public void CaptureLateBinding(Guid id, TypeMemberSerializationInfo info, int index)
       {
          if (id == Guid.Empty) throw new ArgumentNullException("id");
@@ -162,6 +172,15 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          if (info == null) throw new ArgumentNullException("info");
 
          CaptureNodes.Add(new CaptureNode(id, info));
+      }
+
+      public void CaptureLateBinding(Guid id)
+      {
+         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (CurrentMember == null)
+            throw new ReferenceException("CurrentMember of ReferenceManager is null");
+
+         CaptureNodes.Add(new CaptureNode(id, CurrentMember));
       }
    }
 }
