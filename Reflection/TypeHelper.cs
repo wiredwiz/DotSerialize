@@ -53,16 +53,16 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return !IsPrimitive(type) && (IsStruct(type) || !type.IsValueType);
       }
 
-      public static Guid GetReferenceId(XmlReader reader)
+      public static int GetReferenceId(XmlReader reader)
       {
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return Guid.Parse(reader.GetAttribute(Properties.Resources.ReferenceId));
+            return int.Parse(reader.GetAttribute(Properties.Resources.ReferenceId));
          }
          catch (ArgumentNullException)
          {
-            return Guid.Empty;
+            return 0;
          }
       }
 

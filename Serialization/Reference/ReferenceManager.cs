@@ -32,20 +32,22 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       /// </summary>
       public ReferenceManager()
       {
-         ReferencesByGuid = new Dictionary<Guid, ReferenceNode>();
-         ReferencesByInstance = new Dictionary<object, Guid>();
+         ReferencesByGuid = new Dictionary<int, ReferenceNode>();
+         ReferencesByInstance = new Dictionary<object, int>();
          CaptureNodes = new List<CaptureNode>();
+         CurrentId = 1;
       }
 
-      protected Dictionary<Guid, ReferenceNode> ReferencesByGuid { get; set; }
-      protected Dictionary<object, Guid> ReferencesByInstance { get; set; }
+      protected Dictionary<int, ReferenceNode> ReferencesByGuid { get; set; }
+      protected Dictionary<object, int> ReferencesByInstance { get; set; }
       protected Type CurrentCaptureType { get; set; }
       protected TypeMemberSerializationInfo CurrentMember { get; set; }
       protected List<CaptureNode> CaptureNodes { get; set; }
+      protected int CurrentId { get; set; }
 
-      public virtual Guid RegisterId(Guid id, object obj)
+      public virtual int RegisterId(int id, object obj)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (id == 0) throw new ArgumentNullException("id");
          if (obj == null) throw new ArgumentNullException("obj");
 
          ReferencesByGuid.Add(id, new ReferenceNode(obj));
@@ -53,17 +55,36 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          return id;
       }
 
-      public virtual Guid RegisterId(Guid id)
+      public virtual int RegisterId(object obj)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (obj == null) throw new ArgumentNullException("obj");
+
+         int id = CurrentId;
+         CurrentId++;
+         ReferencesByGuid.Add(id, new ReferenceNode(obj));
+         ReferencesByInstance[obj] = id;
+         return id;
+      }
+
+      public virtual int RegisterId(int id)
+      {
+         if (id == 0) throw new ArgumentNullException("id");
 
          ReferencesByGuid.Add(id, new ReferenceNode());
          return id;
       }
 
-      public virtual bool IsRegistered(Guid id)
+      public virtual int RegisterId()
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         int id = CurrentId;
+         ReferencesByGuid.Add(id, new ReferenceNode());
+         CurrentId++;
+         return id;
+      }
+
+      public virtual bool IsRegistered(int id)
+      {
+         if (id == 0) throw new ArgumentNullException("id");
 
          return ReferencesByGuid.ContainsKey(id);
       }
@@ -75,25 +96,25 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          return ReferencesByInstance.ContainsKey(obj);
       }
 
-      public object GetObject(Guid id)
+      public object GetObject(int id)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (id == 0) throw new ArgumentNullException("id");
 
          if (!ReferencesByGuid.ContainsKey(id))
             throw new ReferenceException(string.Format("No object exists for id {0}", id));
          return ReferencesByGuid[id].SourceObject;
       }
 
-      public virtual Guid GetObjectId(object obj)
+      public virtual int GetObjectId(object obj)
       {
          if (obj == null) throw new ArgumentNullException("obj");
 
          return ReferencesByInstance[obj];
       }
 
-      public virtual void UpdateObject(Guid id, object newObject)
+      public virtual void UpdateObject(int id, object newObject)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (id == 0) throw new ArgumentNullException("id");
          if (newObject == null) throw new ArgumentNullException("newObject");
 
          var node = ReferencesByGuid[id];
@@ -102,9 +123,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          node.References.Clear();
       }
 
-      public virtual MemberReferenceList MemberReferences(Guid id)
+      public virtual MemberReferenceList MemberReferences(int id)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (id == 0) throw new ArgumentNullException("id");
 
          if (!ReferencesByGuid.ContainsKey(id))
             throw new ReferenceException(string.Format("No reference exists for id {0}", id));
@@ -142,7 +163,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
                   MemberReferences(node.Id).Add(new MemberReference(source, System.Reflection.MemberTypes.Property, node.MemberInfo.Name));
             }
             var idList = CaptureNodes.Select(item => item.Id).GroupBy(x => x).Select(grp => grp.First());
-            foreach (Guid item in idList)
+            foreach (int item in idList)
             {
                if (GetObject(item) != null)
                   UpdateObject(item, GetObject(item));
@@ -157,26 +178,26 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          CurrentMember = member;
       }
 
-      public void CaptureLateBinding(Guid id, TypeMemberSerializationInfo info, int index)
+      public void CaptureLateBinding(int id, TypeMemberSerializationInfo info, int index)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (id == 0) throw new ArgumentNullException("id");
          if (info == null) throw new ArgumentNullException("info");
          if (index < 0) throw new ArgumentNullException("index");
 
          CaptureNodes.Add(new CaptureNode(id, info, index));
       }
 
-      public void CaptureLateBinding(Guid id, TypeMemberSerializationInfo info)
+      public void CaptureLateBinding(int id, TypeMemberSerializationInfo info)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (id == 0) throw new ArgumentNullException("id");
          if (info == null) throw new ArgumentNullException("info");
 
          CaptureNodes.Add(new CaptureNode(id, info));
       }
 
-      public void CaptureLateBinding(Guid id)
+      public void CaptureLateBinding(int id)
       {
-         if (id == Guid.Empty) throw new ArgumentNullException("id");
+         if (id == 0) throw new ArgumentNullException("id");
          if (CurrentMember == null)
             throw new ReferenceException("CurrentMember of ReferenceManager is null");
 

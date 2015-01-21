@@ -159,7 +159,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             return;
          var memberInfo = info.MemberInfoByEntityName[reader.Name];
          RefManager.SetWorkingMember(memberInfo);
-         Guid id = Guid.Empty;
+         int id = 0;
          bool isReferenceOrStruct = TypeHelper.IsClassOrStruct(memberInfo.DataType);
          if (isReferenceOrStruct)
          {
@@ -170,7 +170,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                                                               memberInfo.DataType));
 
             id = TypeHelper.GetReferenceId(reader);
-            if (id != Guid.Empty)
+            if (id != 0)
             {
                if (RefManager.IsRegistered(id) && (RefManager.GetObject(id) != null))
                {
@@ -210,7 +210,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             result = defaultSerializer.Deserialize(reader, memberInfo.DataType);
             memberValues[memberInfo] = result;
          }
-         RefManager.UpdateObject(id, result);
+         if (id != 0)
+            RefManager.UpdateObject(id, result);
       }
 
       protected bool ReadToTextNode(XmlReader reader)
@@ -262,7 +263,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             // check for struct before writing reference id
             if (!type.IsValueType)
             {
-               Guid id;
+               int id;
                if (RefManager.IsRegistered(obj))
                {
                   id = RefManager.GetObjectId(obj);
@@ -271,13 +272,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   return;
                }
                // Given that the instance has not already been seen we keep writing
-               id = RefManager.RegisterId(Guid.NewGuid(), obj);
+               id = RefManager.RegisterId(obj);
                writer.WriteAttributeString(Properties.Resources.ReferenceId, id.ToString());
                writer.WriteAttributeString(Properties.Resources.ReferenceSource, true.ToString());
             }
 
             if (TypeHelper.IsArray(type))
-               SerializaeArray(writer, obj);
+               SerializeArray(writer, obj);
             else
             {
                var info = TypeInspector.GetInfo(type);
@@ -348,7 +349,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          return false;
       }
 
-      protected virtual void SerializaeArray(XmlWriter writer, object obj)
+      protected virtual void SerializeArray(XmlWriter writer, object obj)
       {
          IEnumerable objArray = obj as IEnumerable;
          Type arrayElementType = obj.GetType().GetElementType();
@@ -398,7 +399,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       {
          Type arrayElementType = arrayType.GetElementType();
          Type type;
-         Guid id;
+         int id = 0;
          bool isReferenceOrStruct = TypeHelper.IsClassOrStruct(arrayElementType);
          if (isReferenceOrStruct)
          {
@@ -409,7 +410,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                                                               type,
                                                               arrayElementType));
             id = TypeHelper.GetReferenceId(reader);
-            if (id != Guid.Empty)
+            if (id != 0)
             {
                if (RefManager.IsRegistered(id) && (RefManager.GetObject(id) != null))
                {
