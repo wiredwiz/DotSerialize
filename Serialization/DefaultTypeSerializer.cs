@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -67,22 +68,23 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                throw new SerializationException("Only primitives or enums can be stored in attributes");
 
             if (TypeHelper.IsPrimitive(type))
-               result = ReadPrimitive(type, reader);
+               result = DeserializePrimitive(type, reader);
             else if (TypeHelper.IsEnum(type))
-               result = ReadEnum(type, reader);
+               result = DeserializeEnum(type, reader);
             else
                throw new SerializationException(string.Format("Unable to deserialize unexpected type \"{0}\"", type.Name()));
             return result;
          }
          // Handle Elements
+         var lateBoundReferences = new Dictionary<TypeMemberSerializationInfo, Guid>();
          if (reader.NodeType == XmlNodeType.Element)
          {
             if (TypeHelper.IsPrimitive(type))
-               result = ReadPrimitive(type, reader);
+               result = DeserializePrimitive(type, reader);
             else if (TypeHelper.IsArray(type))
-               result = ReadArray(type, reader);
+               result = DeserializeArray(type, reader);
             else if (TypeHelper.IsEnum(type))
-               result = ReadEnum(type, reader);
+               result = DeserializeEnum(type, reader);
             else
             {
                // Class or struct
@@ -90,6 +92,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   return null;
 
                var memberValues = new Dictionary<TypeMemberSerializationInfo, object>();
+               ReferenceManager.StartLateBindingCapture(type);
                var info = TypeInspector.GetInfo(type);
 
                // read attributes
@@ -99,17 +102,19 @@ namespace Org.Edgerunner.DotSerialize.Serialization
 
                if (!reader.IsEmptyElement)
                   // read child elements
+                  // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
                   while (ReadNextElement(reader))
                      if (reader.NodeType == XmlNodeType.Element)
                         DeserializeElementMember(reader, info, memberValues);
 
-               //result = type.TryCreateInstance(memberValues);
                result = TypeFactory.CreateInstance(type, memberValues);
                if (result == null)
                   throw new SerializationException(string.Format("Unable to create an instance of type \"{0}\"", type.Name()));
+
+               ReferenceManager.FinishCaptures(result);
             }
 
-            // continue deserializing            
+            // hand back our new object          
             return result;
          }
          throw new SerializationException(
@@ -139,8 +144,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          else
          // Since there was no bound custom type serializer we default to the GenericTypeSerializer
          {
-            var genericSerializer = Factory.GetDefaultSerializer();
-            memberValues[memberInfo] = genericSerializer.Deserialize(reader, memberInfo.DataType);
+            var defaultSerializer = Factory.GetDefaultSerializer();
+            memberValues[memberInfo] = defaultSerializer.Deserialize(reader, memberInfo.DataType);
          }
       }
 
@@ -155,24 +160,39 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             return;
          var memberInfo = info.MemberInfoByEntityName[reader.Name];
          Guid id = Guid.Empty;
-         if (TypeHelper.IsClassOrStruct(memberInfo.DataType))
+         bool isReferenceOrStruct = TypeHelper.IsClassOrStruct(memberInfo.DataType);
+         if (isReferenceOrStruct)
          {
             var type = TypeHelper.GetReferenceType(reader);
             if (memberInfo.DataType != type)
                throw new SerializationException(string.Format("Type attribute of element {0} does not match the object's actual member type of {1}",
                                                               reader.Name,
                                                               memberInfo.DataType));
+
             id = TypeHelper.GetReferenceId(reader);
             if (id != Guid.Empty)
-               if (ReferenceManager.IsRegistered(id))
+            {
+               if (ReferenceManager.IsRegistered(id) && (ReferenceManager.GetObject(id) != null))
                {
-                  if (memberInfo.Type == TypeMemberSerializationInfo.MemberType.Field)
-                     ReferenceManager.MemberReferences(id).LogPendingReference(MemberTypes.Field, memberInfo.Name);
-                  else if (memberInfo.Type == TypeMemberSerializationInfo.MemberType.Property)
-                     ReferenceManager.MemberReferences(id).LogPendingReference(MemberTypes.Property, memberInfo.Name);
+                  object instance = ReferenceManager.GetObject(id);
+                  if (memberInfo.DataType != instance.GetType())
+                     throw new SerializationException("Instance type for id \"{0}\" does not match member type");
+                  memberValues[memberInfo] = instance;
+                  return;
                }
                else
-                  ReferenceManager.RegisterId(id);
+               {
+                  if (!ReferenceManager.IsRegistered(id))
+                     ReferenceManager.RegisterId(id);
+
+                  if (!TypeHelper.IsReferenceSource(reader))
+                  {
+                     memberValues[memberInfo] = null;
+                     ReferenceManager.CaptureLateBinding(id, memberInfo);
+                     return;
+                  }
+               }
+            }
          }
 
          object result = null;
@@ -186,18 +206,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          else
          // Since there was no bound custom type serializer we default to the GenericTypeSerializer
          {
-            var genericSerializer = Factory.GetDefaultSerializer();
-            result = genericSerializer.Deserialize(reader, memberInfo.DataType);
+            var defaultSerializer = Factory.GetDefaultSerializer();
+            result = defaultSerializer.Deserialize(reader, memberInfo.DataType);
             memberValues[memberInfo] = result;
          }
-
-         // Now that we have our object constructed we update any refences that should point to it in our object graph
-         if (TypeHelper.IsClassOrStruct(memberInfo.DataType))
-            if (id != Guid.Empty)
-            {
-               ReferenceManager.MemberReferences(id).SavePendingReferences(result);
-               ReferenceManager.UpdateObject(id, result);
-            }
+         ReferenceManager.UpdateObject(id, result);
       }
 
       protected bool ReadToTextNode(XmlReader reader)
@@ -237,64 +250,79 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             writer.WriteValue(obj.ToString());
          else if (TypeHelper.IsEnum(type))
             writer.WriteValue(obj.ToString());
-         else if (TypeHelper.IsArray(type))
-            ;// TODO: format an array
+         //else if (TypeHelper.IsArray(type))
+         //   SerializableArray(writer, obj);
          else
          {
-            writer.WriteAttributeString("reference__type", type.AssemblyQualifiedName);
+            writer.WriteAttributeString(Properties.Resources.ReferenceType, type.AssemblyQualifiedName);
             // check for null value
             if (obj == null)
             {
-               writer.WriteAttributeString("reference__isNull", true.ToString());
+               writer.WriteAttributeString(Properties.Resources.ReferenceisNull, true.ToString());
                return;
             }
             // check for struct before writing reference id
-            if (!type.IsValueType)
+            if (!type.IsValueType && !type.IsArray)
             {
-               ReferenceManager.RegisterId(Guid.NewGuid(), obj);
-               writer.WriteAttributeString("reference__id", ReferenceManager.GetObjectId(obj).ToString());
+               Guid id;
+               if (ReferenceManager.IsRegistered(obj))
+               {
+                  id = ReferenceManager.GetObjectId(obj);
+                  writer.WriteAttributeString(Properties.Resources.ReferenceId, id.ToString());
+                  // since this object has already been serialized once there is no need to write out the rest of the object
+                  return;
+               }
+               // Given that the instance has not already been seen we keep writing
+               id = ReferenceManager.RegisterId(Guid.NewGuid(), obj);
+               writer.WriteAttributeString(Properties.Resources.ReferenceId, id.ToString());
+               writer.WriteAttributeString(Properties.Resources.ReferenceSource, true.ToString());
             }
 
-            var info = TypeInspector.GetInfo(type);
-            var attribs = from x in info.MemberInfoByEntityName.Values
-                          where x.IsAttribute
-                          select x;
-            foreach (var attrib in attribs)
+            if (TypeHelper.IsArray(type))
+               SerializaeArray(writer, obj);
+            else
             {
-               writer.WriteStartAttribute(attrib.EntityName);
-               object entityValue = GetEntityValue(obj, attrib);
-               // now we resolve a type serializer to do the work
-               ITypeSerializer typeSerializer =
-               Factory.CallMethod(new[] { attrib.DataType }, "GetTypeSerializer") as ITypeSerializer;
-               if (typeSerializer != null)
-                  typeSerializer.Serialize(writer, attrib.DataType, entityValue);
-               else
-               // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+               var info = TypeInspector.GetInfo(type);
+               var attribs = from x in info.MemberInfoByEntityName.Values
+                             where x.IsAttribute
+                             select x;
+               foreach (var attrib in attribs)
                {
-                  var genericSerializer = Factory.GetDefaultSerializer();
-                  genericSerializer.Serialize(writer, attrib.DataType, entityValue);
+                  writer.WriteStartAttribute(attrib.EntityName);
+                  object entityValue = GetEntityValue(obj, attrib);
+                  // now we resolve a type serializer to do the work
+                  ITypeSerializer typeSerializer =
+                  Factory.CallMethod(new[] { attrib.DataType }, "GetTypeSerializer") as ITypeSerializer;
+                  if (typeSerializer != null)
+                     typeSerializer.Serialize(writer, attrib.DataType, entityValue);
+                  else
+                  // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+                  {
+                     var defaultSerializer = Factory.GetDefaultSerializer();
+                     defaultSerializer.Serialize(writer, attrib.DataType, entityValue);
+                  }
+                  writer.WriteEndAttribute();
                }
-               writer.WriteEndAttribute();
-            }
-            var elements = from x in info.MemberInfoByEntityName.Values
-                           where !x.IsAttribute
-                           select x;
-            foreach (var element in elements)
-            {
-               writer.WriteStartElement(element.EntityName);
-               // now we resolve a type serializer to do the work
-               ITypeSerializer typeSerializer =
-               Factory.CallMethod(new[] { element.DataType }, "GetTypeSerializer") as ITypeSerializer;
-               object entityValue = GetEntityValue(obj, element);
-               if (typeSerializer != null)
-                  typeSerializer.Serialize(writer, element.DataType, entityValue);
-               else
-               // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+               var elements = from x in info.MemberInfoByEntityName.Values
+                              where !x.IsAttribute
+                              select x;
+               foreach (var element in elements)
                {
-                  var genericSerializer = Factory.GetDefaultSerializer();
-                  genericSerializer.Serialize(writer, element.DataType, entityValue);
+                  writer.WriteStartElement(element.EntityName);
+                  // now we resolve a type serializer to do the work
+                  ITypeSerializer typeSerializer =
+                  Factory.CallMethod(new[] { element.DataType }, "GetTypeSerializer") as ITypeSerializer;
+                  object entityValue = GetEntityValue(obj, element);
+                  if (typeSerializer != null)
+                     typeSerializer.Serialize(writer, element.DataType, entityValue);
+                  else
+                  // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+                  {
+                     var defaultSerializer = Factory.GetDefaultSerializer();
+                     defaultSerializer.Serialize(writer, element.DataType, entityValue);
+                  }
+                  writer.WriteEndElement();
                }
-               writer.WriteEndElement();
             }
          }
       }
@@ -322,19 +350,107 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          return false;
       }
 
-      protected virtual object ReadArray(Type type, XmlReader reader)
+      protected virtual void SerializaeArray(XmlWriter writer, object obj)
+      {
+         IEnumerable objArray = obj as IEnumerable;
+         Type arrayElementType = obj.GetType().GetElementType();
+         if (objArray == null)
+            throw new SerializationException("Attempt to serialize non-array as an array");
+
+         foreach (object item in objArray)
+         {
+            writer.WriteStartElement("item");
+            Type type;
+            type = item == null ? arrayElementType : item.GetType();
+            // now we resolve a type serializer to do the work
+            ITypeSerializer typeSerializer =
+            Factory.CallMethod(new[] { type }, "GetTypeSerializer") as ITypeSerializer;
+            if (typeSerializer != null)
+               typeSerializer.Serialize(writer, type, item);
+            else
+            // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+            {
+               var defaultSerializer = Factory.GetDefaultSerializer();
+               defaultSerializer.Serialize(writer, type, item);
+            }
+            writer.WriteEndElement();
+         }
+      }
+
+      protected virtual object DeserializeArray(Type type, XmlReader reader)
       {
          if (type == null) throw new ArgumentNullException("type");
          if (reader == null) throw new ArgumentNullException("reader");
-         bool isElement = (reader.NodeType == XmlNodeType.Element);
-         if (isElement)
-            ReadToTextNode(reader);
-         throw new NotImplementedException();
-         if (isElement)
-            ReadToElementEndNode(reader);
+         if (reader.NodeType != XmlNodeType.Element)
+            throw new SerializationException("Cannot deserialize an array from a non-Element node");
+
+         List<object> items = new List<object>();
+         int counter = 0;
+         // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+         while (ReadNextElement(reader))
+         {
+            items.Add(DeserializeArrayItem(type, reader));
+            counter++;
+         }
+         ReadToElementEndNode(reader);
+         return Activator.CreateInstance(type, items.ToArray());
       }
 
-      protected virtual object ReadEnum(Type type, XmlReader reader)
+      protected virtual object DeserializeArrayItem(Type arrayType, XmlReader reader)
+      {
+         Type arrayElementType = arrayType.GetElementType();
+         Type type;
+         Guid id;
+         bool isReferenceOrStruct = TypeHelper.IsClassOrStruct(arrayElementType);
+         if (isReferenceOrStruct)
+         {
+            type = TypeHelper.GetReferenceType(reader);
+            if (!type.IsInstanceOfType(arrayElementType))
+               throw new SerializationException(string.Format(
+                                                              "Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"",
+                                                              type,
+                                                              arrayElementType));
+            id = TypeHelper.GetReferenceId(reader);
+            if (id != Guid.Empty)
+            {
+               if (ReferenceManager.IsRegistered(id) && (ReferenceManager.GetObject(id) != null))
+               {
+                  object instance = ReferenceManager.GetObject(id);
+                  if (memberInfo.DataType != instance.GetType())
+                     throw new SerializationException("Instance type for id \"{0}\" does not match member type");
+                  return instance;
+               }
+               else
+               {
+                  if (!ReferenceManager.IsRegistered(id))
+                     ReferenceManager.RegisterId(id);
+
+                  if (!TypeHelper.IsReferenceSource(reader))
+                  {
+                     ReferenceManager.CaptureLateBinding(id, memberInfo);
+                     return null;
+                  }
+               }
+            }
+         }
+         else
+            type = arrayElementType;
+
+         object result = null;
+         ITypeSerializer typeSerializer =
+            Factory.CallMethod(new[] { type }, "GetTypeSerializer") as ITypeSerializer;
+         if (typeSerializer != null)
+            result = typeSerializer.Deserialize(reader, type);
+         else
+         // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+         {
+            var defaultSerializer = Factory.GetDefaultSerializer();
+            result = defaultSerializer.Deserialize(reader, type);
+         }
+         return result;
+      }
+
+      protected virtual object DeserializeEnum(Type type, XmlReader reader)
       {
          if (type == null) throw new ArgumentNullException("type");
          if (reader == null) throw new ArgumentNullException("reader");
@@ -347,7 +463,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          return result;
       }
 
-      protected virtual object ReadPrimitive(Type type, XmlReader reader)
+      protected virtual object DeserializePrimitive(Type type, XmlReader reader)
       {
          if (type == null) throw new ArgumentNullException("type");
          if (reader == null) throw new ArgumentNullException("reader");

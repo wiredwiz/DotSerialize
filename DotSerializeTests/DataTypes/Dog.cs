@@ -40,6 +40,11 @@ namespace DotSerializeTests.DataTypes
          }
       }
 
+
+      public Owner Owner
+      {
+         get { return _Owner; }
+      }
       private readonly Owner _Owner;
    }
 }

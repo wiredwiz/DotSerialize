@@ -33,6 +33,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          _PendingReferences.Add(new MemberReference(null, type, name));
       }
 
+      public void LogPendingReference(System.Reflection.MemberTypes type, string name, int index)
+      {
+         _PendingReferences.Add(new MemberReference(null, type, name, index));
+      }
+
       public void SavePendingReferences(object source)
       {
          foreach (MemberReference reference in _PendingReferences)

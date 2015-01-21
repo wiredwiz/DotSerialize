@@ -58,7 +58,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return Guid.Parse(reader.GetAttribute("reference__id"));
+            return Guid.Parse(reader.GetAttribute(Properties.Resources.ReferenceId));
          }
          catch (ArgumentNullException)
          {
@@ -66,17 +66,29 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          }
       }
 
-      public static Type GetReferenceType(XmlReader reader)
+      public static bool IsReferenceSource(XmlReader reader)
       {
-         const string typeAttributeName = "reference__type";
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return Type.GetType(reader.GetAttribute(typeAttributeName), true);
+            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceSource));
+         }
+         catch (ArgumentNullException)
+         {
+            return false;
+         }
+      }
+
+      public static Type GetReferenceType(XmlReader reader)
+      {
+         if (reader == null) throw new ArgumentNullException("reader");
+         try
+         {
+            return Type.GetType(reader.GetAttribute(Properties.Resources.ReferenceType), true);
          }
          catch (ArgumentNullException ex)
          {
-            throw new SerializationException(string.Format("Attribute \"{0}\" is missing", typeAttributeName), ex);
+            throw new SerializationException(string.Format("Attribute \"{0}\" is missing", Properties.Resources.ReferenceType), ex);
          }
       }
 
@@ -85,7 +97,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return bool.Parse(reader.GetAttribute("reference__isNull"));
+            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceisNull));
          }
          catch (ArgumentNullException)
          {

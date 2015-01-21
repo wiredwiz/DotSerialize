@@ -1,6 +1,7 @@
 ﻿using System;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
+using Org.Edgerunner.DotSerialize.Utilities;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
@@ -55,6 +56,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       public object Source { get; set; }
       public System.Reflection.MemberTypes Type { get; set; }
       public string Name { get; set; }
+      public bool IsIndexReference { get; set; }
+      public int ArrayIndex { get; set; }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="MemberReference"/> class.
@@ -67,14 +70,42 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          Source = source;
          Type = type;
          Name = name;
+         IsIndexReference = false;
+         ArrayIndex = 0;
+      }
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="MemberReference"/> class.
+      /// </summary>
+      /// <param name="source"></param>
+      /// <param name="type"></param>
+      /// <param name="name"></param>
+      /// <param name="arrayIndex"></param>
+      public MemberReference(object source, System.Reflection.MemberTypes type, string name, int arrayIndex)
+      {
+         Source = source;
+         Type = type;
+         Name = name;
+         IsIndexReference = true;
+         ArrayIndex = arrayIndex;
       }
 
       public void UpdateValue(object newValue)
       {
          if (Type == System.Reflection.MemberTypes.Property)
-            Source.SetPropertyValue(Name, newValue);
+         {
+            if (IsIndexReference)
+               Source.SetArrayPropertyValue(Name, newValue, ArrayIndex);
+            else
+               Source.SetPropertyValue(Name, newValue);
+         }
          else if (Type == System.Reflection.MemberTypes.Field)
-            Source.SetFieldValue(Name, newValue);
+         {
+            if (IsIndexReference)
+               Source.SetArrayFieldValue(Name, newValue, ArrayIndex);
+            else
+               Source.SetFieldValue(Name, newValue);
+         }
          else
             throw new ReferenceException("Reference manager cannot update types other than Property or Field");
       }
