@@ -184,7 +184,7 @@ namespace Org.Edgerunner.DotSerialize
          if (typeof(T) != type)
             throw new SerializationException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
          var id = TypeHelper.GetReferenceId(reader);
-         if (id != Guid.Empty)
+         if (id != 0)
             manager.RegisterId(id);
 
          // Attempt to fetch a custom type serializer
@@ -200,7 +200,7 @@ namespace Org.Edgerunner.DotSerialize
          }
 
          // Now that we have our object constructed we update any refences that should point to it in our object graph
-         if (id != Guid.Empty)
+         if (id != 0)
             manager.UpdateObject(id, result);
 
          if (ReadUntilElement(reader))

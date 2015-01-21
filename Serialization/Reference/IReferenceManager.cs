@@ -5,19 +5,21 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public interface IReferenceManager
    {
-      Guid RegisterId(Guid id, object obj);
-      Guid RegisterId(Guid id);
-      bool IsRegistered(Guid id);
+      int RegisterId(int id, object obj);
+      int RegisterId(object obj);
+      int RegisterId(int id);
+      int RegisterId();
+      bool IsRegistered(int id);
       bool IsRegistered(object obj);
-      object GetObject(Guid id);
-      Guid GetObjectId(object obj);
-      void UpdateObject(Guid id, object newObject);
-      MemberReferenceList MemberReferences(Guid id);
+      object GetObject(int id);
+      int GetObjectId(object obj);
+      void UpdateObject(int id, object newObject);
+      MemberReferenceList MemberReferences(int id);
       void StartLateBindingCapture(Type type);
       void FinishCaptures(object source);
       void SetWorkingMember(TypeMemberSerializationInfo info);
-      void CaptureLateBinding(Guid id, TypeMemberSerializationInfo info, int index);
-      void CaptureLateBinding(Guid id, TypeMemberSerializationInfo info);
-      void CaptureLateBinding(Guid id);
+      void CaptureLateBinding(int id, TypeMemberSerializationInfo info, int index);
+      void CaptureLateBinding(int id, TypeMemberSerializationInfo info);
+      void CaptureLateBinding(int id);
    }
 }
