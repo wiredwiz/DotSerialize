@@ -7,16 +7,21 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       /// <summary>
       /// Initializes a new instance of the <see cref="ReferenceNode"/> class.
       /// </summary>
-      /// <param name="sourceType"></param>
       /// <param name="sourceObject"></param>
-      public ReferenceNode(Type sourceType, object sourceObject)
+      public ReferenceNode(object sourceObject)
       {
          References = new MemberReferenceList();
-         SourceType = sourceType;
          _SourceObject = sourceObject;         
       }
+      /// <summary>
+      /// Initializes a new instance of the <see cref="ReferenceNode"/> class.
+      /// </summary>
+      public ReferenceNode()
+      {
+         References = new MemberReferenceList();
+         _SourceObject = null;
+      }
       public MemberReferenceList References { get; private set; }
-      public Type SourceType { get; set; }
       private object _SourceObject;
       public object SourceObject
       {

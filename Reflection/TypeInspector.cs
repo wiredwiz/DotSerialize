@@ -14,7 +14,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public class TypeInspector : ITypeInspector
    {
-      private readonly ISerializationInfoCache _Cache;
+      protected readonly ISerializationInfoCache _Cache;
 
       /// <summary>
       /// Initializes a new instance of the <see cref="TypeInspector"/> class.
@@ -28,17 +28,17 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       /// Initializes a new instance of the <see cref="TypeInspector"/> class.
       /// </summary>
       /// <param name="cache"></param>
-      internal TypeInspector(ISerializationInfoCache cache)
+      public TypeInspector(ISerializationInfoCache cache)
       {
          _Cache = cache;
       }
 
-      public TypeSerializationInfo GetInfo(string fullyQualifiedTypeName)
+      public virtual TypeSerializationInfo GetInfo(string fullyQualifiedTypeName)
       {
          return GetInfo(Type.GetType(fullyQualifiedTypeName, true));
       }
 
-      public TypeSerializationInfo GetInfo(Type type)
+      public virtual TypeSerializationInfo GetInfo(Type type)
       {
          TypeSerializationInfo result = _Cache.GetInfo(type);
          if (result != null)
@@ -82,7 +82,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return result;
       }
 
-      private List<TypeMemberSerializationInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
+      protected virtual List<TypeMemberSerializationInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
       {
          var fieldInfo = type.Fields(Flags.InstanceAnyVisibility | Flags.ExcludeHiddenMembers);
          List<TypeMemberSerializationInfo> infoList = new List<TypeMemberSerializationInfo>(fieldInfo.Count);
@@ -132,7 +132,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return infoList;
       }
 
-      private List<TypeMemberSerializationInfo> GetPropertyMembersInfo(Type type, IList<string> propertyExclusionList)
+      protected virtual List<TypeMemberSerializationInfo> GetPropertyMembersInfo(Type type, IList<string> propertyExclusionList)
       {
          var propInfo = type.Properties(Flags.InstanceAnyVisibility | Flags.ExcludeHiddenMembers);
          List<TypeMemberSerializationInfo> infoList = new List<TypeMemberSerializationInfo>(propInfo.Count);
@@ -142,6 +142,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             var elementAttrib = prop.Attribute<XmlElementAttribute>();
             if ((ignoreAttrib == null) && !propertyExclusionList.Contains(prop.Name) && (elementAttrib != null))
             {
+               if (prop.GetIndexParameters().Length != 0)
+                  throw new TypeLayoutException("Indexed properties should not be serialized.  Instead the underlying value being indexed should be serialized.");
                var attributeAttrib = prop.Attribute<XmlAttributeAttribute>();
                string entityName = elementAttrib.GetPropertyValue("Name") as String;
                if (string.IsNullOrEmpty(entityName))
@@ -157,7 +159,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return infoList;
       }
 
-      private string CleanNodeName(string name)
+      protected virtual string CleanNodeName(string name)
       {
          StringBuilder builder = new StringBuilder(name.Length);
          foreach (char item in name)
@@ -169,14 +171,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             else
                builder.Append(item);
          return builder.ToString();
-      }
-
-      private string EncapsulatingPropertyName(FieldInfo info)
-      {
-         var result = Regex.Match(info.Name, "<(.+)>k__BackingField", RegexOptions.Compiled);
-         if (!result.Success)
-            return null;
-         return result.Groups[1].Value;
       }
    }
 }
