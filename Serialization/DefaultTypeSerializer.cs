@@ -390,7 +390,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
          while (ReadNextElement(reader))
          {
-            items.Add(DeserializeArrayItem(type, reader));
+            items.Add(DeserializeArrayItem(type, reader, counter));
             counter++;
          }
          ReadToElementEndNode(reader);
@@ -402,7 +402,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          return result;
       }
 
-      protected virtual object DeserializeArrayItem(Type arrayType, XmlReader reader)
+      protected virtual object DeserializeArrayItem(Type arrayType, XmlReader reader, int arrayIndex)
       {
          Type arrayElementType = arrayType.GetElementType();
          Type type;
@@ -433,7 +433,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
 
                   if (!TypeHelper.IsReferenceSource(reader))
                   {
-                     RefManager.CaptureLateBinding(id);
+                     RefManager.CaptureLateBinding(id, arrayIndex);
                      return null;
                   }
                }
