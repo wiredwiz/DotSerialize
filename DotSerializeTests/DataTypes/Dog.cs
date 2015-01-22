@@ -28,6 +28,7 @@ namespace DotSerializeTests.DataTypes
       public virtual string Name { get; set; }
       public virtual string Breed { get; set; }
       public virtual bool HasCollar { get; set; }
+      public DogCollar Collar { get; set; }
       // Fields...
       private int _Age;
 

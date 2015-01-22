@@ -253,7 +253,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             writer.WriteValue(obj.ToString());
          else
          {
-            writer.WriteAttributeString(Properties.Resources.ReferenceType, type.FullName);
+            writer.WriteAttributeString(Properties.Resources.ReferenceType, type.AssemblyQualifiedName);
             // check for null value
             if (obj == null)
             {
@@ -383,6 +383,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if (reader.NodeType != XmlNodeType.Element)
             throw new SerializationException("Cannot deserialize an array from a non-Element node");
 
+         if (TypeHelper.ReferenceIsNull(reader))
+            return null;
          List<object> items = new List<object>();
          int counter = 0;
          // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
@@ -392,7 +394,12 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             counter++;
          }
          ReadToElementEndNode(reader);
-         return Activator.CreateInstance(type, items.ToArray());
+         Array result = Activator.CreateInstance(type, items.Count) as Array;
+         if (result == null)
+            throw new SerializationException(string.Format("Unable to create new instance of \"{0}\"", type.Name()));
+         for (int i = 0; i < items.Count; i++)
+            result.SetValue(items[i], i);
+         return result;
       }
 
       protected virtual object DeserializeArrayItem(Type arrayType, XmlReader reader)
@@ -404,7 +411,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if (isReferenceOrStruct)
          {
             type = TypeHelper.GetReferenceType(reader);
-            if (!type.IsInstanceOfType(arrayElementType))
+            if (!arrayElementType.IsAssignableFrom(type))
                throw new SerializationException(string.Format(
                                                               "Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"",
                                                               type,
