@@ -20,6 +20,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       void SetWorkingMember(TypeMemberSerializationInfo info);
       void CaptureLateBinding(int id, TypeMemberSerializationInfo info, int index);
       void CaptureLateBinding(int id, TypeMemberSerializationInfo info);
+      void CaptureLateBinding(int id, int index);
       void CaptureLateBinding(int id);
    }
 }

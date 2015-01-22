@@ -91,6 +91,7 @@
     <Compile Include="Reflection\TypeSerializationInfo.cs" />
     <Compile Include="Reflection\TypeMemberSerializationInfo.cs" />
     <Compile Include="Serialization\Reference\CaptureNode.cs" />
+    <Compile Include="Serialization\Reference\CaptureSet.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="Reflection\Construction\TypeFactory.cs" />
     <Compile Include="Serialization\ITypeSerializer.cs" />

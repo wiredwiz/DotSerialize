@@ -34,15 +34,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          ReferencesByGuid = new Dictionary<int, ReferenceNode>();
          ReferencesByInstance = new Dictionary<object, int>();
-         CaptureNodes = new List<CaptureNode>();
+         CaptureStack = new Stack<CaptureSet>();
          CurrentId = 1;
       }
 
       protected Dictionary<int, ReferenceNode> ReferencesByGuid { get; set; }
       protected Dictionary<object, int> ReferencesByInstance { get; set; }
-      protected Type CurrentCaptureType { get; set; }
-      protected TypeMemberSerializationInfo CurrentMember { get; set; }
-      protected List<CaptureNode> CaptureNodes { get; set; }
+      protected Stack<CaptureSet> CaptureStack { get; set; }
       protected int CurrentId { get; set; }
 
       public virtual int RegisterId(int id, object obj)
@@ -134,19 +132,17 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 
       public void StartLateBindingCapture(Type type)
       {
-         CurrentMember = null;
-         CaptureNodes.Clear();
-         CurrentCaptureType = type;
+         CaptureStack.Push(new CaptureSet(type));
       }
 
       public void FinishCaptures(object source)
       {
-         CurrentMember = null;
-         if (source.GetType() != CurrentCaptureType)
+         var set = CaptureStack.Pop();
+         if (source.GetType() != set.Type)
             throw new ReferenceException(string.Format("Source object does not match type \"{0}\" specified at the start of the capture.",
-                                                       CurrentCaptureType.Name()));
+                                                       set.Type.Name()));
 
-         foreach (CaptureNode node in CaptureNodes)
+         foreach (CaptureNode node in set.CaptureNodes)
          {
             if (node.Index >= 0)
             {
@@ -162,7 +158,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
                else if (node.MemberInfo.Type == TypeMemberSerializationInfo.MemberType.Property)
                   MemberReferences(node.Id).Add(new MemberReference(source, System.Reflection.MemberTypes.Property, node.MemberInfo.Name));
             }
-            var idList = CaptureNodes.Select(item => item.Id).GroupBy(x => x).Select(grp => grp.First());
+            var idList = set.CaptureNodes.Select(item => item.Id).GroupBy(x => x).Select(grp => grp.First());
             foreach (int item in idList)
             {
                if (GetObject(item) != null)
@@ -175,7 +171,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          if (member == null) throw new ArgumentNullException("member");
 
-         CurrentMember = member;
+         CaptureStack.Peek().CurrentMember = member;
       }
 
       public void CaptureLateBinding(int id, TypeMemberSerializationInfo info, int index)
@@ -184,7 +180,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          if (info == null) throw new ArgumentNullException("info");
          if (index < 0) throw new ArgumentNullException("index");
 
-         CaptureNodes.Add(new CaptureNode(id, info, index));
+         CaptureStack.Peek().CaptureNodes.Add(new CaptureNode(id, info, index));
       }
 
       public void CaptureLateBinding(int id, TypeMemberSerializationInfo info)
@@ -192,16 +188,28 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          if (id == 0) throw new ArgumentNullException("id");
          if (info == null) throw new ArgumentNullException("info");
 
-         CaptureNodes.Add(new CaptureNode(id, info));
+         CaptureStack.Peek().CaptureNodes.Add(new CaptureNode(id, info));
+      }
+
+      public void CaptureLateBinding(int id, int index)
+      {
+         if (id == 0) throw new ArgumentNullException("id");
+         if (index < 0) throw new ArgumentNullException("index");
+
+         CaptureSet set = CaptureStack.Peek();
+         if (set.CurrentMember == null)
+            throw new ReferenceException("CurrentMember of ReferenceManager is null");
+         set.CaptureNodes.Add(new CaptureNode(id, set.CurrentMember, index));
       }
 
       public void CaptureLateBinding(int id)
       {
          if (id == 0) throw new ArgumentNullException("id");
-         if (CurrentMember == null)
-            throw new ReferenceException("CurrentMember of ReferenceManager is null");
 
-         CaptureNodes.Add(new CaptureNode(id, CurrentMember));
+         CaptureSet set = CaptureStack.Peek();
+         if (set.CurrentMember == null)
+            throw new ReferenceException("CurrentMember of ReferenceManager is null");
+         set.CaptureNodes.Add(new CaptureNode(id, set.CurrentMember));
       }
    }
 }
