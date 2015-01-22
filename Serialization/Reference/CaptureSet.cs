@@ -20,7 +20,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          CaptureNodes = new List<CaptureNode>();
       }
       public Type Type { get; set; }
-      public TypeMemberSerializationInfo CurrentMember { get; set; }
+      public TypeMemberInfo CurrentMember { get; set; }
       public List<CaptureNode> CaptureNodes { get; set; }
    }
 }

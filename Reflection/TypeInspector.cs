@@ -33,19 +33,19 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          _Cache = cache;
       }
 
-      public virtual TypeSerializationInfo GetInfo(string fullyQualifiedTypeName)
+      public virtual TypeInfo GetInfo(string fullyQualifiedTypeName)
       {
          return GetInfo(Type.GetType(fullyQualifiedTypeName, true));
       }
 
-      public virtual TypeSerializationInfo GetInfo(Type type)
+      public virtual TypeInfo GetInfo(Type type)
       {
-         TypeSerializationInfo result = _Cache.GetInfo(type);
+         TypeInfo result = _Cache.GetInfo(type);
          if (result != null)
             return result;
          string rootName = null;
          string @namespace = null;
-         List<TypeMemberSerializationInfo> infoList = null;
+         List<TypeMemberInfo> infoList = null;
          var rootAttrib = type.Attribute<XmlRootAttribute>();
          if (rootAttrib != null)
          {
@@ -77,15 +77,15 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             throw new TypeLayoutException(string.Format("Attribute node name \"{0}\" is used for more than one member of Type {1}",
                                                         duplicateAttribs.First(),
                                                         type.Name()));
-         result = new TypeSerializationInfo(type.Name, type, rootName, @namespace, infoList);
+         result = new TypeInfo(type.Name, type, rootName, @namespace, infoList);
          _Cache.AddInfo(result);
          return result;
       }
 
-      protected virtual List<TypeMemberSerializationInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
+      protected virtual List<TypeMemberInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
       {
          var fieldInfo = type.Fields(Flags.InstanceAnyVisibility | Flags.ExcludeHiddenMembers);
-         List<TypeMemberSerializationInfo> infoList = new List<TypeMemberSerializationInfo>(fieldInfo.Count);
+         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>(fieldInfo.Count);
          foreach (var field in fieldInfo)
          {
             var ignoreAttrib = field.Attribute<XmlIgnoreAttribute>();
@@ -121,8 +121,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                   if (string.IsNullOrEmpty(entityName))
                      entityName = property.Name;
                }
-               var memberInfo = new TypeMemberSerializationInfo(field.Name,
-                                                                TypeMemberSerializationInfo.MemberType.Field,
+               var memberInfo = new TypeMemberInfo(field.Name,
+                                                                TypeMemberInfo.MemberType.Field,
                                                                 entityName,
                                                                 field.FieldType,
                                                                 (attributeAttrib != null));
@@ -132,10 +132,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return infoList;
       }
 
-      protected virtual List<TypeMemberSerializationInfo> GetPropertyMembersInfo(Type type, IList<string> propertyExclusionList)
+      protected virtual List<TypeMemberInfo> GetPropertyMembersInfo(Type type, IList<string> propertyExclusionList)
       {
          var propInfo = type.Properties(Flags.InstanceAnyVisibility | Flags.ExcludeHiddenMembers);
-         List<TypeMemberSerializationInfo> infoList = new List<TypeMemberSerializationInfo>(propInfo.Count);
+         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>(propInfo.Count);
          foreach (var prop in propInfo)
          {
             var ignoreAttrib = prop.Attribute<XmlIgnoreAttribute>();
@@ -148,8 +148,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                string entityName = elementAttrib.GetPropertyValue("Name") as String;
                if (string.IsNullOrEmpty(entityName))
                   entityName = prop.Name;
-               var memberInfo = new TypeMemberSerializationInfo(prop.Name,
-                                                                TypeMemberSerializationInfo.MemberType.Property,
+               var memberInfo = new TypeMemberInfo(prop.Name,
+                                                                TypeMemberInfo.MemberType.Property,
                                                                 entityName,
                                                                 prop.PropertyType,
                                                                 (attributeAttrib != null));

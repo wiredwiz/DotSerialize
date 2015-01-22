@@ -7,15 +7,15 @@ using Org.Edgerunner.DotSerialize.Reflection;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Caching
 {
-   public class SerializationInfoCache : SerializationInfoCacheBase<TypeSerializationInfo>
+   public class SerializationInfoCache : SerializationInfoCacheBase<TypeInfo>
    {
 
-      public override void AddInfo(TypeSerializationInfo info)
+      public override void AddInfo(TypeInfo info)
       {
          _InternalCache.Add(info.DataType, info);
       }
 
-      public override TypeSerializationInfo GetInfo(Type type)
+      public override TypeInfo GetInfo(Type type)
       {
          return _InternalCache.ContainsKey(type) ? _InternalCache[type] : null;
       }

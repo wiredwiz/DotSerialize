@@ -90,7 +90,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                if (TypeHelper.ReferenceIsNull(reader))
                   return null;
 
-               var memberValues = new Dictionary<TypeMemberSerializationInfo, object>();
+               var memberValues = new Dictionary<TypeMemberInfo, object>();
                RefManager.StartLateBindingCapture(type);
                var info = TypeInspector.GetInfo(type);
 
@@ -124,8 +124,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       }
 
       protected virtual void DeserializeAttribMember(XmlReader reader,
-                                                  TypeSerializationInfo info,
-                                                  Dictionary<TypeMemberSerializationInfo, object> memberValues)
+                                                  TypeInfo info,
+                                                  Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
          if (info == null) throw new ArgumentNullException("info");
@@ -148,7 +148,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          }
       }
 
-      protected virtual void DeserializeElementMember(XmlReader reader, TypeSerializationInfo info, Dictionary<TypeMemberSerializationInfo, object> memberValues)
+      protected virtual void DeserializeElementMember(XmlReader reader, TypeInfo info, Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
          if (info == null) throw new ArgumentNullException("info");
@@ -326,13 +326,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          }
       }
 
-      public object GetEntityValue(object entity, TypeMemberSerializationInfo memberInfo)
+      public object GetEntityValue(object entity, TypeMemberInfo memberInfo)
       {
          switch (memberInfo.Type)
          {
-            case TypeMemberSerializationInfo.MemberType.Field:
+            case TypeMemberInfo.MemberType.Field:
                return entity.GetFieldValue(memberInfo.Name);
-            case TypeMemberSerializationInfo.MemberType.Property:
+            case TypeMemberInfo.MemberType.Property:
                return entity.GetPropertyValue(memberInfo.Name);
             default:
                throw new SerializationException("Cannot serialize unknown member type");

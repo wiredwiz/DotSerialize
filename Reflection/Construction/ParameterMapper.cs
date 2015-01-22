@@ -9,12 +9,12 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
 {
    internal static class ParameterMapper
    {
-      public static Dictionary<ParameterInfo, TypeMemberSerializationInfo> MapTypeMembersToParameters(Type type, IList<ParameterInfo> parameters, IList<TypeMemberSerializationInfo> members)
+      public static Dictionary<ParameterInfo, TypeMemberInfo> MapTypeMembersToParameters(Type type, IList<ParameterInfo> parameters, IList<TypeMemberInfo> members)
       {
-         var result = new Dictionary<ParameterInfo, TypeMemberSerializationInfo>(parameters.Count);
+         var result = new Dictionary<ParameterInfo, TypeMemberInfo>(parameters.Count);
          foreach (ParameterInfo parameter in parameters)
          {
-            foreach (TypeMemberSerializationInfo member in members)
+            foreach (TypeMemberInfo member in members)
             {
                if (parameter.ParameterType.IsAssignableFrom(member.DataType))
                   if (member.ConstructorFriendlyName.ToLowerInvariant().Trim('_') == parameter.Name.ToLowerInvariant().Trim('_'))

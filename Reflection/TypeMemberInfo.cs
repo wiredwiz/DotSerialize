@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
-   public class TypeMemberSerializationInfo : IEquatable<TypeMemberSerializationInfo>
+   public class TypeMemberInfo : IEquatable<TypeMemberInfo>
    {
       public enum MemberType
       {
@@ -15,12 +15,12 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          Property
       }
       /// <summary>
-      /// Initializes a new instance of the <see cref="FieldSerializationInfo"/> class.
+      /// Initializes a new instance of the <see cref="TypeMemberInfo"/> class.
       /// </summary>
       /// <param name="name"></param>
       /// <param name="type"></param>
       /// <param name="dataType"></param>
-      public TypeMemberSerializationInfo(string name, MemberType type, Type dataType)
+      public TypeMemberInfo(string name, MemberType type, Type dataType)
       {
          Name = name;
          Type = type;
@@ -29,13 +29,13 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          IsAttribute = false;
       }
       /// <summary>
-      /// Initializes a new instance of the <see cref="FieldSerializationInfo"/> class.
+      /// Initializes a new instance of the <see cref="TypeMemberInfo"/> class.
       /// </summary>
       /// <param name="name"></param>
       /// <param name="type"></param>
       /// <param name="entityName"></param>
       /// <param name="dataType"></param>
-      public TypeMemberSerializationInfo(string name, MemberType type, string entityName, Type dataType)
+      public TypeMemberInfo(string name, MemberType type, string entityName, Type dataType)
       {
          Name = name;
          Type = type;
@@ -44,14 +44,14 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          IsAttribute = false;
       }
       /// <summary>
-      /// Initializes a new instance of the <see cref="FieldSerializationInfo"/> class.
+      /// Initializes a new instance of the <see cref="TypeMemberInfo"/> class.
       /// </summary>
       /// <param name="name"></param>
       /// <param name="type"></param>
       /// <param name="entityName"></param>
       /// <param name="dataType"></param>
       /// <param name="isAttribute"></param>
-      public TypeMemberSerializationInfo(string name, MemberType type, string entityName, Type dataType, bool isAttribute)
+      public TypeMemberInfo(string name, MemberType type, string entityName, Type dataType, bool isAttribute)
       {
          Name = name;
          Type = type;
@@ -80,7 +80,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
       /// </returns>
       /// <param name="other">An object to compare with this object.</param>
-      public bool Equals(TypeMemberSerializationInfo other)
+      public bool Equals(TypeMemberInfo other)
       {
          if (ReferenceEquals(null, other)) return false;
          if (ReferenceEquals(this, other)) return true;
@@ -99,7 +99,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (ReferenceEquals(null, obj)) return false;
          if (ReferenceEquals(this, obj)) return true;
          if (obj.GetType() != this.GetType()) return false;
-         return Equals((TypeMemberSerializationInfo)obj);
+         return Equals((TypeMemberInfo)obj);
       }
 
       /// <summary>

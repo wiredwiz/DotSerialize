@@ -20,7 +20,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          _Mappings = new Dictionary<Type, Dictionary<int, ConstructorMap>>();
       }
 
-      public ConstructorMap GetMappingFor(Type type, IList<TypeMemberSerializationInfo> info)
+      public ConstructorMap GetMappingFor(Type type, IList<TypeMemberInfo> info)
       {
          if (type == null) throw new ArgumentNullException("type");
          if (info == null) throw new ArgumentNullException("info");
@@ -35,7 +35,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          return typeMappings[key];
       }
 
-      public void AddMappingFor(Type type, IList<TypeMemberSerializationInfo> info, ConstructorMap constructorMap)
+      public void AddMappingFor(Type type, IList<TypeMemberInfo> info, ConstructorMap constructorMap)
       {
          if (type == null) throw new ArgumentNullException("type");
          if (info == null) throw new ArgumentNullException("info");
@@ -46,7 +46,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          _Mappings[type].Add(GetHash(info), constructorMap);            
       }
 
-      protected int GetHash(IList<TypeMemberSerializationInfo> info)
+      protected int GetHash(IList<TypeMemberInfo> info)
       {
          if (info.Count == 0)
             return 0;
