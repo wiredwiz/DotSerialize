@@ -43,46 +43,25 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       {
          object result = null;
 
-         object[] paramValues;
          var memberInfoList = data.Keys.ToList();
          var cachedMap = Cache.GetMappingFor(type, memberInfoList);
          if (cachedMap != null)
          {
             if (cachedMap.Parameters.Count == 0)
-               result = cachedMap.Constructor.Invoke(null);
+               result = AttempCreation(cachedMap.Constructor);
             else
             {
-               paramValues = BuildParameterVaules(cachedMap.Parameters, cachedMap.Members, data);
-               result = cachedMap.Constructor.Invoke(paramValues);
+               object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
+               result = AttemptCreation(cachedMap.Constructor, paramValues);
             }
          }
-         else
+         // If there was no cached mapping or if the mapping no longer works, we try to find a new one
+         if (result != null)
          {
             var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
             foreach (var constructor in constructors)
-               try
-               {
-                  Dictionary<ParameterInfo, TypeMemberInfo> paramMap;
-                  if (constructor.Parameters().Count == 0)
-                  {
-                     paramMap = new Dictionary<ParameterInfo, TypeMemberInfo>();
-                     result = constructor.Invoke(null);
-                  }
-                  else
-                  {
-                     paramMap = ParameterMapper.MapTypeMembersToParameters(type, constructor.Parameters(), memberInfoList);
-                     paramValues = BuildParameterVaules(paramMap.Keys.ToList(), paramMap.Values.ToList(), data);
-                     result = constructor.Invoke(paramValues);
-                  }
-
-                  if (result != null)
-                     Cache.AddMappingFor(type, memberInfoList, new ConstructorMap(constructor, paramMap.Keys.ToList(), paramMap.Values.ToList()));
+               if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
                   break;
-               }
-               catch (Exception ex)
-               {
-                  // Since we failed to create an instance, we try the next constructor
-               }
          }
          if (result == null)
             throw new Exception(string.Format("Unable to create instance of type \"{0}\"", type.Name()));
@@ -103,7 +82,38 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          return result;
       }
 
-      private static object[] BuildParameterVaules(IList<ParameterInfo> parameters, IList<TypeMemberInfo> members,
+      private static object AttempCreation(ConstructorInfo constructor, object[] paramValues = null)
+      {
+         try { return constructor.Invoke(paramValues); }
+         catch (Exception)
+         {
+            return null;
+         }
+      }
+      private static bool AttemptConstructorMatch(Type type, ConstructorInfo constructor, List<TypeMemberInfo> memberInfoList, IDictionary<TypeMemberInfo, object> data, out object result)
+      {
+         Dictionary<ParameterInfo, TypeMemberInfo> paramMap;
+         if (constructor.Parameters().Count == 0)
+         {
+            paramMap = new Dictionary<ParameterInfo, TypeMemberInfo>();
+            result = AttempCreation(constructor);
+            if (result == null)
+               return false;
+         }
+         else
+         {
+            paramMap = ParameterMapper.MapTypeMembersToParameters(type, constructor.Parameters(), memberInfoList);
+            object[] paramValues = BuildParameterValues(paramMap.Keys.ToList(), paramMap.Values.ToList(), data);
+            result = AttempCreation(constructor, paramValues);
+            if (result == null)
+               return false;
+         }
+
+         Cache.AddMappingFor(type, memberInfoList, new ConstructorMap(constructor, paramMap.Keys.ToList(), paramMap.Values.ToList()));
+         return true;
+      }
+
+      private static object[] BuildParameterValues(IList<ParameterInfo> parameters, IList<TypeMemberInfo> members,
                                                  IDictionary<TypeMemberInfo, object> data)
       {
          if (parameters.Count != members.Count)
