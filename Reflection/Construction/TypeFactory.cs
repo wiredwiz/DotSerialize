@@ -48,8 +48,13 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          var cachedMap = Cache.GetMappingFor(type, memberInfoList);
          if (cachedMap != null)
          {
-            paramValues = BuildParameterVaules(cachedMap.Parameters, new List<TypeMemberSerializationInfo>(), data);
-            result = cachedMap.Constructor.Invoke(paramValues);
+            if (cachedMap.Parameters.Count == 0)
+               result = cachedMap.Constructor.Invoke(null);
+            else
+            {
+               paramValues = BuildParameterVaules(cachedMap.Parameters, cachedMap.Members, data);
+               result = cachedMap.Constructor.Invoke(paramValues);
+            }
          }
          else
          {
@@ -57,21 +62,21 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
             foreach (var constructor in constructors)
                try
                {
-                  Dictionary<string, TypeMemberSerializationInfo> paramMap;
+                  Dictionary<ParameterInfo, TypeMemberSerializationInfo> paramMap;
                   if (constructor.Parameters().Count == 0)
                   {
-                     paramMap = new Dictionary<string, TypeMemberSerializationInfo>();
+                     paramMap = new Dictionary<ParameterInfo, TypeMemberSerializationInfo>();
                      result = constructor.Invoke(null);
                   }
                   else
                   {
                      paramMap = ParameterMapper.MapTypeMembersToParameters(type, constructor.Parameters(), memberInfoList);
-                     paramValues = BuildParameterVaules(constructor.Parameters(), paramMap.Values, data);
+                     paramValues = BuildParameterVaules(paramMap.Keys.ToList(), paramMap.Values.ToList(), data);
                      result = constructor.Invoke(paramValues);
                   }
 
                   if (result != null)
-                     Cache.AddMappingFor(type, memberInfoList, new ConstructorMap(constructor, paramMap));
+                     Cache.AddMappingFor(type, memberInfoList, new ConstructorMap(constructor, paramMap.Keys.ToList(), paramMap.Values.ToList()));
                   break;
                }
                catch (Exception ex)
@@ -114,6 +119,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
             else
                paramValues[i] = data[members[i]];
          }
+         return paramValues;
       }
    }
 }
