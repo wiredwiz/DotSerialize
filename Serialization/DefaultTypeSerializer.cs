@@ -38,7 +38,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       public ITypeInspector TypeInspector { get; set; }
 
       /// <summary>
-      ///    Initializes a new instance of the <see cref="GenericTypeSerializer" /> class.
+      ///    Initializes a new instance of the <see cref="DefaultTypeSerializer" /> class.
       /// </summary>
       /// <param name="factory"></param>
       /// <param name="referenceManager"></param>
@@ -124,7 +124,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       }
 
       protected virtual void DeserializeAttribMember(XmlReader reader,
-                                                  TypeInfo info,
+                                                  Reflection.TypeInfo info,
                                                   Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
@@ -148,7 +148,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          }
       }
 
-      protected virtual void DeserializeElementMember(XmlReader reader, TypeInfo info, Dictionary<TypeMemberInfo, object> memberValues)
+      protected virtual void DeserializeElementMember(XmlReader reader, Reflection.TypeInfo info, Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
          if (info == null) throw new ArgumentNullException("info");
