@@ -19,7 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Fasterflect;
+using Org.Edgerunner.DotSerialize.Utilities;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Construction
 {
@@ -46,7 +48,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          var cachedMap = Cache.GetMappingFor(type, memberInfoList);
          if (cachedMap != null)
          {
-            paramValues = BuildParameterVaules(cachedMap.Parameters, data);
+            paramValues = BuildParameterVaules(cachedMap.Parameters, new List<TypeMemberSerializationInfo>(), data);
             result = cachedMap.Constructor.Invoke(paramValues);
          }
          else
@@ -62,15 +64,15 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
                      result = constructor.Invoke(null);
                   }
                   else
-                  {                     
+                  {
                      paramMap = ParameterMapper.MapTypeMembersToParameters(type, constructor.Parameters(), memberInfoList);
-                     paramValues = BuildParameterVaules(paramMap, data);
+                     paramValues = BuildParameterVaules(constructor.Parameters(), paramMap.Values, data);
                      result = constructor.Invoke(paramValues);
                   }
 
                   if (result != null)
                      Cache.AddMappingFor(type, memberInfoList, new ConstructorMap(constructor, paramMap));
-                     break;
+                  break;
                }
                catch (Exception ex)
                {
@@ -96,20 +98,22 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          return result;
       }
 
-      private static object[] BuildParameterVaules(Dictionary<string, TypeMemberSerializationInfo> parameterMap,
+      private static object[] BuildParameterVaules(IList<ParameterInfo> parameters, IList<TypeMemberSerializationInfo> members,
                                                  IDictionary<TypeMemberSerializationInfo, object> data)
       {
-         var paramValues = new object[parameterMap.Count];
-         int counter = 0;
-         foreach (var pair in parameterMap)
+         if (parameters.Count != members.Count)
+            throw new ArgumentException("Parameters Count does not match members Count.", "parameters");
+         if (parameters.Count != data.Count)
+            throw new ArgumentException("Parameters Count does not match data Count.", "parameters");
+         var paramValues = new object[parameters.Count];
+         for (int i = 0; i < members.Count; i++)
          {
-            if (pair.Value == null)
-               paramValues[counter] = null;
+            if (members[i] == null)
+               try { paramValues[i] = parameters[i].ParameterType.GetDefaultValue(); }
+               catch (Exception ex) { parameters[i] = null; }
             else
-               paramValues[counter] = data[pair.Value];
-            counter++;
+               paramValues[i] = data[members[i]];
          }
-         return paramValues;
       }
    }
 }
