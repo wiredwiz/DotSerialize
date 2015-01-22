@@ -10,17 +10,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
    public class ConstructorMap
    {
       public ConstructorInfo Constructor { get; set; }
-      public Dictionary<string, TypeMemberSerializationInfo> Parameters { get; set; }
-      /// <summary>
-      /// Initializes a new instance of the <see cref="ConstructorMap"/> class.
-      /// </summary>
-      /// <param name="constructor"></param>
-      /// <param name="parameters"></param>
-      public ConstructorMap(ConstructorInfo constructor, Dictionary<string, TypeMemberSerializationInfo> parameters)
-      {
-         Constructor = constructor;
-         Parameters = parameters;
-      }
+      public IList<ParameterInfo> Parameters { get; set; }
+      public IList<TypeMemberSerializationInfo> Members { get; set; }
       /// <summary>
       /// Initializes a new instance of the <see cref="ConstructorMap"/> class.
       /// </summary>
@@ -28,7 +19,20 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       public ConstructorMap(ConstructorInfo constructor)
       {
          Constructor = constructor;
-         Parameters = new Dictionary<string, TypeMemberSerializationInfo>();
+         Parameters = null;
+         Members = null;
+      }
+      /// <summary>
+      /// Initializes a new instance of the <see cref="ConstructorMap"/> class.
+      /// </summary>
+      /// <param name="constructor"></param>
+      /// <param name="parameters"></param>
+      /// <param name="members"></param>
+      public ConstructorMap(ConstructorInfo constructor, IList<ParameterInfo> parameters, IList<TypeMemberSerializationInfo> members)
+      {
+         Constructor = constructor;
+         Parameters = parameters;
+         Members = members;
       }
    }
 }
