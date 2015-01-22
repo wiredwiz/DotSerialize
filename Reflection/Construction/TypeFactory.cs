@@ -34,12 +34,12 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          Cache = new TypeConstructorCache();
       }
 
-      public static T CreateInstance<T>(IDictionary<TypeMemberSerializationInfo, object> data)
+      public static T CreateInstance<T>(IDictionary<TypeMemberInfo, object> data)
       {
          return (T)CreateInstance(typeof(T), data);
       }
 
-      public static object CreateInstance(Type type, IDictionary<TypeMemberSerializationInfo, object> data)
+      public static object CreateInstance(Type type, IDictionary<TypeMemberInfo, object> data)
       {
          object result = null;
 
@@ -62,10 +62,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
             foreach (var constructor in constructors)
                try
                {
-                  Dictionary<ParameterInfo, TypeMemberSerializationInfo> paramMap;
+                  Dictionary<ParameterInfo, TypeMemberInfo> paramMap;
                   if (constructor.Parameters().Count == 0)
                   {
-                     paramMap = new Dictionary<ParameterInfo, TypeMemberSerializationInfo>();
+                     paramMap = new Dictionary<ParameterInfo, TypeMemberInfo>();
                      result = constructor.Invoke(null);
                   }
                   else
@@ -91,10 +91,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          {
             switch (memberInfo.Type)
             {
-               case TypeMemberSerializationInfo.MemberType.Field:
+               case TypeMemberInfo.MemberType.Field:
                   result.SetFieldValue(memberInfo.Name, data[memberInfo]);
                   break;
-               case TypeMemberSerializationInfo.MemberType.Property:
+               case TypeMemberInfo.MemberType.Property:
                   result.SetPropertyValue(memberInfo.Name, data[memberInfo]);
                   break;
             }
@@ -103,8 +103,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          return result;
       }
 
-      private static object[] BuildParameterVaules(IList<ParameterInfo> parameters, IList<TypeMemberSerializationInfo> members,
-                                                 IDictionary<TypeMemberSerializationInfo, object> data)
+      private static object[] BuildParameterVaules(IList<ParameterInfo> parameters, IList<TypeMemberInfo> members,
+                                                 IDictionary<TypeMemberInfo, object> data)
       {
          if (parameters.Count != members.Count)
             throw new ArgumentException("Parameters Count does not match members Count.", "parameters");

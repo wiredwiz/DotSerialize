@@ -11,7 +11,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
    {
       public ConstructorInfo Constructor { get; set; }
       public IList<ParameterInfo> Parameters { get; set; }
-      public IList<TypeMemberSerializationInfo> Members { get; set; }
+      public IList<TypeMemberInfo> Members { get; set; }
       /// <summary>
       /// Initializes a new instance of the <see cref="ConstructorMap"/> class.
       /// </summary>
@@ -28,7 +28,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <param name="constructor"></param>
       /// <param name="parameters"></param>
       /// <param name="members"></param>
-      public ConstructorMap(ConstructorInfo constructor, IList<ParameterInfo> parameters, IList<TypeMemberSerializationInfo> members)
+      public ConstructorMap(ConstructorInfo constructor, IList<ParameterInfo> parameters, IList<TypeMemberInfo> members)
       {
          Constructor = constructor;
          Parameters = parameters;

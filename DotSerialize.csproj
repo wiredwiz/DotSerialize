@@ -88,8 +88,8 @@
     <Compile Include="Reflection\ITypeInspector.cs" />
     <Compile Include="Reflection\TypeHelper.cs" />
     <Compile Include="Reflection\TypeInspector.cs" />
-    <Compile Include="Reflection\TypeSerializationInfo.cs" />
-    <Compile Include="Reflection\TypeMemberSerializationInfo.cs" />
+    <Compile Include="Reflection\TypeInfo.cs" />
+    <Compile Include="Reflection\TypeMemberInfo.cs" />
     <Compile Include="Serialization\Reference\CaptureNode.cs" />
     <Compile Include="Serialization\Reference\CaptureSet.cs" />
     <Compile Include="Serializer.cs" />

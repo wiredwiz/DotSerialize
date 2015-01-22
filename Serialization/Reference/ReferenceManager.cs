@@ -146,16 +146,16 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          {
             if (node.Index >= 0)
             {
-               if (node.MemberInfo.Type == TypeMemberSerializationInfo.MemberType.Field)
+               if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Field)
                   MemberReferences(node.Id).Add(new MemberReference(source, System.Reflection.MemberTypes.Field, node.MemberInfo.Name, node.Index));
-               else if (node.MemberInfo.Type == TypeMemberSerializationInfo.MemberType.Property)
+               else if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Property)
                   MemberReferences(node.Id).Add(new MemberReference(source, System.Reflection.MemberTypes.Property, node.MemberInfo.Name, node.Index));
             }
             else
             {
-               if (node.MemberInfo.Type == TypeMemberSerializationInfo.MemberType.Field)
+               if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Field)
                   MemberReferences(node.Id).Add(new MemberReference(source, System.Reflection.MemberTypes.Field, node.MemberInfo.Name));
-               else if (node.MemberInfo.Type == TypeMemberSerializationInfo.MemberType.Property)
+               else if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Property)
                   MemberReferences(node.Id).Add(new MemberReference(source, System.Reflection.MemberTypes.Property, node.MemberInfo.Name));
             }
             var idList = set.CaptureNodes.Select(item => item.Id).GroupBy(x => x).Select(grp => grp.First());
@@ -167,14 +167,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          }
       }
 
-      public void SetWorkingMember(TypeMemberSerializationInfo member)
+      public void SetWorkingMember(TypeMemberInfo member)
       {
          if (member == null) throw new ArgumentNullException("member");
 
          CaptureStack.Peek().CurrentMember = member;
       }
 
-      public void CaptureLateBinding(int id, TypeMemberSerializationInfo info, int index)
+      public void CaptureLateBinding(int id, TypeMemberInfo info, int index)
       {
          if (id == 0) throw new ArgumentNullException("id");
          if (info == null) throw new ArgumentNullException("info");
@@ -183,7 +183,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          CaptureStack.Peek().CaptureNodes.Add(new CaptureNode(id, info, index));
       }
 
-      public void CaptureLateBinding(int id, TypeMemberSerializationInfo info)
+      public void CaptureLateBinding(int id, TypeMemberInfo info)
       {
          if (id == 0) throw new ArgumentNullException("id");
          if (info == null) throw new ArgumentNullException("info");

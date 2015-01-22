@@ -8,7 +8,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Caching
 {
    public interface ISerializationInfoCache
    {
-      void AddInfo(TypeSerializationInfo info);
-      TypeSerializationInfo GetInfo(Type type);
+      void AddInfo(TypeInfo info);
+      TypeInfo GetInfo(Type type);
    }
 }

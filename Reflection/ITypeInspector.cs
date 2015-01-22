@@ -13,7 +13,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public interface ITypeInspector
    {
-      TypeSerializationInfo GetInfo(string fullyQualifiedTypeName);
-      TypeSerializationInfo GetInfo(Type type);
+      TypeInfo GetInfo(string fullyQualifiedTypeName);
+      TypeInfo GetInfo(Type type);
    }
 }

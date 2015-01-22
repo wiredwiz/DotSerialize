@@ -27,7 +27,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Caching
          _InternalCache = new Dictionary<Type, T>(capacity);
       }
 
-      public abstract void AddInfo(TypeSerializationInfo info);
-      public abstract TypeSerializationInfo GetInfo(Type type);
+      public abstract void AddInfo(TypeInfo info);
+      public abstract TypeInfo GetInfo(Type type);
    }
 }

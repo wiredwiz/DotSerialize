@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Caching
 {
-   public class WeakSerializationInfoCache : SerializationInfoCacheBase<WeakReference<TypeSerializationInfo>>
+   public class WeakSerializationInfoCache : SerializationInfoCacheBase<WeakReference<TypeInfo>>
    {
-      public override void AddInfo(TypeSerializationInfo info)
+      public override void AddInfo(TypeInfo info)
       {
-         _InternalCache.Add(info.DataType, new WeakReference<TypeSerializationInfo>(info));
+         _InternalCache.Add(info.DataType, new WeakReference<TypeInfo>(info));
       }
 
-      public override TypeSerializationInfo GetInfo(Type type)
+      public override TypeInfo GetInfo(Type type)
       {
          if (!_InternalCache.ContainsKey(type))
             return null;
          var reference = _InternalCache[type];
-         TypeSerializationInfo result;
+         TypeInfo result;
          if (reference.TryGetTarget(out result))
             return result;
          _InternalCache.Remove(type);

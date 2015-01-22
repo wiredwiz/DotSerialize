@@ -17,9 +17,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       MemberReferenceList MemberReferences(int id);
       void StartLateBindingCapture(Type type);
       void FinishCaptures(object source);
-      void SetWorkingMember(TypeMemberSerializationInfo info);
-      void CaptureLateBinding(int id, TypeMemberSerializationInfo info, int index);
-      void CaptureLateBinding(int id, TypeMemberSerializationInfo info);
+      void SetWorkingMember(TypeMemberInfo info);
+      void CaptureLateBinding(int id, TypeMemberInfo info, int index);
+      void CaptureLateBinding(int id, TypeMemberInfo info);
       void CaptureLateBinding(int id, int index);
       void CaptureLateBinding(int id);
    }
