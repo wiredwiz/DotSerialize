@@ -16,7 +16,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          {
             foreach (TypeMemberSerializationInfo member in members)
             {
-               if (member.DataType == parameter.ParameterType)
+               if (parameter.ParameterType.IsAssignableFrom(member.DataType))
                   if (member.ConstructorFriendlyName.ToLowerInvariant().Trim('_') == parameter.Name.ToLowerInvariant().Trim('_'))
                   {
                      result.Add(parameter.Name, member);

@@ -74,6 +74,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
                }
                catch (Exception ex)
                {
+                  // Since we failed to create an instance, we try the next constructor
                }
          }
          if (result == null)
