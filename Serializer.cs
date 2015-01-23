@@ -39,13 +39,26 @@ namespace Org.Edgerunner.DotSerialize
       private static Serializer _Instance;
 
       /// <summary>
+      /// Initializes a new instance of the <see cref="Serializer"/> class.
+      /// </summary>
+      /// <param name="settings"></param>
+      /// <param name="kernel"></param>
+      public Serializer(Settings settings, IKernel kernel)
+      {
+         Kernel = kernel;
+         Settings = settings;
+         BindSettings();
+      }
+
+      /// <summary>
       ///    Initializes a new instance of the <see cref="Serializer" /> class.
       /// </summary>
       /// <param name="kernel"></param>
       public Serializer(IKernel kernel)
       {
          Kernel = kernel;
-         Settings = Settings.Default();
+         Settings = Settings.Default;
+         BindSettings();
       }
 
       /// <summary>
@@ -63,8 +76,9 @@ namespace Org.Edgerunner.DotSerialize
       /// </summary>
       public Serializer()
       {
-         Settings = Settings.Default();
          LoadDefaultKernel();
+         Settings = Settings.Default;
+         BindSettings();
       }
 
       protected virtual void LoadDefaultKernel()
@@ -74,13 +88,18 @@ namespace Org.Edgerunner.DotSerialize
          LoadDefaultBindings();
       }
 
-      protected virtual void LoadDefaultBindings()
+      public virtual void LoadDefaultBindings()
       {
          BindITypeInspector();
          BindISerializationInfoCache();
          BindITypeSerializationFactory();
          BindGenericTypeSerializer();
          BindIReferenceManager();
+      }
+
+      protected virtual void BindSettings()
+      {
+         Kernel.Bind<Settings>().ToConstant(Settings);
       }
 
       protected virtual void BindITypeInspector()

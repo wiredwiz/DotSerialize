@@ -9,12 +9,14 @@ using Org.Edgerunner.DotSerialize.Attributes;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Utilities;
+using Org.Edgerunner.DotSerialize;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public class TypeInspector : ITypeInspector
    {
       protected readonly ISerializationInfoCache _Cache;
+      protected readonly Settings _Settings;
 
       /// <summary>
       /// Initializes a new instance of the <see cref="TypeInspector"/> class.
@@ -22,15 +24,18 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       public TypeInspector()
       {
          _Cache = new WeakSerializationInfoCache();
+         _Settings = Settings.Default;
       }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="TypeInspector"/> class.
       /// </summary>
       /// <param name="cache"></param>
-      public TypeInspector(ISerializationInfoCache cache)
+      /// <param name="settings"></param>
+      public TypeInspector(ISerializationInfoCache cache, Settings settings)
       {
          _Cache = cache;
+         _Settings = settings;
       }
 
       public virtual TypeInfo GetInfo(string fullyQualifiedTypeName)
@@ -88,8 +93,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          List<TypeMemberInfo> infoList = new List<TypeMemberInfo>(fieldInfo.Count);
          foreach (var field in fieldInfo)
          {
-            var ignoreAttrib = field.Attribute<XmlIgnoreAttribute>();
-            if (ignoreAttrib == null)
+            bool ignore = (_Settings.AttributesToIgnore.Intersect(field.Attributes.Attributes()).Count() != 0);
+            if (!ignore)
             {
                string entityName = null;
                Attribute elementAttrib = null;
@@ -107,8 +112,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                {
                   var property = field.GetEncapsulatingAutoProperty();
                   propertyExclusionList.Add(property.Name);
-                  ignoreAttrib = property.Attribute<XmlIgnoreAttribute>();
-                  if (ignoreAttrib != null)
+                  ignore = (_Settings.AttributesToIgnore.Intersect(field.Attributes.Attributes()).Count() != 0);
+                  if (!ignore)
                      continue;
                   attributeAttrib = property.Attribute<XmlAttributeAttribute>();
                   if (attributeAttrib != null)
