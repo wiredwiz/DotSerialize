@@ -2,23 +2,29 @@
 using System.Xml;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
+using Org.Edgerunner.DotSerialize;
+using Org.Edgerunner.DotSerialize.Serialization.Factories;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 {
    public abstract class TypeSerializerBase<T> : ITypeSerializer<T>
    {
+      protected ITypeSerializerFactory Factory { get; set; }
       protected ITypeInspector Inspector { get; set; }
-      protected IReferenceManager ReferenceCache { get; set; }
+      protected IReferenceManager RefManager { get; set; }
+
 
       /// <summary>
       /// Initializes a new instance of the <see cref="TypeSerializerBase"/> class.
       /// </summary>
+      /// <param name="factory"></param>
       /// <param name="inspector"></param>
-      /// <param name="referenceCache"></param>
-      protected TypeSerializerBase(ITypeInspector inspector, IReferenceManager referenceCache)
+      /// <param name="refManager"></param>
+      protected TypeSerializerBase(ITypeSerializerFactory factory, ITypeInspector inspector, IReferenceManager refManager)
       {
+         Factory = factory;
          Inspector = inspector;
-         ReferenceCache = referenceCache;
+         RefManager = refManager;
       }
 
       public virtual void Serialize(XmlWriter writer, T obj)
