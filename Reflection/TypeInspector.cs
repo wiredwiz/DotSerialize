@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Attributes;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Utilities;
-using Org.Edgerunner.DotSerialize;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
@@ -19,7 +16,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       protected readonly Settings _Settings;
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="TypeInspector"/> class.
+      ///    Initializes a new instance of the <see cref="TypeInspector" /> class.
       /// </summary>
       public TypeInspector()
       {
@@ -28,7 +25,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="TypeInspector"/> class.
+      ///    Initializes a new instance of the <see cref="TypeInspector" /> class.
       /// </summary>
       /// <param name="cache"></param>
       /// <param name="settings"></param>
@@ -37,6 +34,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          _Cache = cache;
          _Settings = settings;
       }
+
+      #region ITypeInspector Members
 
       public virtual TypeInfo GetInfo(string fullyQualifiedTypeName)
       {
@@ -73,11 +72,11 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                                                         duplicateElements.First(),
                                                         type.Name()));
          var duplicateAttribs = from x in infoList
-                                 where x.IsAttribute
-                                 group x by x.EntityName
-                                    into grouped
-                                    where (grouped.Count() > 1)
-                                    select grouped.Key;
+                                where x.IsAttribute
+                                group x by x.EntityName
+                                into grouped
+                                where (grouped.Count() > 1)
+                                select grouped.Key;
          if (duplicateAttribs.Count() != 0)
             throw new TypeLayoutException(string.Format("Attribute node name \"{0}\" is used for more than one member of Type {1}",
                                                         duplicateAttribs.First(),
@@ -87,50 +86,64 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return result;
       }
 
+      #endregion
+
       protected virtual List<TypeMemberInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
       {
          var fieldInfo = type.Fields(Flags.InstanceAnyVisibility | Flags.ExcludeHiddenMembers);
          List<TypeMemberInfo> infoList = new List<TypeMemberInfo>(fieldInfo.Count);
          foreach (var field in fieldInfo)
          {
-            bool ignore = (_Settings.AttributesToIgnore.Intersect(field.Attributes.Attributes()).Count() != 0);
+            var attribs = field.Attributes.Attributes();
+            Attribute elementAttrib = null;
+            Attribute attributeAttrib = null;
+            bool ignore = false;
+            foreach (var attrib in attribs)
+            {
+               if (_Settings.AttributesToIgnore.Contains(attrib))
+                  ignore = true;
+               if (attrib.GetType() == typeof(XmlAttributeAttribute))
+                  attributeAttrib = attrib;
+               if (attrib.GetType() == typeof(XmlElementAttribute))
+                  elementAttrib = attrib;
+            }
             if (!ignore)
             {
                string entityName = null;
-               Attribute elementAttrib = null;
-               var attributeAttrib = field.Attribute<XmlAttributeAttribute>();
                if (attributeAttrib != null)
                   entityName = attributeAttrib.GetPropertyValue("Name") as String;
                else
-               {
-                  elementAttrib = field.Attribute<XmlElementAttribute>();
                   entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
-               }
                if (string.IsNullOrEmpty(entityName))
                   entityName = field.Name;
                if (field.IsBackingField())
                {
                   var property = field.GetEncapsulatingAutoProperty();
                   propertyExclusionList.Add(property.Name);
-                  ignore = (_Settings.AttributesToIgnore.Intersect(field.Attributes.Attributes()).Count() != 0);
+                  attribs = property.Attributes.Attributes();
+                  foreach (var attrib in attribs)
+                  {
+                     if (_Settings.AttributesToIgnore.Contains(attrib))
+                        ignore = true;
+                     if (attrib.GetType() == typeof(XmlAttributeAttribute))
+                        attributeAttrib = attrib;
+                     if (attrib.GetType() == typeof(XmlElementAttribute))
+                        elementAttrib = attrib;
+                  }
                   if (!ignore)
                      continue;
-                  attributeAttrib = property.Attribute<XmlAttributeAttribute>();
                   if (attributeAttrib != null)
                      entityName = attributeAttrib.GetPropertyValue("Name") as String;
                   else
-                  {
-                     elementAttrib = property.Attribute<XmlElementAttribute>();
                      entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
-                  }
                   if (string.IsNullOrEmpty(entityName))
                      entityName = property.Name;
                }
                var memberInfo = new TypeMemberInfo(field.Name,
-                                                                TypeMemberInfo.MemberType.Field,
-                                                                entityName,
-                                                                field.FieldType,
-                                                                (attributeAttrib != null));
+                                                   TypeMemberInfo.MemberType.Field,
+                                                   entityName,
+                                                   field.FieldType,
+                                                   (attributeAttrib != null));
                infoList.Add(memberInfo);
             }
          }
@@ -143,21 +156,30 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          List<TypeMemberInfo> infoList = new List<TypeMemberInfo>(propInfo.Count);
          foreach (var prop in propInfo)
          {
-            var ignoreAttrib = prop.Attribute<XmlIgnoreAttribute>();
-            var elementAttrib = prop.Attribute<XmlElementAttribute>();
-            if ((ignoreAttrib == null) && !propertyExclusionList.Contains(prop.Name) && (elementAttrib != null))
+            var ignore = false;
+            Attribute elementAttrib = null;
+            var attribs = prop.Attributes.Attributes();
+            foreach (var attrib in attribs)
+            {
+               if (_Settings.AttributesToIgnore.Contains(attrib))
+                  ignore = true;
+               if (attrib.GetType() == typeof(XmlElementAttribute))
+                  elementAttrib = attrib;
+            }
+            if (!(ignore || propertyExclusionList.Contains(prop.Name) || (elementAttrib == null)))
             {
                if (prop.GetIndexParameters().Length != 0)
-                  throw new TypeLayoutException("Indexed properties should not be serialized.  Instead the underlying value being indexed should be serialized.");
+                  throw new TypeLayoutException(
+                     "Indexed properties should not be serialized.  Instead the underlying value being indexed should be serialized.");
                var attributeAttrib = prop.Attribute<XmlAttributeAttribute>();
                string entityName = elementAttrib.GetPropertyValue("Name") as String;
                if (string.IsNullOrEmpty(entityName))
                   entityName = prop.Name;
                var memberInfo = new TypeMemberInfo(prop.Name,
-                                                                TypeMemberInfo.MemberType.Property,
-                                                                entityName,
-                                                                prop.PropertyType,
-                                                                (attributeAttrib != null));
+                                                   TypeMemberInfo.MemberType.Property,
+                                                   entityName,
+                                                   prop.PropertyType,
+                                                   (attributeAttrib != null));
                infoList.Add(memberInfo);
             }
          }
