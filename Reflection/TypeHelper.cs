@@ -58,7 +58,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return int.Parse(reader.GetAttribute(Properties.Resources.ReferenceId));
+            return int.Parse(reader.GetAttribute(Properties.Resources.ReferenceId, Properties.Resources.DotserializeUri));
          }
          catch (ArgumentNullException)
          {
@@ -71,7 +71,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceSource));
+            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceSource, Properties.Resources.DotserializeUri));
          }
          catch (ArgumentNullException)
          {
@@ -84,7 +84,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return Type.GetType(reader.GetAttribute(Properties.Resources.ReferenceType), true);
+            return Type.GetType(reader.GetAttribute(Properties.Resources.ReferenceType, Properties.Resources.DotserializeUri), true);
          }
          catch (ArgumentNullException ex)
          {
@@ -97,7 +97,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceisNull));
+            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceisNull, Properties.Resources.DotserializeUri));
          }
          catch (ArgumentNullException)
          {

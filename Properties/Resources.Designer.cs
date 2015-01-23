@@ -61,7 +61,7 @@ namespace Org.Edgerunner.DotSerialize.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to __id.
+        ///   Looks up a localized string similar to id.
         /// </summary>
         internal static string ReferenceId {
             get {
@@ -70,7 +70,7 @@ namespace Org.Edgerunner.DotSerialize.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to __isNull.
+        ///   Looks up a localized string similar to nil.
         /// </summary>
         internal static string ReferenceisNull {
             get {
@@ -79,7 +79,7 @@ namespace Org.Edgerunner.DotSerialize.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to __source.
+        ///   Looks up a localized string similar to src.
         /// </summary>
         internal static string ReferenceSource {
             get {
@@ -88,11 +88,20 @@ namespace Org.Edgerunner.DotSerialize.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to __type.
+        ///   Looks up a localized string similar to type.
         /// </summary>
         internal static string ReferenceType {
             get {
                 return ResourceManager.GetString("ReferenceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to www.dotserialize.com/.
+        /// </summary>
+        internal static string DotserializeUri {
+            get {
+                return ResourceManager.GetString("DotserializeUri", resourceCulture);
             }
         }
     }
