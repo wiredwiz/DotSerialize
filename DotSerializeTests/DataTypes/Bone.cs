@@ -19,7 +19,7 @@
 using System;
 using Org.Edgerunner.DotSerialize.Attributes;
 
-namespace DotSerializeTests.DataTypes
+namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
 {
    public struct Bone
    {

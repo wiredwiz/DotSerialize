@@ -6,7 +6,7 @@
     <ProjectGuid>{6521DD78-C79C-4FBB-BB13-0A5284958493}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DotSerializeTests</RootNamespace>
+    <RootNamespace>Org.Edgerunner.DotSerialize.Tests</RootNamespace>
     <AssemblyName>DotSerializeTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

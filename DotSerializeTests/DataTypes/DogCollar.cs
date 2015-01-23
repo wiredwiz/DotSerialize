@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DotSerializeTests.DataTypes
+namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
 {
    public class DogCollar
    {

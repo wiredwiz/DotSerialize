@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using DotSerializeTests.DataTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Org.Edgerunner.DotSerialize;
+using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 
-namespace DotSerializeTests
+namespace Org.Edgerunner.DotSerialize.Tests
 {
    /// <summary>
    /// Summary description for SerializerTests
