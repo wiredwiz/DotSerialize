@@ -97,7 +97,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceisNull, Properties.Resources.DotserializeUri));
+            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceisNull, Properties.Resources.XsiUri));
          }
          catch (ArgumentNullException)
          {
