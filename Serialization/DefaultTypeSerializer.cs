@@ -253,11 +253,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             writer.WriteValue(obj.ToString());
          else
          {
-            writer.WriteAttributeString(Properties.Resources.ReferenceType, type.AssemblyQualifiedName);
+            writer.WriteAttributeString(Properties.Resources.ReferenceType, Properties.Resources.DotserializeUri, FormatType(type.AssemblyQualifiedName));
             // check for null value
             if (obj == null)
             {
-               writer.WriteAttributeString(Properties.Resources.ReferenceisNull, true.ToString());
+               writer.WriteAttributeString(Properties.Resources.ReferenceisNull, Properties.Resources.DotserializeUri, true.ToString().ToLowerInvariant());
                return;
             }
             // check for struct before writing reference id
@@ -267,14 +267,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                if (RefManager.IsRegistered(obj))
                {
                   id = RefManager.GetObjectId(obj);
-                  writer.WriteAttributeString(Properties.Resources.ReferenceId, id.ToString());
+                  writer.WriteAttributeString(Properties.Resources.ReferenceId, Properties.Resources.DotserializeUri, id.ToString());
                   // since this object has already been serialized once there is no need to write out the rest of the object
                   return;
                }
                // Given that the instance has not already been seen we keep writing
                id = RefManager.RegisterId(obj);
-               writer.WriteAttributeString(Properties.Resources.ReferenceId, id.ToString());
-               writer.WriteAttributeString(Properties.Resources.ReferenceSource, true.ToString());
+               writer.WriteAttributeString(Properties.Resources.ReferenceId, Properties.Resources.DotserializeUri, id.ToString());
+               writer.WriteAttributeString(Properties.Resources.ReferenceSource, Properties.Resources.DotserializeUri, true.ToString().ToLowerInvariant());
             }
 
             if (TypeHelper.IsArray(type))
@@ -502,6 +502,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if (isElement)
             ReadToElementEndNode(reader);
          return result;
+      }
+      public string FormatType(string assemblyQualifiedName)
+      {
+         string[] parts = assemblyQualifiedName.Split(',');
+         return string.Format("{0}, {1}", parts[0], parts[1]);
       }
    }
 }

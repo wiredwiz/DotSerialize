@@ -118,19 +118,23 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ReferenceId" xml:space="preserve">
-    <value>__id</value>
+    <value>id</value>
     <comment>Attribute used to identify unique instances</comment>
   </data>
   <data name="ReferenceSource" xml:space="preserve">
-    <value>__source</value>
+    <value>src</value>
     <comment>Attribute specifying whether the current node is the source of the attached instance id</comment>
   </data>
   <data name="ReferenceisNull" xml:space="preserve">
-    <value>__isNull</value>
+    <value>nil</value>
     <comment>Attribute specifying whether the value is null</comment>
   </data>
   <data name="ReferenceType" xml:space="preserve">
-    <value>__type</value>
+    <value>type</value>
     <comment>Attribute specifying the type of the value serialized into the node</comment>
+  </data>
+  <data name="DotserializeUri" xml:space="preserve">
+    <value>www.dotserialize.com/</value>
+    <comment>DotserializeUri description</comment>
   </data>
 </root>
