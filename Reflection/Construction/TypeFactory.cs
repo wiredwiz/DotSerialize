@@ -48,7 +48,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          if (cachedMap != null)
          {
             if (cachedMap.Parameters.Count == 0)
-               result = AttempCreation(cachedMap.Constructor);
+               result = AttemptCreation(cachedMap.Constructor);
             else
             {
                object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
@@ -56,7 +56,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
             }
          }
          // If there was no cached mapping or if the mapping no longer works, we try to find a new one
-         if (result != null)
+         if (result == null)
          {
             var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
             foreach (var constructor in constructors)
@@ -82,7 +82,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          return result;
       }
 
-      private static object AttempCreation(ConstructorInfo constructor, object[] paramValues = null)
+      private static object AttemptCreation(ConstructorInfo constructor, object[] paramValues = null)
       {
          try { return constructor.Invoke(paramValues); }
          catch (Exception)
@@ -96,15 +96,22 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          if (constructor.Parameters().Count == 0)
          {
             paramMap = new Dictionary<ParameterInfo, TypeMemberInfo>();
-            result = AttempCreation(constructor);
+            result = AttemptCreation(constructor);
             if (result == null)
                return false;
          }
          else
          {
-            paramMap = ParameterMapper.MapTypeMembersToParameters(type, constructor.Parameters(), memberInfoList);
-            object[] paramValues = BuildParameterValues(paramMap.Keys.ToList(), paramMap.Values.ToList(), data);
-            result = AttempCreation(constructor, paramValues);
+            paramMap = ParameterMapper.MapTypeMembersToParameters(type, constructor.Parameters(), memberInfoList, true);
+            var paramValues = BuildParameterValues(paramMap.Keys.ToList(), paramMap.Values.ToList(), data);
+            result = AttemptCreation(constructor, paramValues);
+            if (result == null)
+            {
+               // Now we make a second and much more forgiving attempt at matching our data to the parameters
+               paramMap = ParameterMapper.MapTypeMembersToParameters(type, constructor.Parameters(), memberInfoList);
+               paramValues = BuildParameterValues(paramMap.Keys.ToList(), paramMap.Values.ToList(), data);
+               result = AttemptCreation(constructor, paramValues);
+            }
             if (result == null)
                return false;
          }
@@ -118,8 +125,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       {
          if (parameters.Count != members.Count)
             throw new ArgumentException("Parameters Count does not match members Count.", "parameters");
-         if (parameters.Count != data.Count)
-            throw new ArgumentException("Parameters Count does not match data Count.", "parameters");
          var paramValues = new object[parameters.Count];
          for (int i = 0; i < members.Count; i++)
          {

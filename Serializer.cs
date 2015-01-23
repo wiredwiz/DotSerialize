@@ -83,12 +83,12 @@ namespace Org.Edgerunner.DotSerialize
 
       protected virtual void BindGenericTypeSerializer()
       {
-         Kernel.Bind<DefaultTypeSerializer>().ToSelf().InSingletonScope();
+         Kernel.Bind<DefaultTypeSerializer>().ToSelf();
       }
 
       protected virtual void BindIReferenceManager()
       {
-         Kernel.Bind<IReferenceManager>().To<ReferenceManager>().InScope(ctx => Scope);
+         Kernel.Bind<IReferenceManager>().To<ReferenceManager>().InThreadScope();
       }
 
       public static Serializer Instance
@@ -115,7 +115,7 @@ namespace Org.Edgerunner.DotSerialize
 
       public virtual void SerializeObject<T>(XmlWriter writer, T obj)
       {
-         Scope = new object();
+         var mgr = Kernel.Get<IReferenceManager>();
          var inspector = Kernel.Get<ITypeInspector>();
          var info = inspector.GetInfo(typeof(T));
          writer.WriteStartDocument();
@@ -135,6 +135,7 @@ namespace Org.Edgerunner.DotSerialize
             defaultSerializer.Serialize<T>(writer, obj);
          }
          writer.WriteEndDocument();
+         Kernel.Release(mgr);
       }
 
       public virtual void SerializeObject<T>(out XmlDocument document, T obj)
@@ -175,7 +176,7 @@ namespace Org.Edgerunner.DotSerialize
 
       public virtual T DeserializeObject<T>(XmlReader reader)
       {
-         Scope = new object(); // Create our scope object for ReferenceManager lifetime
+         var mgr = Kernel.Get<IReferenceManager>();
          T result;
          IReferenceManager manager = Kernel.Get<IReferenceManager>();
          if (!ReadUntilElement(reader))
@@ -206,6 +207,7 @@ namespace Org.Edgerunner.DotSerialize
          if (ReadUntilElement(reader))
             throw new SerializationException("Document cannot contain more than one root node");
 
+         Kernel.Release(mgr);
          return result;
       }
 
