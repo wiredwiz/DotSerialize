@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Org.Edgerunner.DotSerialize</RootNamespace>
-    <AssemblyName>Org.Edgerunner.DotSerialize</AssemblyName>
+    <AssemblyName>DotSerialize</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

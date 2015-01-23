@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DotSerializeTests.DataTypes;
+using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 
-namespace DotSerializeTests
+namespace Org.Edgerunner.DotSerialize.Tests
 {
    [TestClass]
    public class TypeInspectorTests
