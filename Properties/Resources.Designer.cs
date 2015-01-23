@@ -61,6 +61,15 @@ namespace Org.Edgerunner.DotSerialize.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to http://www.dotserialize.com/Schema.
+        /// </summary>
+        internal static string DotserializeUri {
+            get {
+                return ResourceManager.GetString("DotserializeUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to id.
         /// </summary>
         internal static string ReferenceId {
@@ -97,11 +106,11 @@ namespace Org.Edgerunner.DotSerialize.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to www.dotserialize.com/.
+        ///   Looks up a localized string similar to http://www.w3.org/2001/XMLSchema-instance.
         /// </summary>
-        internal static string DotserializeUri {
+        internal static string XsiUri {
             get {
-                return ResourceManager.GetString("DotserializeUri", resourceCulture);
+                return ResourceManager.GetString("XsiUri", resourceCulture);
             }
         }
     }

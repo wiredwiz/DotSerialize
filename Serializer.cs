@@ -123,7 +123,7 @@ namespace Org.Edgerunner.DotSerialize
          if (!string.IsNullOrEmpty(info.Namespace))
             writer.WriteAttributeString("xmlns", info.Namespace);
          writer.WriteAttributeString("xmlns", "dts", null, Properties.Resources.DotserializeUri);
-
+         writer.WriteAttributeString("xmlns", "xsi", null, Properties.Resources.XsiUri);
 
          // Attempt to fetch a custom type serializer
          ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();

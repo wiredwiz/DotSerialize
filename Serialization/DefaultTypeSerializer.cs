@@ -257,7 +257,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             // check for null value
             if (obj == null)
             {
-               writer.WriteAttributeString(Properties.Resources.ReferenceisNull, Properties.Resources.DotserializeUri, true.ToString().ToLowerInvariant());
+               writer.WriteAttributeString(Properties.Resources.ReferenceisNull, Properties.Resources.XsiUri, true.ToString().ToLowerInvariant());
                return;
             }
             // check for struct before writing reference id

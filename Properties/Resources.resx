@@ -134,7 +134,11 @@
     <comment>Attribute specifying the type of the value serialized into the node</comment>
   </data>
   <data name="DotserializeUri" xml:space="preserve">
-    <value>www.dotserialize.com/</value>
+    <value>http://www.dotserialize.com/Schema</value>
     <comment>DotserializeUri description</comment>
+  </data>
+  <data name="XsiUri" xml:space="preserve">
+    <value>http://www.w3.org/2001/XMLSchema-instance</value>
+    <comment>XsiUri description</comment>
   </data>
 </root>
