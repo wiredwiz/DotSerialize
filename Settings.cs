@@ -12,5 +12,9 @@ namespace Org.Edgerunner.DotSerialize
       public List<Attribute> AttributesToIgnore { get; set; }
       public CultureInfo Culture { get; set; }
 
+      public static Settings Default()
+      {
+         return new Settings();
+      }
    }
 }

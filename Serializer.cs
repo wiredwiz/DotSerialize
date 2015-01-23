@@ -34,7 +34,7 @@ namespace Org.Edgerunner.DotSerialize
 {
    public class Serializer
    {
-      protected object Scope { get; set; }
+      protected Settings Settings { get; set; }
       public IKernel Kernel { get; set; }
       private static Serializer _Instance;
 
@@ -45,6 +45,17 @@ namespace Org.Edgerunner.DotSerialize
       public Serializer(IKernel kernel)
       {
          Kernel = kernel;
+         Settings = Settings.Default();
+      }
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="Serializer"/> class.
+      /// </summary>
+      /// <param name="settings"></param>
+      public Serializer(Settings settings)
+      {
+         Settings = settings;
+         LoadDefaultKernel();
       }
 
       /// <summary>
@@ -52,12 +63,18 @@ namespace Org.Edgerunner.DotSerialize
       /// </summary>
       public Serializer()
       {
+         Settings = Settings.Default();
+         LoadDefaultKernel();
+      }
+
+      protected virtual void LoadDefaultKernel()
+      {
          Kernel = new StandardKernel();
          Kernel.Load(Assembly.GetExecutingAssembly());
          LoadDefaultBindings();
       }
 
-      public virtual void LoadDefaultBindings()
+      protected virtual void LoadDefaultBindings()
       {
          BindITypeInspector();
          BindISerializationInfoCache();
