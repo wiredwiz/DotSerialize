@@ -48,6 +48,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          if (id == 0) throw new ArgumentNullException("id");
          if (obj == null) throw new ArgumentNullException("obj");
 
+         CurrentId = id + 1;
          ReferencesByGuid.Add(id, new ReferenceNode(obj));
          ReferencesByInstance[obj] = id;
          return id;
@@ -68,6 +69,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          if (id == 0) throw new ArgumentNullException("id");
 
+         CurrentId = id + 1;
          ReferencesByGuid.Add(id, new ReferenceNode());
          return id;
       }
