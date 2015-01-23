@@ -106,6 +106,7 @@
     <Compile Include="Serialization\Factories\ITypeSerializerFactory.cs" />
     <Compile Include="Serialization\Generic\TypeSerializerBase.cs" />
     <Compile Include="Serialization\Factories\TypeSerializerFactory.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Utilities\FieldInfoExtensions.cs" />
     <Compile Include="Utilities\NamingUtils.cs" />
     <Compile Include="Utilities\ObjectExtensions.cs" />
