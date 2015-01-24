@@ -37,10 +37,16 @@ namespace Org.Edgerunner.DotSerialize
 {
    public class Serializer
    {
+      private static Serializer _Instance;
       public Settings Settings { get; set; }
       protected IKernel Kernel { get; set; }
-      private static Serializer _Instance;
       protected IList<Type> RegisteredTypeSerializers { get; set; }
+
+      public static Serializer Instance
+      {
+         get { return _Instance ?? (_Instance = new Serializer()); }
+         set { _Instance = value; }
+      }
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="Serializer" /> class.
@@ -64,111 +70,12 @@ namespace Org.Edgerunner.DotSerialize
          BindSettings();
       }
 
-      protected virtual void LoadDefaultKernel()
+      public void ClearTypeSerializerRegistrations()
       {
-         Kernel = new StandardKernel();
-         Kernel.Load(Assembly.GetExecutingAssembly());
-         LoadDefaultBindings();
-      }
-
-      public virtual void LoadDefaultBindings()
-      {
-         BindITypeInspector();
-         BindISerializationInfoCache();
+         foreach (Type item in RegisteredTypeSerializers)
+            Kernel.Unbind(item);
+         RegisteredTypeSerializers.Clear();
          BindITypeSerializationFactory();
-         BindGenericTypeSerializer();
-         BindIReferenceManager();
-      }
-
-      protected virtual void BindSettings()
-      {
-         Kernel.Bind<Settings>().ToConstant(Settings);
-      }
-
-      protected virtual void BindITypeInspector()
-      {
-         Kernel.Bind<ITypeInspector>().To<TypeInspector>().InSingletonScope();
-      }
-
-      protected virtual void BindISerializationInfoCache()
-      {
-         Kernel.Bind<ISerializationInfoCache>().To<WeakSerializationInfoCache>();
-      }
-
-      protected virtual void BindITypeSerializationFactory()
-      {
-         Kernel.Rebind<ITypeSerializerFactory>().ToConstant(new TypeSerializerFactory(Kernel, RegisteredTypeSerializers));
-      }
-
-      protected virtual void BindGenericTypeSerializer()
-      {
-         Kernel.Bind<DefaultTypeSerializer>().ToSelf();
-      }
-
-      protected virtual void BindIReferenceManager()
-      {
-         Kernel.Bind<IReferenceManager>().To<ReferenceManager>().InThreadScope();
-      }
-
-      public static Serializer Instance
-      {
-         get { return _Instance ?? (_Instance = new Serializer()); }
-         set { _Instance = value; }
-      }
-
-      public virtual void SerializeObject<T>(Stream stream, T obj)
-      {
-         using (var xmlWriter = XmlWriter.Create(stream))
-            SerializeObject(xmlWriter, obj);
-      }
-
-      public virtual void SerializeObject<T>(TextWriter writer, T obj)
-      {
-         using (var xmlWriter = XmlWriter.Create(writer))
-            SerializeObject(xmlWriter, obj);
-      }
-
-      public virtual void SerializeObject<T>(XmlWriter writer, T obj)
-      {
-         var mgr = Kernel.Get<IReferenceManager>();
-         var inspector = Kernel.Get<ITypeInspector>();
-         var info = inspector.GetInfo(typeof(T));
-         writer.WriteStartDocument();
-         writer.WriteStartElement(info.EntityName);
-         if (!string.IsNullOrEmpty(info.Namespace))
-            writer.WriteAttributeString("xmlns", info.Namespace);
-         writer.WriteAttributeString("xmlns", "dts", null, Resources.DotserializeUri);
-         writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
-
-         // Attempt to fetch a custom type serializer
-         ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
-         var typeSerializer = factory.GetTypeSerializer<T>();
-         if (typeSerializer != null)
-            typeSerializer.Serialize(writer, obj);
-         else
-         // Since there was no bound custom type serializer we default to the GenericTypeSerializer
-         {
-            var defaultSerializer = factory.GetDefaultSerializer();
-            defaultSerializer.Serialize(writer, obj);
-         }
-         writer.WriteEndDocument();
-         Kernel.Release(mgr);
-         BindITypeSerializationFactory();
-      }
-
-      public virtual void SerializeObject<T>(out XmlDocument document, T obj)
-      {
-         StringWriter writer = new StringWriter();
-         SerializeObject(writer, obj);
-         document = new XmlDocument();
-         document.LoadXml(writer.ToString());
-      }
-
-      public virtual void SerializeObjectToFile<T>(string fileName, T obj)
-      {
-         var document = new XmlDocument();
-         SerializeObject(out document, obj);
-         document.Save(fileName);
       }
 
       public virtual T DeserializeObject<T>(Stream stream)
@@ -239,6 +146,114 @@ namespace Org.Edgerunner.DotSerialize
             return DeserializeObject<T>(xmlReader);
       }
 
+      public virtual void LoadDefaultBindings()
+      {
+         BindITypeInspector();
+         BindISerializationInfoCache();
+         BindITypeSerializationFactory();
+         BindGenericTypeSerializer();
+         BindIReferenceManager();
+      }
+
+      public Registrar<T> Register<T>() where T : ITypeSerializer
+      {
+         if (!typeof(T).IsInterface)
+            throw new SerializerException("Type of T must be an interface of type ITypeSerializer");
+         return new Registrar<T>(this);
+      }
+
+      public virtual void SerializeObject<T>(Stream stream, T obj)
+      {
+         using (var xmlWriter = XmlWriter.Create(stream))
+            SerializeObject(xmlWriter, obj);
+      }
+
+      public virtual void SerializeObject<T>(TextWriter writer, T obj)
+      {
+         using (var xmlWriter = XmlWriter.Create(writer))
+            SerializeObject(xmlWriter, obj);
+      }
+
+      public virtual void SerializeObject<T>(XmlWriter writer, T obj)
+      {
+         var mgr = Kernel.Get<IReferenceManager>();
+         var inspector = Kernel.Get<ITypeInspector>();
+         var info = inspector.GetInfo(typeof(T));
+         writer.WriteStartDocument();
+         writer.WriteStartElement(info.EntityName);
+         if (!string.IsNullOrEmpty(info.Namespace))
+            writer.WriteAttributeString("xmlns", info.Namespace);
+         writer.WriteAttributeString("xmlns", "dts", null, Resources.DotserializeUri);
+         writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
+
+         // Attempt to fetch a custom type serializer
+         ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
+         var typeSerializer = factory.GetTypeSerializer<T>();
+         if (typeSerializer != null)
+            typeSerializer.Serialize(writer, obj);
+         else
+         // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+         {
+            var defaultSerializer = factory.GetDefaultSerializer();
+            defaultSerializer.Serialize(writer, obj);
+         }
+         writer.WriteEndDocument();
+         Kernel.Release(mgr);
+         BindITypeSerializationFactory();
+      }
+
+      public virtual void SerializeObject<T>(out XmlDocument document, T obj)
+      {
+         StringWriter writer = new StringWriter();
+         SerializeObject(writer, obj);
+         document = new XmlDocument();
+         document.LoadXml(writer.ToString());
+      }
+
+      public virtual void SerializeObjectToFile<T>(string fileName, T obj)
+      {
+         var document = new XmlDocument();
+         SerializeObject(out document, obj);
+         document.Save(fileName);
+      }
+
+      protected virtual void BindGenericTypeSerializer()
+      {
+         Kernel.Bind<DefaultTypeSerializer>().ToSelf();
+      }
+
+      protected virtual void BindIReferenceManager()
+      {
+         Kernel.Bind<IReferenceManager>().To<ReferenceManager>().InThreadScope();
+      }
+
+      protected virtual void BindISerializationInfoCache()
+      {
+         Kernel.Bind<ISerializationInfoCache>().To<WeakSerializationInfoCache>();
+      }
+
+      protected virtual void BindITypeInspector()
+      {
+         Kernel.Bind<ITypeInspector>().To<TypeInspector>().InSingletonScope();
+      }
+
+      protected virtual void BindITypeSerializationFactory()
+      {
+         Kernel.Rebind<ITypeSerializerFactory>().ToConstant(new TypeSerializerFactory(Kernel, RegisteredTypeSerializers));
+      }
+
+      protected virtual void BindSettings()
+      {
+         Kernel.Bind<Settings>().ToConstant(Settings);
+      }
+
+      protected virtual void LoadDefaultKernel()
+      {
+         Kernel = new StandardKernel();
+         Kernel.Load(Assembly.GetExecutingAssembly());
+         LoadDefaultBindings();
+      }
+
       protected virtual bool ReadUntilElement(XmlReader reader)
       {
          if (reader.NodeType == XmlNodeType.Element)
@@ -259,45 +274,7 @@ namespace Org.Edgerunner.DotSerialize
          BindITypeSerializationFactory();
       }
 
-      public Registrar<T> Register<T>() where T : ITypeSerializer
-      {
-         if (!typeof(T).IsInterface)
-            throw new SerializerException("Type of T must be an interface of type ITypeSerializer");
-         return new Registrar<T>(this);
-      }
-
-      public void ClearTypeSerializerRegistrations()
-      {
-         foreach (Type item in RegisteredTypeSerializers)
-            Kernel.Unbind(item);
-         RegisteredTypeSerializers.Clear();
-         BindITypeSerializationFactory();
-      }
-
-      public static void Serialize<T>(Stream stream, T obj)
-      {
-         Instance.SerializeObject(stream, obj);
-      }
-
-      public static void Serialize<T>(TextWriter writer, T obj)
-      {
-         Instance.SerializeObject(writer, obj);
-      }
-
-      public static void Serialize<T>(XmlWriter writer, T obj)
-      {
-         Instance.SerializeObject(writer, obj);
-      }
-
-      public static void Serialize<T>(out XmlDocument document, T obj)
-      {
-         Instance.SerializeObject(out document, obj);
-      }
-
-      public static void SerializeToFile<T>(string filePath, T obj)
-      {
-         Instance.SerializeObjectToFile(filePath, obj);
-      }
+      #region Static Methods
 
       public static T Deserialize<T>(Stream stream)
       {
@@ -328,5 +305,32 @@ namespace Org.Edgerunner.DotSerialize
       {
          return Instance.DeserializeObjectFromFile<T>(filePath);
       }
+
+      public static void Serialize<T>(Stream stream, T obj)
+      {
+         Instance.SerializeObject(stream, obj);
+      }
+
+      public static void Serialize<T>(TextWriter writer, T obj)
+      {
+         Instance.SerializeObject(writer, obj);
+      }
+
+      public static void Serialize<T>(XmlWriter writer, T obj)
+      {
+         Instance.SerializeObject(writer, obj);
+      }
+
+      public static void Serialize<T>(out XmlDocument document, T obj)
+      {
+         Instance.SerializeObject(out document, obj);
+      }
+
+      public static void SerializeToFile<T>(string filePath, T obj)
+      {
+         Instance.SerializeObjectToFile(filePath, obj);
+      }
+
+      #endregion
    }
 }

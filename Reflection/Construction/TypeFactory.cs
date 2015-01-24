@@ -34,63 +34,13 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          Cache = new TypeConstructorCache();
       }
 
-      public static T CreateInstance<T>(IDictionary<TypeMemberInfo, object> data)
-      {
-         return (T)CreateInstance(typeof(T), data);
-      }
+      #region Static Methods
 
-      public static object CreateInstance(Type type, IDictionary<TypeMemberInfo, object> data)
-      {
-         object result = null;
-
-         var memberInfoList = data.Keys.ToList();
-         var cachedMap = Cache.GetMappingFor(type, memberInfoList);
-         if (cachedMap != null)
-         {
-            if (cachedMap.Parameters.Count == 0)
-               result = AttemptCreation(cachedMap.Constructor);
-            else
-            {
-               object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
-               result = AttemptCreation(cachedMap.Constructor, paramValues);
-            }
-         }
-         // If there was no cached mapping or if the mapping no longer works, we try to find a new one
-         if (result == null)
-         {
-            var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
-            foreach (var constructor in constructors)
-               if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
-                  break;
-         }
-         if (result == null)
-            throw new Exception(string.Format("Unable to create instance of type \"{0}\"", type.Name()));
-
-         foreach (var memberInfo in data.Keys)
-         {
-            switch (memberInfo.Type)
-            {
-               case TypeMemberInfo.MemberType.Field:
-                  result.SetFieldValue(memberInfo.Name, data[memberInfo]);
-                  break;
-               case TypeMemberInfo.MemberType.Property:
-                  result.SetPropertyValue(memberInfo.Name, data[memberInfo]);
-                  break;
-            }
-         }
-
-         return result;
-      }
-
-      private static object AttemptCreation(ConstructorInfo constructor, object[] paramValues = null)
-      {
-         try { return constructor.Invoke(paramValues); }
-         catch (Exception)
-         {
-            return null;
-         }
-      }
-      private static bool AttemptConstructorMatch(Type type, ConstructorInfo constructor, List<TypeMemberInfo> memberInfoList, IDictionary<TypeMemberInfo, object> data, out object result)
+      private static bool AttemptConstructorMatch(Type type,
+                                                  ConstructorInfo constructor,
+                                                  List<TypeMemberInfo> memberInfoList,
+                                                  IDictionary<TypeMemberInfo, object> data,
+                                                  out object result)
       {
          Dictionary<ParameterInfo, TypeMemberInfo> paramMap;
          if (constructor.Parameters().Count == 0)
@@ -116,25 +66,90 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
                return false;
          }
 
-         Cache.AddMappingFor(type, memberInfoList, new ConstructorMap(constructor, paramMap.Keys.ToList(), paramMap.Values.ToList()));
+         Cache.AddMappingFor(type,
+                             memberInfoList,
+                             new ConstructorMap(constructor, paramMap.Keys.ToList(), paramMap.Values.ToList()));
          return true;
       }
 
-      private static object[] BuildParameterValues(IList<ParameterInfo> parameters, IList<TypeMemberInfo> members,
-                                                 IDictionary<TypeMemberInfo, object> data)
+      private static object AttemptCreation(ConstructorInfo constructor, object[] paramValues = null)
+      {
+         try
+         {
+            return constructor.Invoke(paramValues);
+         }
+         catch (Exception)
+         {
+            return null;
+         }
+      }
+
+      private static object[] BuildParameterValues(IList<ParameterInfo> parameters,
+                                                   IList<TypeMemberInfo> members,
+                                                   IDictionary<TypeMemberInfo, object> data)
       {
          if (parameters.Count != members.Count)
             throw new ArgumentException("Parameters Count does not match members Count.", "parameters");
          var paramValues = new object[parameters.Count];
          for (int i = 0; i < members.Count; i++)
-         {
             if (members[i] == null)
-               try { paramValues[i] = parameters[i].ParameterType.GetDefaultValue(); }
-               catch (Exception ex) { parameters[i] = null; }
+               try
+               {
+                  paramValues[i] = parameters[i].ParameterType.GetDefaultValue();
+               }
+               catch (Exception ex)
+               {
+                  parameters[i] = null;
+               }
             else
                paramValues[i] = data[members[i]];
-         }
          return paramValues;
       }
+
+      public static T CreateInstance<T>(IDictionary<TypeMemberInfo, object> data)
+      {
+         return (T)CreateInstance(typeof(T), data);
+      }
+
+      public static object CreateInstance(Type type, IDictionary<TypeMemberInfo, object> data)
+      {
+         object result = null;
+
+         var memberInfoList = data.Keys.ToList();
+         var cachedMap = Cache.GetMappingFor(type, memberInfoList);
+         if (cachedMap != null)
+            if (cachedMap.Parameters.Count == 0)
+               result = AttemptCreation(cachedMap.Constructor);
+            else
+            {
+               object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
+               result = AttemptCreation(cachedMap.Constructor, paramValues);
+            }
+         // If there was no cached mapping or if the mapping no longer works, we try to find a new one
+         if (result == null)
+         {
+            var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
+            foreach (var constructor in constructors)
+               if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
+                  break;
+         }
+         if (result == null)
+            throw new Exception(string.Format("Unable to create instance of type \"{0}\"", type.Name()));
+
+         foreach (var memberInfo in data.Keys)
+            switch (memberInfo.Type)
+            {
+               case TypeMemberInfo.MemberType.Field:
+                  result.SetFieldValue(memberInfo.Name, data[memberInfo]);
+                  break;
+               case TypeMemberInfo.MemberType.Property:
+                  result.SetPropertyValue(memberInfo.Name, data[memberInfo]);
+                  break;
+            }
+
+         return result;
+      }
+
+      #endregion
    }
 }

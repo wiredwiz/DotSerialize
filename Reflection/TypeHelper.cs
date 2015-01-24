@@ -1,17 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region Apache License 2.0
+
+// Copyright 2015 Thaddeus Ryker
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
+using System;
 using System.Xml;
-using Fasterflect;
-using System.Threading;
-using Org.Edgerunner.DotSerialize.Exceptions;
+using Org.Edgerunner.DotSerialize.Properties;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public static class TypeHelper
    {
+      #region Static Methods
+
+      public static int GetReferenceId(XmlReader reader)
+      {
+         if (reader == null) throw new ArgumentNullException("reader");
+         try
+         {
+            return int.Parse(reader.GetAttribute(Resources.ReferenceId, Resources.DotserializeUri));
+         }
+         catch (ArgumentNullException)
+         {
+            return 0;
+         }
+      }
+
+      public static Type GetReferenceType(XmlReader reader)
+      {
+         if (reader == null) throw new ArgumentNullException("reader");
+         try
+         {
+            return Type.GetType(reader.GetAttribute(Resources.ReferenceType, Resources.DotserializeUri), true);
+         }
+         catch (ArgumentNullException ex)
+         {
+            return null;
+         }
+      }
+
+      public static bool IsArray(Type type)
+      {
+         return type.IsArray;
+      }
+
+      public static bool IsClassOrStruct(Type type)
+      {
+         return !IsPrimitive(type) && (IsStruct(type) || !type.IsValueType);
+      }
+
+      public static bool IsEnum(Type type)
+      {
+         return type.IsEnum;
+      }
+
       public static bool IsPrimitive(Type type)
       {
          switch (type.FullName)
@@ -33,14 +88,17 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          }
       }
 
-      public static bool IsEnum(Type type)
+      public static bool IsReferenceSource(XmlReader reader)
       {
-         return type.IsEnum;
-      }
-
-      public static bool IsArray(Type type)
-      {
-         return type.IsArray;
+         if (reader == null) throw new ArgumentNullException("reader");
+         try
+         {
+            return bool.Parse(reader.GetAttribute(Resources.ReferenceSource, Resources.DotserializeUri));
+         }
+         catch (ArgumentNullException)
+         {
+            return false;
+         }
       }
 
       public static bool IsStruct(Type type)
@@ -48,61 +106,19 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return (!type.IsEnum && !type.IsArray && !IsPrimitive(type) && type.IsValueType);
       }
 
-      public static bool IsClassOrStruct(Type type)
-      {
-         return !IsPrimitive(type) && (IsStruct(type) || !type.IsValueType);
-      }
-
-      public static int GetReferenceId(XmlReader reader)
-      {
-         if (reader == null) throw new ArgumentNullException("reader");
-         try
-         {
-            return int.Parse(reader.GetAttribute(Properties.Resources.ReferenceId, Properties.Resources.DotserializeUri));
-         }
-         catch (ArgumentNullException)
-         {
-            return 0;
-         }
-      }
-
-      public static bool IsReferenceSource(XmlReader reader)
-      {
-         if (reader == null) throw new ArgumentNullException("reader");
-         try
-         {
-            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceSource, Properties.Resources.DotserializeUri));
-         }
-         catch (ArgumentNullException)
-         {
-            return false;
-         }
-      }
-
-      public static Type GetReferenceType(XmlReader reader)
-      {
-         if (reader == null) throw new ArgumentNullException("reader");
-         try
-         {
-            return Type.GetType(reader.GetAttribute(Properties.Resources.ReferenceType, Properties.Resources.DotserializeUri), true);
-         }
-         catch (ArgumentNullException ex)
-         {
-            return null;
-         }
-      }
-
       public static bool ReferenceIsNull(XmlReader reader)
       {
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return bool.Parse(reader.GetAttribute(Properties.Resources.ReferenceisNull, Properties.Resources.XsiUri));
+            return bool.Parse(reader.GetAttribute(Resources.ReferenceisNull, Resources.XsiUri));
          }
          catch (ArgumentNullException)
          {
             return false;
          }
       }
+
+      #endregion
    }
 }

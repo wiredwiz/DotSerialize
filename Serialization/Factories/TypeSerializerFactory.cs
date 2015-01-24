@@ -1,8 +1,25 @@
-﻿using System;
+﻿#region Apache License 2.0
+
+// Copyright 2015 Thaddeus Ryker
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
-using Org.Edgerunner.DotSerialize.Serialization;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 {
@@ -14,7 +31,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
       protected DefaultTypeSerializer DefaultSerializer { get; set; }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="TypeSerializerFactory"/> class.
+      ///    Initializes a new instance of the <see cref="TypeSerializerFactory" /> class.
       /// </summary>
       /// <param name="kernel"></param>
       /// <param name="customerSerializerTypes"></param>
@@ -26,6 +43,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
          DefaultSerializer = null;
       }
 
+      #region ITypeSerializerFactory Members
+
+      public DefaultTypeSerializer GetDefaultSerializer()
+      {
+         return DefaultSerializer ?? (DefaultSerializer = Kernel.Get<DefaultTypeSerializer>());
+      }
+
       public ITypeSerializer<T> GetTypeSerializer<T>()
       {
          Type type = typeof(ITypeSerializer<T>);
@@ -34,14 +58,10 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 
          if (!SerializerInstances.ContainsKey(type))
             SerializerInstances[type] = Kernel.Get<ITypeSerializer<T>>();
-            
+
          return SerializerInstances[type] as ITypeSerializer<T>;
-
       }
 
-      public DefaultTypeSerializer GetDefaultSerializer()
-      {
-         return DefaultSerializer ?? (DefaultSerializer = Kernel.Get<DefaultTypeSerializer>());
-      }
+      #endregion
    }
 }
