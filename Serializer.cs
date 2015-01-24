@@ -17,16 +17,19 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Exceptions;
+using Org.Edgerunner.DotSerialize.Properties;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Serialization;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
+using Org.Edgerunner.DotSerialize.Serialization.Registration;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
@@ -37,36 +40,15 @@ namespace Org.Edgerunner.DotSerialize
       protected Settings Settings { get; set; }
       public IKernel Kernel { get; set; }
       private static Serializer _Instance;
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Serializer"/> class.
-      /// </summary>
-      /// <param name="settings"></param>
-      /// <param name="kernel"></param>
-      public Serializer(Settings settings, IKernel kernel)
-      {
-         Kernel = kernel;
-         Settings = settings;
-         BindSettings();
-      }
+      protected IList<Type> RegisteredTypeSerializers { get; set; }
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="Serializer" /> class.
       /// </summary>
-      /// <param name="kernel"></param>
-      public Serializer(IKernel kernel)
-      {
-         Kernel = kernel;
-         Settings = Settings.Default;
-         BindSettings();
-      }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Serializer"/> class.
-      /// </summary>
       /// <param name="settings"></param>
       public Serializer(Settings settings)
       {
+         RegisteredTypeSerializers = new List<Type>();
          Settings = settings;
          LoadDefaultKernel();
       }
@@ -76,6 +58,7 @@ namespace Org.Edgerunner.DotSerialize
       /// </summary>
       public Serializer()
       {
+         RegisteredTypeSerializers = new List<Type>();
          LoadDefaultKernel();
          Settings = Settings.Default;
          BindSettings();
@@ -114,7 +97,7 @@ namespace Org.Edgerunner.DotSerialize
 
       protected virtual void BindITypeSerializationFactory()
       {
-         Kernel.Bind<ITypeSerializerFactory>().ToConstant(new TypeSerializerFactory(Kernel));
+         Kernel.Rebind<ITypeSerializerFactory>().ToConstant(new TypeSerializerFactory(Kernel, RegisteredTypeSerializers));
       }
 
       protected virtual void BindGenericTypeSerializer()
@@ -126,7 +109,7 @@ namespace Org.Edgerunner.DotSerialize
       {
          Kernel.Bind<IReferenceManager>().To<ReferenceManager>().InThreadScope();
       }
-
+      
       public static Serializer Instance
       {
          get { return _Instance ?? (_Instance = new Serializer()); }
@@ -136,17 +119,13 @@ namespace Org.Edgerunner.DotSerialize
       public virtual void SerializeObject<T>(Stream stream, T obj)
       {
          using (var xmlWriter = XmlWriter.Create(stream))
-         {
-            SerializeObject<T>(xmlWriter, obj);
-         }
+            SerializeObject(xmlWriter, obj);
       }
 
       public virtual void SerializeObject<T>(TextWriter writer, T obj)
       {
          using (var xmlWriter = XmlWriter.Create(writer))
-         {
-            SerializeObject<T>(xmlWriter, obj);
-         }
+            SerializeObject(xmlWriter, obj);
       }
 
       public virtual void SerializeObject<T>(XmlWriter writer, T obj)
@@ -158,8 +137,8 @@ namespace Org.Edgerunner.DotSerialize
          writer.WriteStartElement(info.EntityName);
          if (!string.IsNullOrEmpty(info.Namespace))
             writer.WriteAttributeString("xmlns", info.Namespace);
-         writer.WriteAttributeString("xmlns", "dts", null, Properties.Resources.DotserializeUri);
-         writer.WriteAttributeString("xmlns", "xsi", null, Properties.Resources.XsiUri);
+         writer.WriteAttributeString("xmlns", "dts", null, Resources.DotserializeUri);
+         writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
 
          // Attempt to fetch a custom type serializer
          ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
@@ -170,16 +149,17 @@ namespace Org.Edgerunner.DotSerialize
          // Since there was no bound custom type serializer we default to the GenericTypeSerializer
          {
             var defaultSerializer = factory.GetDefaultSerializer();
-            defaultSerializer.Serialize<T>(writer, obj);
+            defaultSerializer.Serialize(writer, obj);
          }
          writer.WriteEndDocument();
          Kernel.Release(mgr);
+         BindITypeSerializationFactory();
       }
 
       public virtual void SerializeObject<T>(out XmlDocument document, T obj)
       {
          StringWriter writer = new StringWriter();
-         SerializeObject<T>(writer, obj);
+         SerializeObject(writer, obj);
          document = new XmlDocument();
          document.LoadXml(writer.ToString());
       }
@@ -187,16 +167,14 @@ namespace Org.Edgerunner.DotSerialize
       public virtual void SerializeObjectToFile<T>(string fileName, T obj)
       {
          var document = new XmlDocument();
-         SerializeObject<T>(out document, obj);
+         SerializeObject(out document, obj);
          document.Save(fileName);
       }
 
       public virtual T DeserializeObject<T>(Stream stream)
       {
          using (var xmlReader = XmlReader.Create(stream))
-         {
             return DeserializeObject<T>(xmlReader);
-         }
       }
 
       public virtual T DeserializeObject<T>(XmlDocument document)
@@ -207,9 +185,7 @@ namespace Org.Edgerunner.DotSerialize
       public virtual T DeserializeObject<T>(TextReader reader)
       {
          using (var xmlReader = XmlReader.Create(reader))
-         {
             return DeserializeObject<T>(xmlReader);
-         }
       }
 
       public virtual T DeserializeObject<T>(XmlReader reader)
@@ -218,10 +194,10 @@ namespace Org.Edgerunner.DotSerialize
          T result;
          IReferenceManager manager = Kernel.Get<IReferenceManager>();
          if (!ReadUntilElement(reader))
-            throw new SerializationException("Could not find root node");
+            throw new SerializerException("Could not find root node");
          var type = TypeHelper.GetReferenceType(reader);
          if (typeof(T) != type)
-            throw new SerializationException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
+            throw new SerializerException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
          var id = TypeHelper.GetReferenceId(reader);
          if (id != 0)
             manager.RegisterId(id);
@@ -243,26 +219,23 @@ namespace Org.Edgerunner.DotSerialize
             manager.UpdateObject(id, result);
 
          if (ReadUntilElement(reader))
-            throw new SerializationException("Document cannot contain more than one root node");
+            throw new SerializerException("Document cannot contain more than one root node");
 
          Kernel.Release(mgr);
+         BindITypeSerializationFactory();
          return result;
       }
 
       public virtual T DeserializeObject<T>(string xml)
       {
-         using (var strReader = new StringReader(xml))         
-         {
+         using (var strReader = new StringReader(xml))
             return DeserializeObject<T>(strReader);
-         }
       }
 
       public virtual T DeserializeObjectFromFile<T>(string fileName)
       {
          using (var xmlReader = XmlReader.Create(fileName))
-         {
             return DeserializeObject<T>(xmlReader);
-         }
       }
 
       protected virtual bool ReadUntilElement(XmlReader reader)
@@ -275,6 +248,29 @@ namespace Org.Edgerunner.DotSerialize
                return true;
 
          return false;
+      }
+
+      internal void RegisterTypeSerializer(Type sourceInterface, Type implementation)
+      {
+         Kernel.Rebind(sourceInterface).To(implementation);
+         if (!RegisteredTypeSerializers.Contains(sourceInterface))
+            RegisteredTypeSerializers.Add(sourceInterface);
+         BindITypeSerializationFactory();
+      }
+
+      public Registrar<T> Register<T>() where T : ITypeSerializer
+      {
+         if (!typeof(T).IsInterface)
+            throw new SerializerException("Type of T must be an interface of type ITypeSerializer");
+         return new Registrar<T>(this);
+      }
+
+      public void ClearTypeSerializerRegistrations()
+      {
+         foreach (Type item in RegisteredTypeSerializers)
+            Kernel.Unbind(item);
+         RegisteredTypeSerializers.Clear();
+         BindITypeSerializationFactory();
       }
 
       public static void Serialize<T>(Stream stream, T obj)
@@ -297,7 +293,7 @@ namespace Org.Edgerunner.DotSerialize
          Instance.SerializeObject(out document, obj);
       }
 
-      private static void SerializeToFile<T>(string filePath, T obj)
+      public static void SerializeToFile<T>(string filePath, T obj)
       {
          Instance.SerializeObjectToFile(filePath, obj);
       }

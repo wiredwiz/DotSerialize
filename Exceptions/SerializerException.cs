@@ -7,23 +7,23 @@ using System.Runtime.Serialization;
 
 namespace Org.Edgerunner.DotSerialize.Exceptions
 {
-   public class SerializationException : Exception
+   public class SerializerException : Exception
    {
-      public SerializationException()
+      public SerializerException()
       {
          
       }
-      public SerializationException(string message)
+      public SerializerException(string message)
          : base(message)
       {
          
       }
-      public SerializationException(string message, Exception innerException)
+      public SerializerException(string message, Exception innerException)
          : base(message, innerException)
       {
          
       }
-      protected SerializationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+      protected SerializerException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
          : base(info, context)
       {
          

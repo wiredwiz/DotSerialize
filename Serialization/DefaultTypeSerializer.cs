@@ -65,14 +65,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if ((reader.NodeType == XmlNodeType.Attribute))
          {
             if (!((TypeHelper.IsPrimitive(type)) || (TypeHelper.IsEnum(type))))
-               throw new SerializationException("Only primitives or enums can be stored in attributes.");
+               throw new SerializerException("Only primitives or enums can be stored in attributes.");
 
             if (TypeHelper.IsPrimitive(type))
                result = DeserializePrimitive(type, reader);
             else if (TypeHelper.IsEnum(type))
                result = DeserializeEnum(type, reader);
             else
-               throw new SerializationException(string.Format("Unable to deserialize unexpected type \"{0}\" from an attribute.", type.Name()));
+               throw new SerializerException(string.Format("Unable to deserialize unexpected type \"{0}\" from an attribute.", type.Name()));
             return result;
          }
          // Handle Elements
@@ -108,7 +108,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
 
                result = TypeFactory.CreateInstance(type, memberValues);
                if (result == null)
-                  throw new SerializationException(string.Format("Unable to create an instance of type \"{0}\".", type.Name()));
+                  throw new SerializerException(string.Format("Unable to create an instance of type \"{0}\".", type.Name()));
 
                RefManager.FinishCaptures(result);
             }
@@ -116,7 +116,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             // hand back our new object          
             return result;
          }
-         throw new SerializationException(
+         throw new SerializerException(
             string.Format("Reader was not positioned on a node of type Attribute or Element.\r\n" +
                           "A custom type serializer probably positioned the reader incorrectly." +
                           "Unable to deserialize type \"{0}\".",
@@ -165,7 +165,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          {
             var type = TypeHelper.GetReferenceType(reader);
             if (memberInfo.DataType != type)
-               throw new SerializationException(string.Format("Type attribute of element {0} does not match the object's actual member type of {1}.",
+               throw new SerializerException(string.Format("Type attribute of element {0} does not match the object's actual member type of {1}.",
                                                               reader.Name,
                                                               memberInfo.DataType));
 
@@ -176,7 +176,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                {
                   object instance = RefManager.GetObject(id);
                   if (memberInfo.DataType != instance.GetType())
-                     throw new SerializationException("Instance type for id \"{0}\" does not match member type");
+                     throw new SerializerException("Instance type for id \"{0}\" does not match member type");
                   memberValues[memberInfo] = instance;
                   return;
                }
@@ -335,7 +335,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             case TypeMemberInfo.MemberType.Property:
                return entity.GetPropertyValue(memberInfo.Name);
             default:
-               throw new SerializationException("Cannot serialize unknown member type");
+               throw new SerializerException("Cannot serialize unknown member type");
          }
       }
       protected virtual bool ReadNextElement(XmlReader reader)
@@ -354,7 +354,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          IEnumerable objArray = obj as IEnumerable;
          Type arrayElementType = obj.GetType().GetElementType();
          if (objArray == null)
-            throw new SerializationException("Attempt to serialize non-array as an array");
+            throw new SerializerException("Attempt to serialize non-array as an array");
 
          foreach (object item in objArray)
          {
@@ -381,7 +381,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if (type == null) throw new ArgumentNullException("type");
          if (reader == null) throw new ArgumentNullException("reader");
          if (reader.NodeType != XmlNodeType.Element)
-            throw new SerializationException("Cannot deserialize an array from a non-Element node");
+            throw new SerializerException("Cannot deserialize an array from a non-Element node");
 
          if (TypeHelper.ReferenceIsNull(reader))
             return null;
@@ -396,7 +396,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          ReadToElementEndNode(reader);
          Array result = Activator.CreateInstance(type, items.Count) as Array;
          if (result == null)
-            throw new SerializationException(string.Format("Unable to create new instance of \"{0}\"", type.Name()));
+            throw new SerializerException(string.Format("Unable to create new instance of \"{0}\"", type.Name()));
          for (int i = 0; i < items.Count; i++)
             result.SetValue(items[i], i);
          return result;
@@ -412,7 +412,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          {
             type = TypeHelper.GetReferenceType(reader);
             if (!arrayElementType.IsAssignableFrom(type))
-               throw new SerializationException(string.Format(
+               throw new SerializerException(string.Format(
                                                               "Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"",
                                                               type,
                                                               arrayElementType));
