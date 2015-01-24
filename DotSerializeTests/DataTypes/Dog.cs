@@ -20,9 +20,17 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
          _Age = 0;
       }
 
+      public enum NoseStyle
+      {
+         Normal,
+         Smushed,
+         Pointy
+      }
+
       public virtual string Name { get; set; }
       public virtual string Breed { get; set; }
       public virtual bool HasCollar { get; set; }
+      public Dog.NoseStyle Nose { get; set; }
       public DogCollar Collar { get; set; }
       // Fields...
       private int _Age;

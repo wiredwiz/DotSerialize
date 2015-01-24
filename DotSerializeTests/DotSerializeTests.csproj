@@ -72,6 +72,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DataTypes\Bone.cs" />
+    <Compile Include="DataTypes\CompetitionOwner.cs" />
     <Compile Include="DataTypes\DogCollar.cs" />
     <Compile Include="DataTypes\DogCollarFactory.cs" />
     <Compile Include="DataTypes\Dog.cs" />

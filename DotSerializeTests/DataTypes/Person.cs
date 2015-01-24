@@ -11,7 +11,6 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
       public virtual string MiddleInitial { get; set; }
       [XmlIgnore]
       public virtual string LastName { get; set; }
-      [XmlIgnore]
       public virtual int Age { get; set; }
 
       public Person Father { get; set; }
