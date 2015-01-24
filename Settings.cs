@@ -12,6 +12,10 @@ namespace Org.Edgerunner.DotSerialize
    {
       public List<Attribute> AttributesToIgnore { get; set; }
       public CultureInfo Culture { get; set; }
+      public bool OmitTypeWhenPossible { get; set; }
+      public bool IncludeAssemblyVersionWithType { get; set; }
+      public bool IncludeAssemblyCultureWithType { get; set; }
+      public bool IncludeAssemblyKeyWithType { get; set; }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="Settings"/> class.

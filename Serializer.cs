@@ -37,8 +37,8 @@ namespace Org.Edgerunner.DotSerialize
 {
    public class Serializer
    {
-      protected Settings Settings { get; set; }
-      public IKernel Kernel { get; set; }
+      public Settings Settings { get; set; }
+      protected IKernel Kernel { get; set; }
       private static Serializer _Instance;
       protected IList<Type> RegisteredTypeSerializers { get; set; }
 
@@ -59,8 +59,8 @@ namespace Org.Edgerunner.DotSerialize
       public Serializer()
       {
          RegisteredTypeSerializers = new List<Type>();
-         LoadDefaultKernel();
          Settings = Settings.Default;
+         LoadDefaultKernel();
          BindSettings();
       }
 
@@ -109,7 +109,7 @@ namespace Org.Edgerunner.DotSerialize
       {
          Kernel.Bind<IReferenceManager>().To<ReferenceManager>().InThreadScope();
       }
-      
+
       public static Serializer Instance
       {
          get { return _Instance ?? (_Instance = new Serializer()); }
@@ -196,8 +196,9 @@ namespace Org.Edgerunner.DotSerialize
          if (!ReadUntilElement(reader))
             throw new SerializerException("Could not find root node");
          var type = TypeHelper.GetReferenceType(reader);
-         if (typeof(T) != type)
-            throw new SerializerException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
+         if (type != null)
+            if (typeof(T) != type)
+               throw new SerializerException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
          var id = TypeHelper.GetReferenceId(reader);
          if (id != 0)
             manager.RegisterId(id);

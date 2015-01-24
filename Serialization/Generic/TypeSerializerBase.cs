@@ -11,19 +11,22 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
    {
       protected ITypeSerializerFactory Factory { get; set; }
       protected ITypeInspector Inspector { get; set; }
+      protected Settings Settings { get; set; }
       protected IReferenceManager RefManager { get; set; }
 
 
       /// <summary>
       /// Initializes a new instance of the <see cref="TypeSerializerBase"/> class.
       /// </summary>
+      /// <param name="settings"></param>
       /// <param name="factory"></param>
       /// <param name="inspector"></param>
       /// <param name="refManager"></param>
-      protected TypeSerializerBase(ITypeSerializerFactory factory, ITypeInspector inspector, IReferenceManager refManager)
+      protected TypeSerializerBase(Settings settings, ITypeSerializerFactory factory, ITypeInspector inspector, IReferenceManager refManager)
       {
          Factory = factory;
          Inspector = inspector;
+         Settings = settings;
          RefManager = refManager;
       }
 
