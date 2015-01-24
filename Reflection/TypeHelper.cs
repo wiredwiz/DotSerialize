@@ -88,7 +88,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          }
          catch (ArgumentNullException ex)
          {
-            throw new SerializationException(string.Format("Attribute \"{0}\" is missing", Properties.Resources.ReferenceType), ex);
+            throw new SerializerException(string.Format("Attribute \"{0}\" is missing", Properties.Resources.ReferenceType), ex);
          }
       }
 

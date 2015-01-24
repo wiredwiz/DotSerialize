@@ -94,7 +94,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          List<TypeMemberInfo> infoList = new List<TypeMemberInfo>(fieldInfo.Count);
          foreach (var field in fieldInfo)
          {
-            var attribs = field.Attributes.Attributes();
+            var attribs = field.Attributes();
             Attribute elementAttrib = null;
             Attribute attributeAttrib = null;
             bool ignore = false;
@@ -120,7 +120,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                {
                   var property = field.GetEncapsulatingAutoProperty();
                   propertyExclusionList.Add(property.Name);
-                  attribs = property.Attributes.Attributes();
+                  attribs = property.Attributes();
                   foreach (var attrib in attribs)
                   {
                      if (_Settings.AttributesToIgnore.Contains(attrib))
@@ -130,7 +130,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                      if (attrib.GetType() == typeof(XmlElementAttribute))
                         elementAttrib = attrib;
                   }
-                  if (!ignore)
+                  if (ignore)
                      continue;
                   if (attributeAttrib != null)
                      entityName = attributeAttrib.GetPropertyValue("Name") as String;
@@ -158,7 +158,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          {
             var ignore = false;
             Attribute elementAttrib = null;
-            var attribs = prop.Attributes.Attributes();
+            var attribs = prop.Attributes();
             foreach (var attrib in attribs)
             {
                if (_Settings.AttributesToIgnore.Contains(attrib))

@@ -2,52 +2,46 @@
 using System.Collections.Generic;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
+using Org.Edgerunner.DotSerialize.Serialization;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 {
    public class TypeSerializerFactory : ITypeSerializerFactory
    {
-      protected List<Type> UnknownTypes { get; set; }
-
       protected IKernel Kernel { get; set; }
+      public IList<Type> CustomerSerializerTypes { get; set; }
+      protected Dictionary<Type, ITypeSerializer> SerializerInstances { get; set; }
+      protected DefaultTypeSerializer DefaultSerializer { get; set; }
+
       /// <summary>
       /// Initializes a new instance of the <see cref="TypeSerializerFactory"/> class.
       /// </summary>
       /// <param name="kernel"></param>
-      public TypeSerializerFactory(IKernel kernel)
+      /// <param name="customerSerializerTypes"></param>
+      public TypeSerializerFactory(IKernel kernel, IList<Type> customerSerializerTypes)
       {
          Kernel = kernel;
-         UnknownTypes = new List<Type>();
+         CustomerSerializerTypes = customerSerializerTypes;
+         SerializerInstances = new Dictionary<Type, ITypeSerializer>();
+         DefaultSerializer = null;
       }
 
       public ITypeSerializer<T> GetTypeSerializer<T>()
       {
-         try
-         {
-            // First we check our unknown types to increase performance because Ninject resolution is expensive
-            if (UnknownTypes.Contains(typeof(T)))
-               return null;
-
-            return Kernel.Get<ITypeSerializer<T>>();
-         }
-         catch (ActivationException)
-         {
-            // Since this type was not bound we add it to our unknown types to waste any future resolution time
-            UnknownTypes.Add(typeof(T));
+         Type type = typeof(ITypeSerializer<T>);
+         if (!CustomerSerializerTypes.Contains(type))
             return null;
-         }
+
+         if (!SerializerInstances.ContainsKey(type))
+            SerializerInstances[type] = Kernel.Get<ITypeSerializer<T>>();
+            
+         return SerializerInstances[type] as ITypeSerializer<T>;
+
       }
 
       public DefaultTypeSerializer GetDefaultSerializer()
       {
-         try
-         {
-            return Kernel.Get<DefaultTypeSerializer>();
-         }
-         catch (ActivationException)
-         {
-            return null;
-         }
+         return DefaultSerializer ?? (DefaultSerializer = Kernel.Get<DefaultTypeSerializer>());
       }
    }
 }
