@@ -20,11 +20,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Xml;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
+using Org.Edgerunner.DotSerialize.Properties;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Construction;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
@@ -45,8 +45,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       /// <param name="settings"></param>
       /// <param name="factory"></param>
       /// <param name="referenceManager"></param>
-      /// <param name="typeInspector"></param>      
-      public DefaultTypeSerializer(Settings settings, ITypeSerializerFactory factory, IReferenceManager referenceManager, ITypeInspector typeInspector)
+      /// <param name="typeInspector"></param>
+      public DefaultTypeSerializer(Settings settings,
+                                   ITypeSerializerFactory factory,
+                                   IReferenceManager referenceManager,
+                                   ITypeInspector typeInspector)
       {
          Settings = settings;
          Factory = factory;
@@ -76,7 +79,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             else if (TypeHelper.IsEnum(type))
                result = DeserializeEnum(type, reader);
             else
-               throw new SerializerException(string.Format("Unable to deserialize unexpected type \"{0}\" from an attribute.", type.Name()));
+               throw new SerializerException(string.Format("Unable to deserialize unexpected type \"{0}\" from an attribute.",
+                                                           type.Name()));
             return result;
          }
          // Handle Elements
@@ -129,8 +133,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       }
 
       protected virtual void DeserializeAttribMember(XmlReader reader,
-                                                  Reflection.TypeInfo info,
-                                                  Dictionary<TypeMemberInfo, object> memberValues)
+                                                     TypeInfo info,
+                                                     Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
          if (info == null) throw new ArgumentNullException("info");
@@ -153,7 +157,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          }
       }
 
-      protected virtual void DeserializeElementMember(XmlReader reader, Reflection.TypeInfo info, Dictionary<TypeMemberInfo, object> memberValues)
+      protected virtual void DeserializeElementMember(XmlReader reader,
+                                                      TypeInfo info,
+                                                      Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
          if (info == null) throw new ArgumentNullException("info");
@@ -171,11 +177,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             var type = TypeHelper.GetReferenceType(reader);
             if (type == null)
                type = memberInfo.DataType;
-            else
-               if (!memberInfo.DataType.IsAssignableFrom(type))
-                  throw new SerializerException(string.Format("Type attribute of element {0} is not compatible with the object's actual member type of {1}.",
-                                                                 reader.Name,
-                                                                 memberInfo.DataType));
+            else if (!memberInfo.DataType.IsAssignableFrom(type))
+               throw new SerializerException(
+                  string.Format("Type attribute of element {0} is not compatible with the object's actual member type of {1}.",
+                                reader.Name,
+                                memberInfo.DataType));
 
             id = TypeHelper.GetReferenceId(reader);
             if (id != 0)
@@ -188,17 +194,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   memberValues[memberInfo] = instance;
                   return;
                }
-               else
-               {
-                  if (!RefManager.IsRegistered(id))
-                     RefManager.RegisterId(id);
+               if (!RefManager.IsRegistered(id))
+                  RefManager.RegisterId(id);
 
-                  if (!TypeHelper.IsReferenceSource(reader))
-                  {
-                     memberValues[memberInfo] = null;
-                     RefManager.CaptureLateBinding(id, memberInfo);
-                     return;
-                  }
+               if (!TypeHelper.IsReferenceSource(reader))
+               {
+                  memberValues[memberInfo] = null;
+                  RefManager.CaptureLateBinding(id, memberInfo);
+                  return;
                }
             }
          }
@@ -226,10 +229,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       {
          if (reader == null) throw new ArgumentNullException("reader");
          while (reader.NodeType != XmlNodeType.Text)
-         {
             if (!reader.Read())
                return false;
-         }
          return true;
       }
 
@@ -237,10 +238,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
       {
          if (reader == null) throw new ArgumentNullException("reader");
          while (reader.NodeType != XmlNodeType.EndElement)
-         {
             if (!reader.Read())
                return false;
-         }
          return true;
       }
 
@@ -266,15 +265,16 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             if (obj == null)
             {
                actualType = type;
-               writer.WriteAttributeString(Properties.Resources.ReferenceisNull,
-                                           Properties.Resources.XsiUri,
+               writer.WriteAttributeString(Resources.ReferenceisNull,
+                                           Resources.XsiUri,
                                            true.ToString().ToLowerInvariant());
                return;
             }
-            else
-               actualType = obj.GetType();
+            actualType = obj.GetType();
             if ((actualType != type) || (!Settings.OmitTypeWhenPossible))
-               writer.WriteAttributeString(Properties.Resources.ReferenceType, Properties.Resources.DotserializeUri, FormatType(actualType.AssemblyQualifiedName));
+               writer.WriteAttributeString(Resources.ReferenceType,
+                                           Resources.DotserializeUri,
+                                           FormatType(actualType.AssemblyQualifiedName));
             // check for struct before writing reference id
             if (!type.IsValueType)
             {
@@ -282,14 +282,16 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                if (RefManager.IsRegistered(obj))
                {
                   id = RefManager.GetObjectId(obj);
-                  writer.WriteAttributeString(Properties.Resources.ReferenceId, Properties.Resources.DotserializeUri, id.ToString());
+                  writer.WriteAttributeString(Resources.ReferenceId, Resources.DotserializeUri, id.ToString());
                   // since this object has already been serialized once there is no need to write out the rest of the object
                   return;
                }
                // Given that the instance has not already been seen we keep writing
                id = RefManager.RegisterId(obj);
-               writer.WriteAttributeString(Properties.Resources.ReferenceId, Properties.Resources.DotserializeUri, id.ToString());
-               writer.WriteAttributeString(Properties.Resources.ReferenceSource, Properties.Resources.DotserializeUri, true.ToString().ToLowerInvariant());
+               writer.WriteAttributeString(Resources.ReferenceId, Resources.DotserializeUri, id.ToString());
+               writer.WriteAttributeString(Resources.ReferenceSource,
+                                           Resources.DotserializeUri,
+                                           true.ToString().ToLowerInvariant());
             }
 
             if (TypeHelper.IsArray(type))
@@ -306,7 +308,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   object entityValue = GetEntityValue(obj, attrib);
                   // now we resolve a type serializer to do the work
                   ITypeSerializer typeSerializer =
-                  Factory.CallMethod(new[] { attrib.DataType }, "GetTypeSerializer") as ITypeSerializer;
+                     Factory.CallMethod(new[] { attrib.DataType }, "GetTypeSerializer") as ITypeSerializer;
                   if (typeSerializer != null)
                      typeSerializer.Serialize(writer, attrib.DataType, entityValue);
                   else
@@ -325,7 +327,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   writer.WriteStartElement(element.EntityName);
                   // now we resolve a type serializer to do the work
                   ITypeSerializer typeSerializer =
-                  Factory.CallMethod(new[] { element.DataType }, "GetTypeSerializer") as ITypeSerializer;
+                     Factory.CallMethod(new[] { element.DataType }, "GetTypeSerializer") as ITypeSerializer;
                   object entityValue = GetEntityValue(obj, element);
                   if (typeSerializer != null)
                      typeSerializer.Serialize(writer, element.DataType, entityValue);
@@ -353,6 +355,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                throw new SerializerException("Cannot serialize unknown member type");
          }
       }
+
       protected virtual bool ReadNextElement(XmlReader reader)
       {
          if (reader == null) throw new ArgumentNullException("reader");
@@ -378,7 +381,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             type = item == null ? arrayElementType : item.GetType();
             // now we resolve a type serializer to do the work
             ITypeSerializer typeSerializer =
-            Factory.CallMethod(new[] { arrayElementType }, "GetTypeSerializer") as ITypeSerializer;
+               Factory.CallMethod(new[] { arrayElementType }, "GetTypeSerializer") as ITypeSerializer;
             if (typeSerializer != null)
                typeSerializer.Serialize(writer, arrayElementType, item);
             else
@@ -428,11 +431,10 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             type = TypeHelper.GetReferenceType(reader);
             if (type == null)
                type = arrayElementType;
-            else
-               if (!arrayElementType.IsAssignableFrom(type))
-                  throw new SerializerException(string.Format("Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"",
-                                                              type,
-                                                              arrayElementType));
+            else if (!arrayElementType.IsAssignableFrom(type))
+               throw new SerializerException(string.Format("Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"",
+                                                           type,
+                                                           arrayElementType));
             id = TypeHelper.GetReferenceId(reader);
             if (id != 0)
             {
@@ -443,16 +445,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   //   throw new SerializationException("Instance type for id \"{0}\" does not match member type");
                   return instance;
                }
-               else
-               {
-                  if (!RefManager.IsRegistered(id))
-                     RefManager.RegisterId(id);
+               if (!RefManager.IsRegistered(id))
+                  RefManager.RegisterId(id);
 
-                  if (!TypeHelper.IsReferenceSource(reader))
-                  {
-                     RefManager.CaptureLateBinding(id, arrayIndex);
-                     return null;
-                  }
+               if (!TypeHelper.IsReferenceSource(reader))
+               {
+                  RefManager.CaptureLateBinding(id, arrayIndex);
+                  return null;
                }
             }
          }
@@ -520,6 +519,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
             ReadToElementEndNode(reader);
          return result;
       }
+
       public string FormatType(string assemblyQualifiedName)
       {
          string[] parts = assemblyQualifiedName.Split(',');

@@ -1,4 +1,22 @@
-﻿using System;
+﻿#region Apache License 2.0
+
+// Copyright 2015 Thaddeus Ryker
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -78,7 +96,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                                 where (grouped.Count() > 1)
                                 select grouped.Key;
          if (duplicateAttribs.Count() != 0)
-            throw new TypeLayoutException(string.Format("Attribute node name \"{0}\" is used for more than one member of Type {1}",
+            throw new TypeLayoutException(string.Format(
+                                                        "Attribute node name \"{0}\" is used for more than one member of Type {1}",
                                                         duplicateAttribs.First(),
                                                         type.Name()));
          result = new TypeInfo(type.Name, type, rootName, @namespace, infoList);
@@ -87,6 +106,20 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       }
 
       #endregion
+
+      protected virtual string CleanNodeName(string name)
+      {
+         StringBuilder builder = new StringBuilder(name.Length);
+         foreach (char item in name)
+            if ((item < 48) ||
+                ((item > 57) && (item < 65)) ||
+                ((item > 90) && (item < 97)) ||
+                (item > 122))
+               builder.Append('_');
+            else
+               builder.Append(item);
+         return builder.ToString();
+      }
 
       protected virtual List<TypeMemberInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
       {
@@ -184,20 +217,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             }
          }
          return infoList;
-      }
-
-      protected virtual string CleanNodeName(string name)
-      {
-         StringBuilder builder = new StringBuilder(name.Length);
-         foreach (char item in name)
-            if ((item < 48) ||
-                ((item > 57) && (item < 65)) ||
-                ((item > 90) && (item < 97)) ||
-                (item > 122))
-               builder.Append('_');
-            else
-               builder.Append(item);
-         return builder.ToString();
       }
    }
 }
