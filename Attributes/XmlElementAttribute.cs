@@ -24,6 +24,9 @@ namespace Org.Edgerunner.DotSerialize.Attributes
    public class XmlElementAttribute : Attribute
    {
       public string Name { get; set; }
+      public int Order { get; set; }
+
+      #region Constructors
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="XmlElementAttribute" /> class.
@@ -32,6 +35,30 @@ namespace Org.Edgerunner.DotSerialize.Attributes
       public XmlElementAttribute(string name = null)
       {
          Name = name;
+         Order = 0;
       }
+
+      /// <summary>
+      ///    Initializes a new instance of the <see cref="XmlElementAttribute" /> class.
+      /// </summary>
+      /// <param name="order"></param>
+      public XmlElementAttribute(int order)
+      {
+         Order = order;
+         Name = String.Empty;
+      }
+
+      /// <summary>
+      ///    Initializes a new instance of the <see cref="XmlElementAttribute" /> class.
+      /// </summary>
+      /// <param name="name"></param>
+      /// <param name="order"></param>
+      public XmlElementAttribute(string name, int order)
+      {
+         Name = name;
+         Order = order;
+      }
+
+      #endregion
    }
 }

@@ -28,6 +28,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       public string EntityName { get; set; }
       public Type DataType { get; set; }
       public bool IsAttribute { get; set; }
+      public int Order { get; set; }
 
       public string ConstructorFriendlyName
       {
