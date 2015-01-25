@@ -143,12 +143,14 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             if (!ignore)
             {
                string entityName = null;
-               int ordering = 0;
+               int ordering = 999;
                if (attributeAttrib != null)
-                  entityName = attributeAttrib.GetPropertyValue("Name") as String;
-               else
-                  entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name").ToString() : null;
-               ordering = elementAttrib != null ? (int)elementAttrib.GetPropertyValue("Order"): 0;
+                  entityName = attributeAttrib.GetPropertyValue("Name").ToString();
+               else if (elementAttrib != null)
+               {
+                  entityName = elementAttrib.GetPropertyValue("Name").ToString();
+                  ordering = (int)elementAttrib.GetPropertyValue("Order");
+               }
                if (string.IsNullOrEmpty(entityName))
                   entityName = field.Name;
                if (field.IsBackingField())
@@ -205,7 +207,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             }
             if (!(ignore || propertyExclusionList.Contains(prop.Name) || (elementAttrib == null)))
             {
-               int ordering = 0;
+               int ordering = 999;
                if (prop.GetIndexParameters().Length != 0)
                   throw new TypeLayoutException(
                      "Indexed properties should not be serialized.  Instead the underlying value being indexed should be serialized.");
