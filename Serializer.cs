@@ -155,10 +155,8 @@ namespace Org.Edgerunner.DotSerialize
          BindIReferenceManager();
       }
 
-      public Registrar<T> Register<T>() where T : ITypeSerializer
+      public Registrar<T> Register<T>()
       {
-         if (!typeof(T).IsInterface)
-            throw new SerializerException("Type of T must be an interface of type ITypeSerializer");
          return new Registrar<T>(this);
       }
 

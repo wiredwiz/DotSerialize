@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using Org.Edgerunner.DotSerialize.Serialization.Generic;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Registration
 {
@@ -35,7 +36,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Registration
 
       public void To<TImplementation>()
       {
-         CurrentSerializer.RegisterTypeSerializer(typeof(T), typeof(TImplementation));
+         CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation));
       }
    }
 }
