@@ -1,4 +1,5 @@
 ﻿using System;
+using Org.Edgerunner.DotSerialize.Attributes;
 
 namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
 {
@@ -27,12 +28,15 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
          Pointy
       }
 
+      [XmlElement(Order = 1)]
       public virtual string Name { get; set; }
+      [XmlElement(Order = 2)]
       public virtual string Breed { get; set; }
       public virtual bool HasCollar { get; set; }
       public Dog.NoseStyle Nose { get; set; }
       public DogCollar Collar { get; set; }
       // Fields...
+      [XmlElement(Order = 3)]
       private int _Age;
 
       public virtual int Age
@@ -49,6 +53,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
       {
          get { return _Owner; }
       }
+      [XmlElement(Order = 4)]
       private readonly Owner _Owner;
    }
 }
