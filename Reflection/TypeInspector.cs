@@ -143,10 +143,12 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             if (!ignore)
             {
                string entityName = null;
+               int ordering = 0;
                if (attributeAttrib != null)
                   entityName = attributeAttrib.GetPropertyValue("Name") as String;
                else
-                  entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
+                  entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name").ToString() : null;
+               ordering = elementAttrib != null ? (int)elementAttrib.GetPropertyValue("Order"): 0;
                if (string.IsNullOrEmpty(entityName))
                   entityName = field.Name;
                if (field.IsBackingField())
@@ -166,17 +168,19 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                   if (ignore)
                      continue;
                   if (attributeAttrib != null)
-                     entityName = attributeAttrib.GetPropertyValue("Name") as String;
+                     entityName = attributeAttrib.GetPropertyValue("Name").ToString();
                   else
-                     entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name") as String : null;
+                     entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name").ToString() : null;
                   if (string.IsNullOrEmpty(entityName))
                      entityName = property.Name;
+                  if (elementAttrib != null) 
+                     ordering = (int)elementAttrib.GetPropertyValue("Order");
                }
                var memberInfo = new TypeMemberInfo(field.Name,
                                                    TypeMemberInfo.MemberType.Field,
                                                    entityName,
                                                    field.FieldType,
-                                                   (attributeAttrib != null));
+                                                   (attributeAttrib != null)) { Order = ordering };
                infoList.Add(memberInfo);
             }
          }
@@ -201,18 +205,20 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             }
             if (!(ignore || propertyExclusionList.Contains(prop.Name) || (elementAttrib == null)))
             {
+               int ordering = 0;
                if (prop.GetIndexParameters().Length != 0)
                   throw new TypeLayoutException(
                      "Indexed properties should not be serialized.  Instead the underlying value being indexed should be serialized.");
                var attributeAttrib = prop.Attribute<XmlAttributeAttribute>();
-               string entityName = elementAttrib.GetPropertyValue("Name") as String;
+               string entityName = elementAttrib.GetPropertyValue("Name").ToString();
+               ordering = (int)elementAttrib.GetPropertyValue("Order");
                if (string.IsNullOrEmpty(entityName))
                   entityName = prop.Name;
                var memberInfo = new TypeMemberInfo(prop.Name,
                                                    TypeMemberInfo.MemberType.Property,
                                                    entityName,
                                                    prop.PropertyType,
-                                                   (attributeAttrib != null));
+                                                   (attributeAttrib != null)) { Order = ordering };
                infoList.Add(memberInfo);
             }
          }

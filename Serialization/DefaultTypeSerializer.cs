@@ -319,9 +319,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   }
                   writer.WriteEndAttribute();
                }
-               var elements = from x in info.MemberInfoByEntityName.Values
+               var elements = (from x in info.MemberInfoByEntityName.Values
                               where !x.IsAttribute
-                              select x;
+                              select x).OrderBy(x => x.Order).ToList();
                foreach (var element in elements)
                {
                   writer.WriteStartElement(element.EntityName);
