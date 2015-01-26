@@ -34,9 +34,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Registration
          CurrentSerializer = currentSerializer;
       }
 
-      public void ToTypeSerializer<TImplementation>()
+      public void ToTypeSerializer<TImplementation>(params object[] constructorArguments)
       {
-         CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation));
+          CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation), constructorArguments);
       }
    }
 }
