@@ -155,7 +155,7 @@ namespace Org.Edgerunner.DotSerialize
          BindIReferenceManager();
       }
 
-      public Registrar<T> Register<T>()
+      public Registrar<T> RegisterType<T>()
       {
          return new Registrar<T>(this);
       }
