@@ -34,7 +34,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Registration
          CurrentSerializer = currentSerializer;
       }
 
-      public void To<TImplementation>()
+      public void ToTypeSerializer<TImplementation>()
       {
          CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation));
       }
