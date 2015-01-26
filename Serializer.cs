@@ -264,9 +264,11 @@ namespace Org.Edgerunner.DotSerialize
          return false;
       }
 
-      internal void RegisterTypeSerializer(Type sourceInterface, Type implementation)
+      internal void RegisterTypeSerializer(Type sourceInterface, Type implementation, params object[] constructorArguments)
       {
-         Kernel.Rebind(sourceInterface).To(implementation);
+         var bindingSyntax = Kernel.Rebind(sourceInterface).To(implementation);
+         foreach (object arg in constructorArguments)
+            bindingSyntax.WithConstructorArgument(arg.GetType(), arg);
          if (!RegisteredTypeSerializers.Contains(sourceInterface))
             RegisteredTypeSerializers.Add(sourceInterface);
          BindITypeSerializationFactory();
