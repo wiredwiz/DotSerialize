@@ -41,6 +41,10 @@ namespace Org.Edgerunner.DotSerialize
       /// <summary>Culture to use when serializing and deserializing data.</summary>
       /// <remarks>The default value is CultureInfo.InvariantCulture.</remarks>
       public CultureInfo Culture { get; set; }
+      /// <summary>Indicates whether the serializer should omit type attributes from the resulting xml if possible.</summary>
+      /// <value>The default value is false.</value>
+      /// <requirements>The serializer will only omit the type attribute if the value stored within a member is of the exact same type as the member declaration.</requirements>
+      /// <remarks>This setting is not yet supported.</remarks>
       public bool OmitTypeWhenPossible { get; set; }
       /// <summary>Specifies whether the Version of assembly that the type resides within should be written out in the type attribute of the serialized data.</summary>
       /// <remarks>The default value is false.</remarks>
