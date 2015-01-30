@@ -198,7 +198,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                                            Resources.DotserializeUri,
                                            FormatType(actualType.AssemblyQualifiedName));
             // check for struct before writing reference id
-            if (!type.IsValueType)
+            if (!type.IsValueType && !Settings.DisableReferentialIntegrity)
             {
                int id;
                if (RefManager.IsRegistered(obj))
