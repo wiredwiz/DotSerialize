@@ -55,6 +55,18 @@ namespace Org.Edgerunner.DotSerialize
       /// <summary>Specifies whether the public key of assembly that the type resides within should be written out in the type attribute of the serialized data.</summary>
       /// <remarks>The default value is false.</remarks>
       public bool IncludeAssemblyKeyWithType { get; set; }
+      /// <summary>
+      /// Specifies whether serialized reference type nodes should include an id attribute to identify unique instances of reference types.
+      /// </summary>
+      /// <remarks>
+      /// This setting only effects serialization.  Deserialization will maintain referential intregrity regardless of this setting as long as the xml includes id attributes.
+      /// </remarks>
+      public bool DisableReferentialIntegrity { get; set; }
+      /// <summary>
+      /// Specifies whether the Serializer should throw an exception if it encounters any unexpected attributes or elements on deserialization.
+      /// </summary>
+      /// <remarks>Not yet supported</remarks>
+      public bool StrictMode { get; set; }
 
       /// <summary>Default settings instance.</summary>
       public static Settings Default
