@@ -322,7 +322,9 @@ namespace Org.Edgerunner.DotSerialize
          writer.WriteStartElement(info.EntityName);
          if (!string.IsNullOrEmpty(info.Namespace))
             writer.WriteAttributeString("xmlns", info.Namespace);
+         // ReSharper disable once AssignNullToNotNullAttribute
          writer.WriteAttributeString("xmlns", "dts", null, Resources.DotserializeUri);
+         // ReSharper disable once AssignNullToNotNullAttribute
          writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
 
          // Attempt to fetch a custom type serializer
