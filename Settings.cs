@@ -58,9 +58,10 @@ namespace Org.Edgerunner.DotSerialize
       /// <summary>
       /// Specifies whether serialized reference type nodes should include an id attribute to identify unique instances of reference types.
       /// </summary>
-      /// <remarks>
-      /// This setting only effects serialization.  Deserialization will maintain referential intregrity regardless of this setting as long as the xml includes id attributes.
-      /// </remarks>
+      /// <remarks>This setting only effects the process of serialization. Deserialization will maintain referential intregrity regardless of this setting as long as the xml
+      /// includes id attributes.  It is highly recommended that referential integrity not be disabled unless you can be 100% certain that your object graph does
+      /// not contain any circular references.  If a circular reference is encountered with referential integrity turned off, a neverending recursion will
+      /// occur and a StackOverflowException will result.</remarks>
       public bool DisableReferentialIntegrity { get; set; }
       /// <summary>
       /// Specifies whether the Serializer should throw an exception if it encounters any unexpected attributes or elements on deserialization.

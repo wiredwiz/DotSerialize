@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using Fasterflect;
@@ -29,6 +30,7 @@ using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Construction;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
+using TypeInfo = Org.Edgerunner.DotSerialize.Reflection.TypeInfo;
 
 namespace Org.Edgerunner.DotSerialize.Serialization
 {
@@ -255,7 +257,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
          if (type == null) throw new ArgumentNullException("type");
 
          if (TypeHelper.IsPrimitive(type))
-            writer.WriteValue(obj.ToString());
+            // if we encounter null here it is because it is a string
+            writer.WriteValue(obj == null ? string.Empty : obj.ToString());
          else if (TypeHelper.IsEnum(type))
             writer.WriteValue(obj.ToString());
          else
@@ -276,7 +279,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                                            Resources.DotserializeUri,
                                            FormatType(actualType.AssemblyQualifiedName));
             // check for struct before writing reference id
-            if (!type.IsValueType)
+            if (!type.IsValueType && !Settings.DisableReferentialIntegrity)
             {
                int id;
                if (RefManager.IsRegistered(obj))
@@ -320,8 +323,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization
                   writer.WriteEndAttribute();
                }
                var elements = (from x in info.MemberInfoByEntityName.Values
-                              where !x.IsAttribute
-                              select x).OrderBy(x => x.Order).ToList();
+                               where !x.IsAttribute
+                               select x).OrderBy(x => x.Order).ToList();
                foreach (var element in elements)
                {
                   writer.WriteStartElement(element.EntityName);
@@ -345,15 +348,20 @@ namespace Org.Edgerunner.DotSerialize.Serialization
 
       public object GetEntityValue(object entity, TypeMemberInfo memberInfo)
       {
+         object result = null;
+         entity = entity.WrapIfValueType();
          switch (memberInfo.Type)
          {
             case TypeMemberInfo.MemberType.Field:
-               return entity.GetFieldValue(memberInfo.Name);
+               result = entity.GetFieldValue(memberInfo.Name);
+               break;
             case TypeMemberInfo.MemberType.Property:
-               return entity.GetPropertyValue(memberInfo.Name);
+               result = entity.GetPropertyValue(memberInfo.Name);
+               break;
             default:
                throw new SerializerException("Cannot serialize unknown member type");
          }
+         return result;
       }
 
       protected virtual bool ReadNextElement(XmlReader reader)

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
+using Org.Edgerunner.DotSerialize.Utilities;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 {
@@ -53,13 +54,30 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
       public ITypeSerializer<T> GetTypeSerializer<T>()
       {
          Type type = typeof(ITypeSerializer<T>);
-         if (!CustomerSerializerTypes.Contains(type))
-            return null;
 
-         if (!SerializerInstances.ContainsKey(type))
+         if (SerializerInstances.ContainsKey(type))
+            return SerializerInstances[type] as ITypeSerializer<T>;
+
+         if (CustomerSerializerTypes.Contains(type))
+         {
             SerializerInstances[type] = Kernel.Get<ITypeSerializer<T>>();
+            return (ITypeSerializer<T>)SerializerInstances[type];
+         }
 
-         return SerializerInstances[type] as ITypeSerializer<T>;
+         foreach (Type item in CustomerSerializerTypes)
+         {
+            if (item.IsGenericType)
+            {
+               var targetType = item.GetGenericArguments()[0];
+               if (targetType.IsInterface)
+                  if (type.IsImplementationOf(targetType))
+                  {
+                     SerializerInstances[type] = Kernel.Get(item) as ITypeSerializer;
+                     return SerializerInstances[type] as ITypeSerializer<T>;
+                  }
+            }
+         }
+         return null;
       }
 
       #endregion

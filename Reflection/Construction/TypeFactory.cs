@@ -136,6 +136,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          if (result == null)
             throw new Exception(string.Format("Unable to create instance of type \"{0}\"", type.Name()));
 
+         result = result.WrapIfValueType();
          foreach (var memberInfo in data.Keys)
             switch (memberInfo.Type)
             {
@@ -146,7 +147,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
                   result.SetPropertyValue(memberInfo.Name, data[memberInfo]);
                   break;
             }
-
+         result = result.UnwrapIfWrapped();
          return result;
       }
 

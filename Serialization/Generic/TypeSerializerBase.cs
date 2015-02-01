@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using Fasterflect;
@@ -29,6 +30,7 @@ using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Construction;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
+using TypeInfo = Org.Edgerunner.DotSerialize.Reflection.TypeInfo;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 {
@@ -177,7 +179,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          if (type == null) throw new ArgumentNullException("type");
 
          if (TypeHelper.IsPrimitive(type))
-            writer.WriteValue(obj.ToString());
+            // if we encounter null here it is because it is a string
+            writer.WriteValue(obj == null ? string.Empty : obj.ToString());
          else if (TypeHelper.IsEnum(type))
             writer.WriteValue(obj.ToString());
          else
@@ -363,6 +366,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
       protected virtual object GetEntityValue(object entity, TypeMemberInfo memberInfo)
       {
+         entity = entity.WrapIfValueType();
          switch (memberInfo.Type)
          {
             case TypeMemberInfo.MemberType.Field:
