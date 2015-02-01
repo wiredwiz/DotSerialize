@@ -28,6 +28,7 @@ using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Serialization;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
+using Org.Edgerunner.DotSerialize.Serialization.Generic;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
 using Org.Edgerunner.DotSerialize.Serialization.Registration;
 
@@ -79,6 +80,7 @@ namespace Org.Edgerunner.DotSerialize
          RegisteredTypeSerializers = new List<Type>();
          Settings = settings;
          LoadDefaultKernel();
+         BindSettings();
       }
 
       /// <summary>
@@ -327,16 +329,28 @@ namespace Org.Edgerunner.DotSerialize
          // ReSharper disable once AssignNullToNotNullAttribute
          writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
 
-         // Attempt to fetch a custom type serializer
-         ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
-         var typeSerializer = factory.GetTypeSerializer<T>();
-         if (typeSerializer != null)
-            typeSerializer.Serialize(writer, obj);
-         else
-         // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+         try
          {
-            var defaultSerializer = factory.GetDefaultSerializer();
-            defaultSerializer.Serialize(writer, obj);
+            // Attempt to fetch a custom type serializer
+            ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
+            var typeSerializer = factory.GetTypeSerializer<T>();
+            if (typeSerializer != null)
+               typeSerializer.Serialize(writer, obj);
+            else
+            // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+            {
+               var defaultSerializer = factory.GetDefaultSerializer();
+               defaultSerializer.Serialize(writer, obj);
+            }
+         }
+         catch (StackOverflowException ex)
+         {
+            if (Settings.DisableReferentialIntegrity)
+               throw new SerializerException("Non-ending recursive loop encountered during serialization.\n" +
+                                             "This is likely due to a circular reference in the object graph, try enabling the referential integrity setting.",
+                                             ex);
+
+            throw;
          }
          writer.WriteEndDocument();
          Kernel.Release(mgr);
@@ -368,6 +382,21 @@ namespace Org.Edgerunner.DotSerialize
          XmlDocument document;
          SerializeObject(out document, obj);
          document.Save(fileName);
+      }
+
+      /// <summary>
+      /// Unregisters the custom ITypeSerializer linked to Type.
+      /// </summary>
+      /// <typeparam name="T">The Type to unregister the customer ITypeSerializer for.</typeparam>
+      public virtual void UnRegisterType<T>()
+      {
+         var type = typeof(ITypeSerializer<T>);
+         if (RegisteredTypeSerializers.Contains(type))
+         {            
+            Kernel.Unbind(type);
+            RegisteredTypeSerializers.Remove(type);
+            BindITypeSerializationFactory();
+         }
       }
 
       /// <summary>
