@@ -129,9 +129,12 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          if (result == null)
          {
             var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
-            foreach (var constructor in constructors)
-               if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
-                  break;
+            if (constructors.Count == 0)
+               result = Activator.CreateInstance(type);
+            else
+               foreach (var constructor in constructors)
+                  if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
+                     break;
          }
          if (result == null)
             throw new Exception(string.Format("Unable to create instance of type \"{0}\"", type.Name()));
