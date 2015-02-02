@@ -18,6 +18,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Fasterflect;
 
 namespace Org.Edgerunner.DotSerialize.Utilities
@@ -38,7 +39,9 @@ namespace Org.Edgerunner.DotSerialize.Utilities
       public static bool IsBackingField(this FieldInfo info)
       {
          var propertyName = NamingUtils.GetAutoPropertyName(info.Name);
-         return !string.IsNullOrEmpty(propertyName);
+         if (string.IsNullOrEmpty(propertyName))
+            return false;
+         return info.HasAttribute<CompilerGeneratedAttribute>();
       }
 
       #endregion
