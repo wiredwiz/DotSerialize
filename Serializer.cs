@@ -333,17 +333,17 @@ namespace Org.Edgerunner.DotSerialize
 
          try
          {
-            // Attempt to fetch a custom type serializer
-            ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
-            var typeSerializer = factory.GetTypeSerializer<T>();
-            if (typeSerializer != null)
-               typeSerializer.Serialize(writer, obj);
-            else
-            // Since there was no bound custom type serializer we default to the GenericTypeSerializer
-            {
-               var defaultSerializer = factory.GetDefaultSerializer();
-               defaultSerializer.Serialize(writer, obj);
-            }
+         // Attempt to fetch a custom type serializer
+         ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
+         var typeSerializer = factory.GetTypeSerializer<T>();
+         if (typeSerializer != null)
+            typeSerializer.Serialize(writer, obj);
+         else
+         // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+         {
+            var defaultSerializer = factory.GetDefaultSerializer();
+            defaultSerializer.Serialize(writer, obj);
+         }
          }
          catch (StackOverflowException ex)
          {
