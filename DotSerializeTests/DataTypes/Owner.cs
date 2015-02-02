@@ -6,7 +6,6 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
    [XmlRoot("DogOwner")]
    public class Owner : Person
    {
-      [XmlElement]
       public override int Age
       {
          get { return base.Age; }
