@@ -20,7 +20,7 @@ using System;
 using System.Xml;
 using Org.Edgerunner.DotSerialize.Properties;
 
-namespace Org.Edgerunner.DotSerialize.Reflection
+namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class TypeHelper
    {
