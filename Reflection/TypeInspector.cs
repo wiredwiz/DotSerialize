@@ -149,9 +149,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                           select new { FieldName = g.Key, Value = g.ToList() };
          foreach (var item in results)
          {
+            bool ignore;
             var fields = item.Value;
-            var memberInfo = GetFieldMemberInfo(type, fields);
-            if (memberInfo != null)
+            var memberInfo = GetFieldMemberInfo(type, fields, out ignore);
+            if (!ignore &&(memberInfo != null))
                infoList.Add(memberInfo);
          }
 
@@ -168,21 +169,23 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                           select new { PropertyName = g.Key, Value = g.ToList() };
          foreach (var item in results)
          {
+            bool ignore;
             if (PropertiesToExclude.Contains(item.PropertyName))
                continue;
             var properties = item.Value;
-            var memberInfo = GetPropertyMemberInfo(type, properties);
-            if (memberInfo != null)
+            var memberInfo = GetPropertyMemberInfo(type, properties, out ignore);
+            if (!ignore && (memberInfo != null))
                infoList.Add(memberInfo);
          }
 
          return infoList;
       }
 
-      protected virtual TypeMemberInfo GetFieldMemberInfo(Type type, List<FieldInfo> fields)
+      protected virtual TypeMemberInfo GetFieldMemberInfo(Type type, List<FieldInfo> fields, out bool ignore)
       {
          var topLevelField = fields.First();
          int ordering = 999;
+         ignore = false;
          TypeMemberInfo memberInfo = null;
          foreach (var field in fields)
             if (field.IsBackingField())
@@ -191,13 +194,13 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                var autoProperty = field.GetEncapsulatingAutoProperty();
                PropertiesToExclude.Add(autoProperty.Name);
                var allProperties = type.Properties(Flags.InstanceAnyVisibility, autoProperty.Name);
-               memberInfo = GetPropertyMemberInfo(type, allProperties.ToList());
+               memberInfo = GetPropertyMemberInfo(type, allProperties.ToList(), out ignore);
                if (memberInfo != null)
                {
                   memberInfo.Name = field.Name;
                   memberInfo.Type = TypeMemberInfo.MemberType.Field;
                }
-               else
+               else if (!ignore)
                {
                   memberInfo = new TypeMemberInfo(field.Name,
                                                   TypeMemberInfo.MemberType.Field,
@@ -210,7 +213,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             else
             {
                string entityName = string.Empty;
-               bool ignore = field.HasAttribute<XmlIgnoreAttribute>();
+               ignore = field.HasAttribute<XmlIgnoreAttribute>();
                var elementAttrib = field.Attribute<XmlElementAttribute>();
                var attribAttribute = field.Attribute<XmlAttributeAttribute>();
                var dataMemberAttribute = field.Attribute<DataMemberAttribute>();
@@ -219,6 +222,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                   break; // skip the current field
                if ((elementAttrib != null) || (attribAttribute != null) || (dataMemberAttribute != null))
                {
+                  ignore = false;
                   if (attribAttribute != null)
                      entityName = attribAttribute.GetPropertyValue("Name").ToString();
                   else if (elementAttrib != null)
@@ -241,23 +245,24 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                   break;
                }
             }
-         if ((memberInfo == null) && (!WhiteListMode))
+         if ((memberInfo == null) && !ignore && !WhiteListMode)
             memberInfo = new TypeMemberInfo(topLevelField.Name,
-                                            TypeMemberInfo.MemberType.Field,
-                                            topLevelField.Name,
-                                            topLevelField.FieldType,
-                                            false) { Order = ordering };
+                                               TypeMemberInfo.MemberType.Field,
+                                               topLevelField.Name,
+                                               topLevelField.FieldType,
+                                               false) { Order = ordering };
          return memberInfo;
       }
 
-      protected virtual TypeMemberInfo GetPropertyMemberInfo(Type type, List<PropertyInfo> properties)
+      protected virtual TypeMemberInfo GetPropertyMemberInfo(Type type, List<PropertyInfo> properties, out bool ignore)
       {
          int ordering = 999;
          TypeMemberInfo memberInfo = null;
+         ignore = true;
          foreach (var property in properties)
          {
             string entityName = string.Empty;
-            bool ignore = property.HasAttribute<XmlIgnoreAttribute>();
+            ignore = property.HasAttribute<XmlIgnoreAttribute>();
             var elementAttrib = property.Attribute<XmlElementAttribute>();
             var attribAttribute = property.Attribute<XmlAttributeAttribute>();
             var dataMemberAttribute = property.Attribute<DataMemberAttribute>();
@@ -266,6 +271,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                break; // skip the current field
             if ((elementAttrib != null) || (attribAttribute != null) || (dataMemberAttribute != null))
             {
+               ignore = false;
                if (attribAttribute != null)
                   entityName = attribAttribute.GetPropertyValue("Name").ToString();
                else if (elementAttrib != null)
