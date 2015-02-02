@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Attributes;
@@ -32,6 +33,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
    {
       protected readonly ISerializationInfoCache _Cache;
       protected readonly Settings _Settings;
+      protected bool _WhiteListMode;
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="TypeInspector" /> class.
@@ -40,6 +42,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       {
          _Cache = new WeakSerializationInfoCache();
          _Settings = Settings.Default;
+         _WhiteListMode = false;
       }
 
       /// <summary>
@@ -51,6 +54,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       {
          _Cache = cache;
          _Settings = settings;
+         _WhiteListMode = false;
       }
 
       #region ITypeInspector Members
@@ -62,6 +66,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 
       public virtual TypeInfo GetInfo(Type type)
       {
+         _WhiteListMode = false;
          TypeInfo result = _Cache.GetInfo(type);
          if (result != null)
             return result;
@@ -76,15 +81,22 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          }
          else
             rootName = CleanNodeName(type.Name());
+         var dcAttrib = type.Attribute<DataContractAttribute>();
+         if (dcAttrib != null)
+         {
+            _WhiteListMode = true;
+            rootName = !string.IsNullOrEmpty(dcAttrib.Name) ? dcAttrib.GetPropertyValue("Name").ToString() : rootName;
+            @namespace = !string.IsNullOrEmpty(dcAttrib.Namespace) ? dcAttrib.GetPropertyValue("Namespace").ToString() : @namespace;
+         }
          var propertyExclusionList = new List<string>();
          infoList = GetFieldMembersInfo(type, propertyExclusionList);
          infoList.AddRange(GetPropertyMembersInfo(type, propertyExclusionList));
          var duplicateElements = from x in infoList
                                  where !x.IsAttribute
                                  group x by x.EntityName
-                                 into grouped
-                                 where (grouped.Count() > 1)
-                                 select grouped.Key;
+                                    into grouped
+                                    where (grouped.Count() > 1)
+                                    select grouped.Key;
          if (duplicateElements.Count() != 0)
             throw new TypeLayoutException(string.Format("Element node name \"{0}\" is used for more than one member of Type {1}",
                                                         duplicateElements.First(),
@@ -92,9 +104,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          var duplicateAttribs = from x in infoList
                                 where x.IsAttribute
                                 group x by x.EntityName
-                                into grouped
-                                where (grouped.Count() > 1)
-                                select grouped.Key;
+                                   into grouped
+                                   where (grouped.Count() > 1)
+                                   select grouped.Key;
          if (duplicateAttribs.Count() != 0)
             throw new TypeLayoutException(string.Format(
                                                         "Attribute node name \"{0}\" is used for more than one member of Type {1}",
@@ -123,14 +135,64 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 
       protected virtual List<TypeMemberInfo> GetFieldMembersInfo(Type type, IList<string> propertyExclusionList)
       {
-         var fieldInfo = type.Fields(Flags.InstanceAnyVisibility | Flags.ExcludeHiddenMembers);
-         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>(fieldInfo.Count);
+         var fieldInfo = type.Fields(Flags.InstanceAnyVisibility);
+         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>();
+
+         // Get information for fields
+         var allFields = type.Fields(Flags.InstanceAnyVisibility);
+         var results = from p in allFields
+                       group p by p.Name
+                          into g
+                          select new { FieldName = g.Key, Value = g.ToList() };
+         foreach (var item in results)
+         {
+            string name = item.FieldName;
+            var fields = item.Value;
+            foreach (var field in fields)
+            {
+               if (field.IsBackingField())
+               {
+                  // get information from property
+               }
+               else
+               {
+                  string entityName = string.Empty;
+                  int ordering = 999;
+                  bool ignore = field.HasAttribute<XmlIgnoreAttribute>();
+                  var elementAttrib = field.Attribute<XmlElementAttribute>();
+                  var attribAttribute = field.Attribute<XmlAttributeAttribute>();
+
+                  if (ignore && (elementAttrib == null) && (attribAttribute == null))
+                     break; // skip the current field
+                  else if ((elementAttrib == null) && (attribAttribute == null))
+                  {
+                     if (attribAttribute != null)
+                        entityName = attribAttribute.GetPropertyValue("Name").ToString();
+                     else if (elementAttrib != null)
+                     {
+                        entityName = elementAttrib.GetPropertyValue("Name").ToString();
+                        ordering = (int)elementAttrib.GetPropertyValue("Order");
+                     }
+                     var memberInfo = new TypeMemberInfo(field.Name,
+                                                         TypeMemberInfo.MemberType.Field,
+                                                         entityName,
+                                                         field.FieldType,
+                                                         (attribAttribute != null)) { Order = ordering };
+                     infoList.Add(memberInfo);
+                     break;
+                  }
+               }
+            }
+         }
+
+
          foreach (var field in fieldInfo)
          {
-            var attribs = field.Attributes();
             Attribute elementAttrib = null;
             Attribute attributeAttrib = null;
             bool ignore = false;
+            Type parent = type;
+            var attribs = field.Attributes();
             foreach (var attrib in attribs)
             {
                if (_Settings.AttributesToIgnore.Contains(attrib))
@@ -175,7 +237,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                      entityName = elementAttrib != null ? elementAttrib.GetPropertyValue("Name").ToString() : null;
                   if (string.IsNullOrEmpty(entityName))
                      entityName = property.Name;
-                  if (elementAttrib != null) 
+                  if (elementAttrib != null)
                      ordering = (int)elementAttrib.GetPropertyValue("Order");
                }
                var memberInfo = new TypeMemberInfo(field.Name,
