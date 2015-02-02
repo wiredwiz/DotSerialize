@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using Fasterflect;
@@ -31,9 +32,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public class TypeInspector : ITypeInspector
    {
+      protected bool _WhiteListMode;
       protected readonly ISerializationInfoCache _Cache;
       protected readonly Settings _Settings;
-      protected bool _WhiteListMode;
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="TypeInspector" /> class.
@@ -146,45 +147,13 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                           select new { FieldName = g.Key, Value = g.ToList() };
          foreach (var item in results)
          {
-            string name = item.FieldName;
             var fields = item.Value;
-            foreach (var field in fields)
+            var memberInfo = GetFieldMemberInfo(fields, propertyExclusionList);
+            if (memberInfo != null)
             {
-               if (field.IsBackingField())
-               {
-                  // get information from property
-               }
-               else
-               {
-                  string entityName = string.Empty;
-                  int ordering = 999;
-                  bool ignore = field.HasAttribute<XmlIgnoreAttribute>();
-                  var elementAttrib = field.Attribute<XmlElementAttribute>();
-                  var attribAttribute = field.Attribute<XmlAttributeAttribute>();
-
-                  if (ignore && (elementAttrib == null) && (attribAttribute == null))
-                     break; // skip the current field
-                  else if ((elementAttrib == null) && (attribAttribute == null))
-                  {
-                     if (attribAttribute != null)
-                        entityName = attribAttribute.GetPropertyValue("Name").ToString();
-                     else if (elementAttrib != null)
-                     {
-                        entityName = elementAttrib.GetPropertyValue("Name").ToString();
-                        ordering = (int)elementAttrib.GetPropertyValue("Order");
-                     }
-                     var memberInfo = new TypeMemberInfo(field.Name,
-                                                         TypeMemberInfo.MemberType.Field,
-                                                         entityName,
-                                                         field.FieldType,
-                                                         (attribAttribute != null)) { Order = ordering };
-                     infoList.Add(memberInfo);
-                     break;
-                  }
-               }
+               infoList.Add(memberInfo);
             }
          }
-
 
          foreach (var field in fieldInfo)
          {
@@ -249,6 +218,61 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             }
          }
          return infoList;
+      }
+
+      protected virtual TypeMemberInfo GetFieldMemberInfo(List<FieldInfo> fields, IList<string> propertyExclusionList)
+      {
+         var topLevelField = fields.First();
+         int ordering = 999;
+         TypeMemberInfo memberInfo = null;
+         foreach (var field in fields)
+            if (field.IsBackingField())
+            {
+               // get information from property
+            }
+            else
+            {
+               string entityName = string.Empty;
+               bool ignore = field.HasAttribute<XmlIgnoreAttribute>();
+               var elementAttrib = field.Attribute<XmlElementAttribute>();
+               var attribAttribute = field.Attribute<XmlAttributeAttribute>();
+               var dataMemberAttribute = field.Attribute<DataMemberAttribute>();
+
+               if (ignore && (elementAttrib == null) && (attribAttribute == null) && (dataMemberAttribute == null))
+                  break; // skip the current field
+               if ((elementAttrib != null) || (attribAttribute != null) || (dataMemberAttribute != null))
+               {
+                  if (attribAttribute != null)
+                     entityName = attribAttribute.GetPropertyValue("Name").ToString();
+                  else if (elementAttrib != null)
+                  {
+                     entityName = elementAttrib.GetPropertyValue("Name").ToString();
+                     ordering = (int)elementAttrib.GetPropertyValue("Order");
+                  }
+                  else
+                  {
+                     entityName = dataMemberAttribute.GetPropertyValue("Name").ToString();
+                     ordering = (int)dataMemberAttribute.GetPropertyValue("Order");
+                  }
+                  entityName = string.IsNullOrEmpty(entityName) ? field.Name : entityName;
+                  ordering = ordering == 0 ? 999 : ordering;
+                  memberInfo = new TypeMemberInfo(field.Name,
+                                                  TypeMemberInfo.MemberType.Field,
+                                                  entityName,
+                                                  field.FieldType,
+                                                  (attribAttribute != null)) { Order = ordering };
+                  break;
+               }
+            }
+         if (memberInfo != null)
+            infoList.Add(memberInfo);
+         else if (!_WhiteListMode)
+            infoList.Add(new TypeMemberInfo(topLevelField.Name,
+                                            TypeMemberInfo.MemberType.Field,
+                                            topLevelField.Name,
+                                            topLevelField.FieldType,
+                                            false) { Order = ordering });
+         return memberInfo;
       }
 
       protected virtual List<TypeMemberInfo> GetPropertyMembersInfo(Type type, IList<string> propertyExclusionList)
