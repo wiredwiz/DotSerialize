@@ -32,25 +32,6 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          return null;
       }
 
-      public static bool IsImplementationOf<T>(this Type t)
-      {
-         var type = typeof(T);
-         if (t == null) throw new ArgumentNullException("t");
-         if (type == null) throw new NotSupportedException("Type of T must not be null");
-         if (!type.IsInterface) throw new NotSupportedException("Type of T must an interface");
-
-         return t.GetInterface(type.FullName) != null;
-      }
-
-      public static bool IsImplementationOf(this Type t, Type interfaceToTest)
-      {         
-         if (t == null) throw new ArgumentNullException("t");
-         if (interfaceToTest == null) throw new ArgumentNullException("interfaceToTest");
-         if (!interfaceToTest.IsInterface) throw new ArgumentNullException("Must an interface", "interfaceToTest");
-
-         return t.GetInterface(interfaceToTest.FullName) != null;
-      }
-
       #endregion
    }
 }

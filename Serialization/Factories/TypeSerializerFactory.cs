@@ -18,9 +18,10 @@
 
 using System;
 using System.Collections.Generic;
+using Fasterflect;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
-using Org.Edgerunner.DotSerialize.Utilities;
+//using Org.Edgerunner.DotSerialize.Utilities;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 {
@@ -70,7 +71,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
             {
                var targetType = item.GetGenericArguments()[0];
                if (targetType.IsInterface)
-                  if (type.IsImplementationOf(targetType))
+                  if (type.Implements(targetType))
                   {
                      SerializerInstances[type] = Kernel.Get(item) as ITypeSerializer;
                      return SerializerInstances[type] as ITypeSerializer<T>;
