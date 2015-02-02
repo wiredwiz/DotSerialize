@@ -61,6 +61,15 @@ namespace Org.Edgerunner.DotSerialize.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to culture.
+        /// </summary>
+        internal static string CultureName {
+            get {
+                return ResourceManager.GetString("CultureName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to http://www.dotserialize.com/Schema.
         /// </summary>
         internal static string DotserializeUri {

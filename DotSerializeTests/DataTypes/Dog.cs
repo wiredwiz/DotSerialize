@@ -34,9 +34,12 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
       public virtual string Breed { get; set; }
       public virtual bool HasCollar { get; set; }
       public Dog.NoseStyle Nose { get; set; }
+      public Bone Bone { get; set; }
+      [XmlElement(Order = 3)]
+      public DateTime BirthDate { get; set; }
       public DogCollar Collar { get; set; }
       // Fields...
-      [XmlElement(Order = 3)]
+      [XmlElement(Order = 4)]
       private int _Age;
 
       public virtual int Age
@@ -53,7 +56,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
       {
          get { return _Owner; }
       }
-      [XmlElement(Order = 4)]
+      [XmlElement(Order = 5)]
       private readonly Owner _Owner;
    }
 }

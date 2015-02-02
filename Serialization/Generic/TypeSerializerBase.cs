@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -30,6 +31,7 @@ using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Construction;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
+using Org.Edgerunner.DotSerialize.Utilities;
 using TypeInfo = Org.Edgerunner.DotSerialize.Reflection.TypeInfo;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Generic
@@ -179,8 +181,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          if (type == null) throw new ArgumentNullException("type");
 
          if (TypeHelper.IsPrimitive(type))
-            // if we encounter null here it is because it is a string
-            writer.WriteValue(obj == null ? string.Empty : obj.ToString());
+            writer.WriteValue(FormatPrimitive(type, obj, Settings.Culture));
          else if (TypeHelper.IsEnum(type))
             writer.WriteValue(obj.ToString());
          else
@@ -378,6 +379,44 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          }
       }
 
+      public virtual string FormatPrimitive(Type type, object obj, CultureInfo culture)
+      {
+         // if we encounter null here it is because it is a string
+         //return obj == null ? string.Empty : obj.ToString();
+
+         if (type == null) throw new ArgumentNullException("type");
+         if (obj == null)
+            return string.Empty;
+         if (culture == null)
+            culture = CultureInfo.InvariantCulture;
+         string result = null;
+
+         if (type == typeof(Int16))
+            result = ((Int16)obj).ToString(culture);
+         if (type == typeof(Int32))
+            result = ((Int32)obj).ToString(culture);
+         if (type == typeof(Int64))
+            result = ((Int64)obj).ToString(culture);
+         if (type == typeof(String))
+            result = ((String)obj).ToString(culture);
+         if (type == typeof(Char))
+            result = ((Char)obj).ToString(culture);
+         if (type == typeof(Byte))
+            result = ((Byte)obj).ToString(culture);
+         if (type == typeof(Single))
+            result = ((Single)obj).ToString(culture);
+         if (type == typeof(Double))
+            result = ((Double)obj).ToString(culture);
+         if (type == typeof(Decimal))
+            result = ((Decimal)obj).ToString(culture);
+         if (type == typeof(Boolean))
+            result = ((Boolean)obj).ToString(culture);
+         if (type == typeof(DateTime))
+            result = ((DateTime)obj).ToString(culture);
+
+         return result;
+      }
+
       protected virtual bool ReadNextElement(XmlReader reader)
       {
          if (reader == null) throw new ArgumentNullException("reader");
@@ -515,33 +554,47 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          bool isElement = (reader.NodeType == XmlNodeType.Element);
          if (isElement)
             ReadToTextNode(reader);
-         if (type == typeof(Int16))
-            result = reader.IsEmptyElement ? default(Int16) : Int16.Parse(reader.ReadContentAsString());
-         if (type == typeof(Int32))
-            result = reader.IsEmptyElement ? default(Int32) : Int32.Parse(reader.ReadContentAsString());
-         if (type == typeof(Int64))
-            result = reader.IsEmptyElement ? default(Int64) : Int64.Parse(reader.ReadContentAsString());
-         if (type == typeof(string))
-            result = reader.IsEmptyElement ? string.Empty : reader.ReadContentAsString();
-         if (type == typeof(Char))
-            result = reader.IsEmptyElement ? default(Char) : Char.Parse(reader.ReadContentAsString());
-         if (type == typeof(Byte))
-            result = reader.IsEmptyElement ? default(Byte) : Byte.Parse(reader.ReadContentAsString());
-         if (type == typeof(Single))
-            result = reader.IsEmptyElement ? default(Single) : Single.Parse(reader.ReadContentAsString());
-         if (type == typeof(Double))
-            result = reader.IsEmptyElement ? default(Double) : Double.Parse(reader.ReadContentAsString());
-         if (type == typeof(Decimal))
-            result = reader.IsEmptyElement ? default(Decimal) : Decimal.Parse(reader.ReadContentAsString());
-         if (type == typeof(Boolean))
-            result = !reader.IsEmptyElement && Boolean.Parse(reader.ReadContentAsString());
-         if (type == typeof(DateTime))
-            result = reader.IsEmptyElement ? default(DateTime) : DateTime.Parse(reader.ReadContentAsString());
+         if (reader.IsEmptyElement)
+            result = type.GetDefaultValue();
+         else
+         {
+            string primitiveValue = reader.ReadContentAsString();
+            result = ParsePrimitive(type, primitiveValue);
+         }
          if (isElement)
             ReadToElementEndNode(reader);
          return result;
       }
 
+      protected virtual object ParsePrimitive(Type type, string primitiveValue)
+      {
+         object result = null;
+         if (type == typeof(Int16))
+            result = Int16.Parse(primitiveValue, Settings.Culture);
+         else if (type == typeof(Int32))
+            result = Int32.Parse(primitiveValue, Settings.Culture);
+         else if (type == typeof(Int64))
+            result = Int64.Parse(primitiveValue, Settings.Culture);
+         else if (type == typeof(string))
+            result = primitiveValue;
+         else if (type == typeof(Char))
+            result = Convert.ToChar(primitiveValue, Settings.Culture);
+         else if (type == typeof(Byte))
+            result = Byte.Parse(primitiveValue, Settings.Culture);
+         else if (type == typeof(Single))
+            result = Single.Parse(primitiveValue, Settings.Culture);
+         else if (type == typeof(Double))
+            result = Double.Parse(primitiveValue, Settings.Culture);
+         else if (type == typeof(Decimal))
+            result = Decimal.Parse(primitiveValue, Settings.Culture);
+         else if (type == typeof(Boolean))
+            result = Convert.ToBoolean(primitiveValue, Settings.Culture);
+         else if (type == typeof(DateTime))
+            result = DateTime.Parse(primitiveValue, Settings.Culture);
+         else
+            throw new SerializerException(string.Format("Cannot parse unexpected primitive type {0}", type.Name()));
+         return result;
+      }
       protected virtual string FormatType(string assemblyQualifiedName)
       {
          string[] parts = assemblyQualifiedName.Split(',');
