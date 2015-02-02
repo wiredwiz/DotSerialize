@@ -71,6 +71,8 @@
     <Compile Include="Attributes\XmlElementAttribute.cs" />
     <Compile Include="Attributes\XmlIgnoreAttribute.cs" />
     <Compile Include="Attributes\XmlRootAttribute.cs" />
+    <Compile Include="Serialization\CollectionTypeSerializer.cs" />
+    <Compile Include="Serialization\DictionaryTypeSerializer.cs" />
     <Compile Include="Serialization\Registration\Registrar.cs" />
     <Compile Include="Exceptions\ReferenceException.cs" />
     <Compile Include="Exceptions\SerializerException.cs" />
@@ -89,7 +91,7 @@
     <Compile Include="Reflection\Construction\ParameterMapper.cs" />
     <Compile Include="Reflection\Construction\TypeConstructorCache.cs" />
     <Compile Include="Reflection\ITypeInspector.cs" />
-    <Compile Include="Reflection\TypeHelper.cs" />
+    <Compile Include="Utilities\TypeHelper.cs" />
     <Compile Include="Reflection\TypeInspector.cs" />
     <Compile Include="Reflection\TypeInfo.cs" />
     <Compile Include="Reflection\TypeMemberInfo.cs" />
@@ -142,7 +144,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DocumentXCommentEditorState="&lt;HtmlEditState&gt;&#xA;  &lt;Attributes&gt;&#xA;    &lt;Attribute key=&quot;TabContainerSelectedTabIndex&quot; valuetype=&quot;integer&quot;&gt;0&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;scrollPosition&quot; valuetype=&quot;integer&quot;&gt;719&lt;/Attribute&gt;&#xA;  &lt;/Attributes&gt;&#xA;&lt;/HtmlEditState&gt;" />
+      <UserProperties DocumentXCommentEditorState="&lt;HtmlEditState&gt;&#xA;  &lt;Attributes&gt;&#xA;    &lt;Attribute key=&quot;TabContainerSelectedTabIndex&quot; valuetype=&quot;integer&quot;&gt;0&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;scrollPosition&quot; valuetype=&quot;integer&quot;&gt;137&lt;/Attribute&gt;&#xA;  &lt;/Attributes&gt;&#xA;&lt;/HtmlEditState&gt;" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

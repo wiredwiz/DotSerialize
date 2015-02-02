@@ -141,4 +141,8 @@
     <value>http://www.w3.org/2001/XMLSchema-instance</value>
     <comment>XsiUri description</comment>
   </data>
+  <data name="CultureName" xml:space="preserve">
+    <value>culture</value>
+    <comment>Culture description</comment>
+  </data>
 </root>

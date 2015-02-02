@@ -31,6 +31,7 @@ using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
 using Org.Edgerunner.DotSerialize.Serialization.Registration;
+using Org.Edgerunner.DotSerialize.Utilities;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
@@ -328,6 +329,7 @@ namespace Org.Edgerunner.DotSerialize
          writer.WriteAttributeString("xmlns", "dts", null, Resources.DotserializeUri);
          // ReSharper disable once AssignNullToNotNullAttribute
          writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
+         writer.WriteAttributeString(Resources.CultureName, Resources.DotserializeUri, Settings.Culture.Name);
 
          try
          {
