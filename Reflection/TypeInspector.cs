@@ -269,7 +269,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          foreach (var property in properties)
          {
             // If any of our AttributesToIgnore are found then set the ignore flag
-            ignore = false || _Settings.AttributesToIgnore.Any(attribute => property.HasAttribute(attribute.GetType()));            
+            ignore = _Settings.AttributesToIgnore.Any(attribute => property.HasAttribute(attribute.GetType()));            
             var elementAttrib = property.Attribute<XmlElementAttribute>();
             var attribAttribute = property.Attribute<XmlAttributeAttribute>();
             var dataMemberAttribute = property.Attribute<DataMemberAttribute>();
@@ -303,10 +303,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                                                (attribAttribute != null)) { Order = ordering };
                break;
             }
-
-            // Set ignore true as a failsafe so that on the last loop we will return an ignore value if we haven't
-            // encountered any explicit display attributes
-            ignore = true;
          }
 
          return memberInfo;
