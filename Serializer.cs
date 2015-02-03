@@ -329,7 +329,8 @@ namespace Org.Edgerunner.DotSerialize
          writer.WriteAttributeString("xmlns", "dts", null, Resources.DotserializeUri);
          // ReSharper disable once AssignNullToNotNullAttribute
          writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
-         writer.WriteAttributeString(Resources.CultureName, Resources.DotserializeUri, Settings.Culture.Name);
+         if (!string.IsNullOrEmpty(Settings.Culture.Name))
+            writer.WriteAttributeString(Resources.CultureName, Resources.DotserializeUri, Settings.Culture.Name);
 
          try
          {
