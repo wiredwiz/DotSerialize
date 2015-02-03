@@ -92,7 +92,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          {
             WhiteListMode = true;
             rootName = !string.IsNullOrEmpty(dcAttrib.Name) ? dcAttrib.GetPropertyValue("Name").ToString() : rootName;
-            @namespace = !string.IsNullOrEmpty(dcAttrib.Namespace) ? dcAttrib.GetPropertyValue("Namespace").ToString() : @namespace;
+            @namespace = !string.IsNullOrEmpty(dcAttrib.Namespace)
+               ? dcAttrib.GetPropertyValue("Namespace").ToString()
+               : @namespace;
          }
          infoList = GetFieldMembersInfo(type);
          infoList.AddRange(GetPropertyMembersInfo(type));
@@ -152,7 +154,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             bool ignore;
             var fields = item.Value;
             var memberInfo = GetFieldMemberInfo(type, fields, out ignore);
-            if (!ignore &&(memberInfo != null))
+            if (!ignore && (memberInfo != null))
                infoList.Add(memberInfo);
          }
 
@@ -201,19 +203,17 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                   memberInfo.Type = TypeMemberInfo.MemberType.Field;
                }
                else if (!ignore)
-               {
                   memberInfo = new TypeMemberInfo(field.Name,
                                                   TypeMemberInfo.MemberType.Field,
                                                   autoProperty.Name,
                                                   field.FieldType,
                                                   false) { Order = ordering };
-               }
                break;
             }
             else
             {
-               string entityName = string.Empty;
-               ignore = field.HasAttribute<XmlIgnoreAttribute>();
+               // If any of our AttributesToIgnore are found then set the ignore flag
+               if (_Settings.AttributesToIgnore.Any(attribute => field.HasAttribute(attribute.GetType()))) ignore = true;
                var elementAttrib = field.Attribute<XmlElementAttribute>();
                var attribAttribute = field.Attribute<XmlAttributeAttribute>();
                var dataMemberAttribute = field.Attribute<DataMemberAttribute>();
@@ -223,6 +223,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                if ((elementAttrib != null) || (attribAttribute != null) || (dataMemberAttribute != null))
                {
                   ignore = false;
+                  string entityName;
                   if (attribAttribute != null)
                      entityName = attribAttribute.GetPropertyValue("Name").ToString();
                   else if (elementAttrib != null)
@@ -247,31 +248,40 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             }
          if ((memberInfo == null) && !ignore && !WhiteListMode)
             memberInfo = new TypeMemberInfo(topLevelField.Name,
-                                               TypeMemberInfo.MemberType.Field,
-                                               topLevelField.Name,
-                                               topLevelField.FieldType,
-                                               false) { Order = ordering };
+                                            TypeMemberInfo.MemberType.Field,
+                                            topLevelField.Name,
+                                            topLevelField.FieldType,
+                                            false) { Order = ordering };
          return memberInfo;
       }
 
       protected virtual TypeMemberInfo GetPropertyMemberInfo(Type type, List<PropertyInfo> properties, out bool ignore)
       {
+         if (type == null) throw new ArgumentNullException("type");
+         if (properties == null) throw new ArgumentNullException("properties");
+
+         ignore = false;
+         if (properties.Count == 0)
+            return null;
+
          int ordering = 999;
          TypeMemberInfo memberInfo = null;
-         ignore = true;
          foreach (var property in properties)
          {
-            string entityName = string.Empty;
-            ignore = property.HasAttribute<XmlIgnoreAttribute>();
+            // If any of our AttributesToIgnore are found then set the ignore flag
+            ignore = false || _Settings.AttributesToIgnore.Any(attribute => property.HasAttribute(attribute.GetType()));            
             var elementAttrib = property.Attribute<XmlElementAttribute>();
             var attribAttribute = property.Attribute<XmlAttributeAttribute>();
             var dataMemberAttribute = property.Attribute<DataMemberAttribute>();
 
+            // If we are set to explicitly ignore then we break out now
             if (ignore && (elementAttrib == null) && (attribAttribute == null) && (dataMemberAttribute == null))
                break; // skip the current field
+            // If we found an element, attribute ot datamember attribute then we build type member info from
             if ((elementAttrib != null) || (attribAttribute != null) || (dataMemberAttribute != null))
             {
                ignore = false;
+               string entityName;
                if (attribAttribute != null)
                   entityName = attribAttribute.GetPropertyValue("Name").ToString();
                else if (elementAttrib != null)
@@ -293,6 +303,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                                                (attribAttribute != null)) { Order = ordering };
                break;
             }
+
+            // Set ignore true as a failsafe so that on the last loop we will return an ignore value if we haven't
+            // encountered any explicit display attributes
+            ignore = true;
          }
 
          return memberInfo;
