@@ -126,11 +126,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       }
 
       /// <summary>
-      /// Extracts a <see cref="TypeInfo"/> instance from an XmlClassMap and adds it to the internal cache.
+      /// Extracts a <see cref="TypeInfo"/> instance from an class map and adds it to the internal cache.
       /// </summary>
-      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap" /> instance to register.</param>
-      /// <typeparam name="T">Data type for which a class map is being registered.</typeparam>
-      public void RegisterMap<T>(XmlClassMap<T> map)
+      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.ClassMapBase" /> instance to register.</param>
+      public void RegisterMap(ClassMapBase map)
       {
          _Cache.AddInfo(map.GetTypeInfo());
       }

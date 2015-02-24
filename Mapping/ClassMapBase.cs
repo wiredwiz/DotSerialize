@@ -1,4 +1,4 @@
-#region Apache License 2.0
+﻿#region Apache License 2.0
 
 // Copyright 2015 Thaddeus Ryker
 // 
@@ -17,14 +17,18 @@
 #endregion
 
 using System;
-using Org.Edgerunner.DotSerialize.Mapping;
+using Org.Edgerunner.DotSerialize.Reflection;
 
-namespace Org.Edgerunner.DotSerialize.Reflection
+namespace Org.Edgerunner.DotSerialize.Mapping
 {
-   public interface ITypeInspector
+   /// <summary>
+   ///    Root class for XmlClassMap class.
+   /// </summary>
+   /// <remarks>
+   ///    Users should not inherit from this class for mappings, but should instead use <see cref="XmlClassMap" />
+   /// </remarks>
+   public abstract class ClassMapBase
    {
-      TypeInfo GetInfo(string fullyQualifiedTypeName);
-      TypeInfo GetInfo(Type type);
-      void RegisterMap(ClassMapBase map);
+      internal abstract TypeInfo GetTypeInfo();
    }
 }
