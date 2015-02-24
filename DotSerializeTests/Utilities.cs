@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Resources;
 
 namespace Org.Edgerunner.DotSerialize.Tests
 {
@@ -30,7 +31,7 @@ namespace Org.Edgerunner.DotSerialize.Tests
          using (var resourceStream = assembly.GetManifestResourceStream(fileName))
          {
             if (resourceStream == null)
-               throw new FileNotFoundException(string.Format("Embedded resource file {0} could not be accessed", fileName));
+               throw new MissingManifestResourceException(string.Format("Embedded resource file {0} could not be accessed", fileName));
 
             using (var sr = new StreamReader(resourceStream))
                using (var sw = File.CreateText(fileName))
