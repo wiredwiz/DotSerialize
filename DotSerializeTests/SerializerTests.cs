@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 
@@ -10,6 +11,17 @@ namespace Org.Edgerunner.DotSerialize.Tests
    [TestClass]
    public class SerializerTests
    {
+      [TestInitialize]
+      private void Setup()
+      {
+         Utilities.ExtractEmbeddedFile("foo");
+      }
+      [TestCleanup]
+      private void CleanUp()
+      {
+         File.Delete("foo");
+      }
+
       [TestMethod]
       public void SerializeDogResultsInProperFile()
       {
