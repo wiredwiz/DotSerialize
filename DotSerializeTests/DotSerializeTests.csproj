@@ -72,12 +72,14 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DataTypes\Bone.cs" />
+    <Compile Include="DataTypes\Cat.cs" />
     <Compile Include="DataTypes\CompetitionOwner.cs" />
     <Compile Include="DataTypes\DogCollar.cs" />
     <Compile Include="DataTypes\DogCollarFactory.cs" />
     <Compile Include="DataTypes\Dog.cs" />
     <Compile Include="DataTypes\Owner.cs" />
     <Compile Include="DataTypes\Person.cs" />
+    <Compile Include="Maps\CatMap.cs" />
     <Compile Include="SerializerTests.cs" />
     <Compile Include="TypeInspectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,6 +107,7 @@
       <Name>DotSerialize</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

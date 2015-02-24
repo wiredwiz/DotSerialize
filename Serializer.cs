@@ -284,8 +284,9 @@ namespace Org.Edgerunner.DotSerialize
       /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap"/> instance to register.</param>
       /// <typeparam name="T">Data type for which the class map is being registered.</typeparam>
       /// <returns></returns>
-      public virtual Serializer RegisterClassMap<T>(XmlClassMap<T> map)
+      public virtual Serializer RegisterClassMap<T>() where T : ClassMapBase
       {
+         var map = Activator.CreateInstance<T>();
          var inspector = Kernel.Get<ITypeInspector>();
          inspector.RegisterMap(map);
          return this;

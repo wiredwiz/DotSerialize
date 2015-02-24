@@ -73,6 +73,7 @@
     <Compile Include="Attributes\XmlIgnoreAttribute.cs" />
     <Compile Include="Attributes\XmlRootAttribute.cs" />
     <Compile Include="Exceptions\MappingException.cs" />
+    <Compile Include="Mapping\ClassMapBase.cs" />
     <Compile Include="Mapping\IXmlClassMap.cs" />
     <Compile Include="Mapping\XmlClassMap.cs" />
     <Compile Include="Mapping\XmlNodeMap.cs" />
