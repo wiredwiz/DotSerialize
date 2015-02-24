@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Xml;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Exceptions;
+using Org.Edgerunner.DotSerialize.Mapping;
 using Org.Edgerunner.DotSerialize.Properties;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
@@ -274,6 +275,20 @@ namespace Org.Edgerunner.DotSerialize
          BindITypeSerializationFactory();
          BindDefaultTypeSerializer();
          BindIReferenceManager();
+      }
+
+      /// <summary>
+      /// Registers an <see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap"/> instance for a specified data type 
+      /// that contains a fluent mapping of how the data type should be serialized and deserialized.
+      /// </summary>
+      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap"/> instance to register.</param>
+      /// <typeparam name="T">Data type for which the class map is being registered.</typeparam>
+      /// <returns></returns>
+      public virtual Serializer RegisterClassMap<T>(XmlClassMap<T> map)
+      {
+         var inspector = Kernel.Get<ITypeInspector>();
+         inspector.RegisterMap(map);
+         return this;
       }
 
       /// <summary>

@@ -25,6 +25,7 @@ using System.Text;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Attributes;
 using Org.Edgerunner.DotSerialize.Exceptions;
+using Org.Edgerunner.DotSerialize.Mapping;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Utilities;
 
@@ -124,9 +125,19 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return result;
       }
 
+      /// <summary>
+      /// Extracts a <see cref="TypeInfo"/> instance from an XmlClassMap and adds it to the internal cache.
+      /// </summary>
+      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap" /> instance to register.</param>
+      /// <typeparam name="T">Data type for which a class map is being registered.</typeparam>
+      public void RegisterMap<T>(XmlClassMap<T> map)
+      {
+         _Cache.AddInfo(map.GetTypeInfo());
+      }
+
       #endregion
 
-      protected virtual string CleanNodeName(string name)
+      public static string CleanNodeName(string name)
       {
          StringBuilder builder = new StringBuilder(name.Length);
          foreach (char item in name)
@@ -248,10 +259,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             }
          if ((memberInfo == null) && !ignore && !WhiteListMode)
             memberInfo = new TypeMemberInfo(topLevelField.Name,
-                                            TypeMemberInfo.MemberType.Field,
-                                            topLevelField.Name,
-                                            topLevelField.FieldType,
-                                            false) { Order = ordering };
+                                               TypeMemberInfo.MemberType.Field,
+                                               topLevelField.Name,
+                                               topLevelField.FieldType,
+                                               false) { Order = ordering };
          return memberInfo;
       }
 
