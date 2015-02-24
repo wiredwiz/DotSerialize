@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using Org.Edgerunner.DotSerialize.Mapping;
 
 namespace Org.Edgerunner.DotSerialize.Reflection
 {
@@ -24,5 +25,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection
    {
       TypeInfo GetInfo(string fullyQualifiedTypeName);
       TypeInfo GetInfo(Type type);
+      void RegisterMap<T>(XmlClassMap<T> map);
    }
 }

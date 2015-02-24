@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Linq.Expressions;
 using System.Xml;
 using Org.Edgerunner.DotSerialize.Properties;
 
@@ -117,6 +118,38 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          {
             return false;
          }
+      }
+
+      /// <summary>
+      /// Gets the member expression.
+      /// </summary>
+      /// <typeparam name="TModel">The type of the model.</typeparam>
+      /// <typeparam name="T"></typeparam>
+      /// <param name="expression">The expression.</param>
+      /// <returns></returns>
+      internal static MemberExpression GetMemberExpression<TModel, T>(Expression<Func<TModel, T>> expression)
+      {
+         // This method was taken from CsvHelper which was taken from FluentNHibernate.Utils.ReflectionHelper.cs and modified.
+         // http://joshclose.github.io/CsvHelper/
+         // http://fluentnhibernate.org/
+
+         MemberExpression memberExpression = null;
+         if (expression.Body.NodeType == ExpressionType.Convert)
+         {
+            var body = (UnaryExpression)expression.Body;
+            memberExpression = body.Operand as MemberExpression;
+         }
+         else if (expression.Body.NodeType == ExpressionType.MemberAccess)
+         {
+            memberExpression = expression.Body as MemberExpression;
+         }
+
+         if (memberExpression == null)
+         {
+            throw new ArgumentException("Not a member access", "expression");
+         }
+
+         return memberExpression;
       }
 
       #endregion
