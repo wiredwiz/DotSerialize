@@ -14,7 +14,7 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
+    <IsCodedUITest>True</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -65,7 +65,12 @@
       <HintPath>..\packages\ApprovalUtilities.3.0.8\lib\net45\ApprovalUtilities.Net45.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">

@@ -41,5 +41,10 @@ namespace Org.Edgerunner.DotSerialize.Tests
                }
          }
       }
+
+      private static void Delete(string fileName)
+      {
+         
+      }
    }
 }
