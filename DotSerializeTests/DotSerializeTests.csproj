@@ -130,7 +130,7 @@
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithMap1ResultsInProperOutput.approved.xml" />
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithMap2ResultsInProperOutput.approved.xml" />
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithoutMapResultsInProperOutput.approved.xml" />
-    <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperFile.approved.xml" />
+    <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperOutput.approved.xml" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

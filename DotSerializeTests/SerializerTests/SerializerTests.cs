@@ -32,8 +32,8 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
    [TestClass]
    public class SerializerTests
    {
-      private const string SerializeDogResultsInProperFile_Approved =
-         "SerializerTests.SerializeDogResultsInProperFile.approved.xml";
+      private const string SerializeDogResultsInProperOutput_Approved =
+         "SerializerTests.SerializeDogResultsInProperOutput.approved.xml";
 
       private const string SerializeCatWithoutMapResultsInProperOutput_Approved =
          "SerializerTests.SerializeCatWithoutMapResultsInProperOutput.approved.xml";
@@ -47,7 +47,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       [TestInitialize]
       private void Setup()
       {
-         Utilities.ExtractEmbeddedFile(SerializeDogResultsInProperFile_Approved);
+         Utilities.ExtractEmbeddedFile(SerializeDogResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithoutMapResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithMap1ResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithMap2ResultsInProperOutput_Approved);
@@ -56,14 +56,14 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       [TestCleanup]
       private void CleanUp()
       {
-         Utilities.DeleteFile(SerializeDogResultsInProperFile_Approved);
+         Utilities.DeleteFile(SerializeDogResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithoutMapResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithMap1ResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithMap2ResultsInProperOutput_Approved);
       }
 
       [TestMethod]
-      public void SerializeDogResultsInProperFile()
+      public void SerializeDogResultsInProperOutput()
       {
          var dog = new Dog("Fido", "Golden Retriever", true, null);
          var serializer = new Serializer();
