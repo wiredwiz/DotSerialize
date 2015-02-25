@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Exceptions;
@@ -300,6 +301,20 @@ namespace Org.Edgerunner.DotSerialize
       public Registrar<T> RegisterType<T>()
       {
          return new Registrar<T>(this);
+      }
+
+      /// <summary>
+      /// Serializes an object and writes it to the supplied string.
+      /// </summary>
+      /// <typeparam name="T">The Type being Serialized</typeparam>
+      /// <param name="obj">The object to serialize.</param>
+      /// <returns>A string containing the serialized object xml.</returns>
+      public virtual string SerializeObject<T>(T obj)
+      {
+         var builder = new StringBuilder();
+         using (var strWriter = new StringWriter(builder))
+            SerializeObject(strWriter, obj);
+         return builder.ToString();
       }
 
       /// <summary>
@@ -584,6 +599,17 @@ namespace Org.Edgerunner.DotSerialize
       public static T DeserializeFromFile<T>(string fileName)
       {
          return Instance.DeserializeObjectFromFile<T>(fileName);
+      }
+
+      /// <summary>
+      /// Serializes an object and writes it to the supplied string.
+      /// </summary>
+      /// <typeparam name="T">The Type being Serialized</typeparam>
+      /// <param name="obj">The object to serialize.</param>
+      /// <returns>A string containing the serialized object xml.</returns>
+      public static string Serialize<T>(T obj)
+      {
+         return Instance.SerializeObject(obj);
       }
 
       /// <summary>

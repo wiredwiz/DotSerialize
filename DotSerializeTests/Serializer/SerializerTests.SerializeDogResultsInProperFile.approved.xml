@@ -1,0 +1,11 @@
+﻿<Dog xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" dts:src="true">
+  <Name>Fido</Name>
+  <Breed>Golden Retriever</Breed>
+  <BirthDate>01/01/0001 00:00:00</BirthDate>
+  <_Age>0</_Age>
+  <_Owner xsi:nil="true" />
+  <HasCollar>True</HasCollar>
+  <Nose>Normal</Nose>
+  <Bone dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Bone,  DotSerializeTests" Type="Chicken" Width="0" Diameter="0" />
+  <Collar xsi:nil="true" />
+</Dog>
