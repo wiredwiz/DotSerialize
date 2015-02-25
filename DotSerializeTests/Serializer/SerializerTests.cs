@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
+using ApprovalTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 
@@ -11,15 +13,17 @@ namespace Org.Edgerunner.DotSerialize.Tests
    [TestClass]
    public class SerializerTests
    {
+      protected const string _SerializeDogResultsInProperFile = "SerializerTests.SerializeDogResultsInProperFile.approved.xml";
+
       [TestInitialize]
       private void Setup()
       {
-         Utilities.ExtractEmbeddedFile("foo");
+         Utilities.ExtractEmbeddedFile(_SerializeDogResultsInProperFile);
       }
       [TestCleanup]
       private void CleanUp()
       {
-         File.Delete("foo");
+         Utilities.DeleteFile(_SerializeDogResultsInProperFile);
       }
 
       [TestMethod]
@@ -27,8 +31,8 @@ namespace Org.Edgerunner.DotSerialize.Tests
       {
          var dog = new Dog("Fido", "Golden Retriever", true, null);
          var serializer = new Serializer();
-         serializer.SerializeObjectToFile<Dog>("C:\\DogSerializeTest.xml", dog);
-         
+         string xml = serializer.SerializeObject(dog);
+         Approvals.VerifyXml(xml);
       }
    }
 }

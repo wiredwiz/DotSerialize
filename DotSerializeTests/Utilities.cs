@@ -42,9 +42,10 @@ namespace Org.Edgerunner.DotSerialize.Tests
          }
       }
 
-      private static void Delete(string fileName)
+      public static void DeleteFile(string fileName)
       {
-         
+         if (File.Exists(fileName))
+            File.Delete(fileName);
       }
    }
 }
