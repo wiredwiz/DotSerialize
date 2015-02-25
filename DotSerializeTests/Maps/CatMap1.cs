@@ -13,7 +13,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.Maps
       {
          Map(x => x.Name).OrderedAs(0);
          Map(x => x.Breed).OrderedAs(2);
-         Map(x => x.Age).OrderedAs(1);
+         Map(x => x.BirthDate).OrderedAs(1);
          Map(x => x.Selfish).UsingName("ActsLikeACat").AsAttribute();
       }
    }

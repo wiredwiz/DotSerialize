@@ -74,7 +74,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       [TestMethod]
       public void SerializeCatWithoutMapResultsInProperOutput()
       {
-         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, Age = 3 };
+         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, BirthDate = new DateTime(2000, 12, 5) };
          var serializer = new Serializer();
          string xml = serializer.SerializeObject(cat);
          Approvals.VerifyXml(xml);
@@ -83,7 +83,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       [TestMethod]
       public void SerializeCatWithMap1ResultsInProperOutput()
       {
-         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, Age = 3 };
+         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, BirthDate = new DateTime(2000, 12, 5) };
          var serializer = new Serializer();
          serializer.RegisterClassMap<CatMap1>();
          string xml = serializer.SerializeObject(cat);
@@ -93,11 +93,33 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       [TestMethod]
       public void SerializeCatWithMap2ResultsInProperOutput()
       {
-         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, Age = 3 };
+         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, BirthDate = new DateTime(2000, 12, 5) };
          var serializer = new Serializer();
          serializer.RegisterClassMap<CatMap2>();
          string xml = serializer.SerializeObject(cat);
          Approvals.VerifyXml(xml);
+      }
+
+      [TestMethod]
+      public void DeserializeCatWithoutMapSucceeds()
+      {
+         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, BirthDate = new DateTime(2000, 12, 5) };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(cat);
+         var cat2 = serializer.DeserializeObject<Cat>(xml);
+         Assert.AreEqual<Cat>(cat, cat2);
+      }
+
+      [TestMethod]
+      public void DeserializeMaintainsReferentialIntegrity()
+      {
+         var owner = new Owner("Joe", "J", "Smith") { BirthDate = new DateTime(1970, 3, 20) };
+         var cat = new Cat(owner) { Name = "Puss", Breed = "Saimese", Selfish = true, BirthDate = new DateTime(2000, 12, 5) };
+         owner.Pets = new Pet[] { cat };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(cat);
+         cat = serializer.DeserializeObject<Cat>(xml);
+         Assert.AreSame(cat, cat.Owner.Pets[0]);
       }
    }
 }
