@@ -73,6 +73,12 @@
     <Compile Include="Attributes\XmlElementAttribute.cs" />
     <Compile Include="Attributes\XmlIgnoreAttribute.cs" />
     <Compile Include="Attributes\XmlRootAttribute.cs" />
+    <Compile Include="Exceptions\MappingException.cs" />
+    <Compile Include="Mapping\ClassMapBase.cs" />
+    <Compile Include="Mapping\IXmlClassMap.cs" />
+    <Compile Include="Mapping\XmlClassMap.cs" />
+    <Compile Include="Mapping\XmlNodeMap.cs" />
+    <Compile Include="Reflection\Construction\IHelperFactory.cs" />
     <Compile Include="Serialization\Registration\Registrar.cs" />
     <Compile Include="Exceptions\ReferenceException.cs" />
     <Compile Include="Exceptions\SerializerException.cs" />
