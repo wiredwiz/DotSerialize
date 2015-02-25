@@ -65,7 +65,26 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       [TestMethod]
       public void SerializeDogResultsInProperOutput()
       {
-         var dog = new Dog("Fido", "Golden Retriever", true, null);
+         var owner = new Owner("Joe", "J", "Smith") { BirthDate = new DateTime(1970, 3, 20) };
+         var mother = new Owner("Jane", "M", "Smith") { BirthDate = new DateTime(1951, 6, 12) };
+         var father = new Owner("John", "K", "Smith") { BirthDate = new DateTime(1948, 4, 16) };
+         var child1 = new Owner("Simon", "P", "Smith") { BirthDate = new DateTime(2000, 3, 22) };
+         var child2 = new Owner("Sally", "P", "Smith") { BirthDate = new DateTime(2001, 1, 1) };
+         owner.Father = father;
+         owner.Mother = mother;
+         father.Children = new System.Collections.Generic.List<Person> { owner };
+         mother.Children = new System.Collections.Generic.List<Person> { owner };
+         owner.Children = new System.Collections.Generic.List<Person> { child1, child2 };
+         child1.Father = owner;
+         child2.Father = owner;
+         var dog = new Dog("Fido", "Golden Retriever", true, owner)
+                   {
+                      BirthDate = new DateTime(2003, 5, 10),
+                      Collar = DogCollarFactory.GetCollar(20, true)
+                   };
+         owner.Pets = new Pet[] { dog };
+         child1.Pets = new Pet[] { dog };
+         child2.Pets = new Pet[] { dog };
          var serializer = new Serializer();
          string xml = serializer.SerializeObject(dog);
          Approvals.VerifyXml(xml);
