@@ -49,6 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\DotSerialize.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fasterflect">
@@ -72,11 +73,6 @@
     <Compile Include="Attributes\XmlElementAttribute.cs" />
     <Compile Include="Attributes\XmlIgnoreAttribute.cs" />
     <Compile Include="Attributes\XmlRootAttribute.cs" />
-    <Compile Include="Exceptions\MappingException.cs" />
-    <Compile Include="Mapping\ClassMapBase.cs" />
-    <Compile Include="Mapping\IXmlClassMap.cs" />
-    <Compile Include="Mapping\XmlClassMap.cs" />
-    <Compile Include="Mapping\XmlNodeMap.cs" />
     <Compile Include="Serialization\Registration\Registrar.cs" />
     <Compile Include="Exceptions\ReferenceException.cs" />
     <Compile Include="Exceptions\SerializerException.cs" />
@@ -143,14 +139,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="License.txt" />
-    <Content Include="ReadMe.txt" />
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ReadMe.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DocumentXCommentEditorState="&lt;HtmlEditState&gt;&#xA;  &lt;Attributes&gt;&#xA;    &lt;Attribute key=&quot;TabContainerSelectedTabIndex&quot; valuetype=&quot;integer&quot;&gt;0&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;scrollPosition&quot; valuetype=&quot;integer&quot;&gt;719&lt;/Attribute&gt;&#xA;  &lt;/Attributes&gt;&#xA;&lt;/HtmlEditState&gt;" />
+      <UserProperties DocumentXCommentEditorState="&lt;HtmlEditState&gt;&#xA;  &lt;Attributes&gt;&#xA;    &lt;Attribute key=&quot;TabContainerSelectedTabIndex&quot; valuetype=&quot;integer&quot;&gt;1&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;scrollPosition&quot; valuetype=&quot;integer&quot;&gt;114&lt;/Attribute&gt;&#xA;  &lt;/Attributes&gt;&#xA;&lt;/HtmlEditState&gt;" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
