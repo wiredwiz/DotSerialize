@@ -94,7 +94,7 @@
     <Compile Include="DataTypes\Owner.cs" />
     <Compile Include="DataTypes\Person.cs" />
     <Compile Include="Maps\CatMap.cs" />
-    <EmbeddedResource Include="Serializer\SerializerTests.cs" />
+    <Compile Include="SerializerTests\SerializerTests.cs" />
     <Compile Include="TypeInspectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities.cs" />
@@ -126,7 +126,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Serializer\SerializerTests.SerializeDogResultsInProperFile.approved.xml" />
+    <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperFile.approved.xml" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
