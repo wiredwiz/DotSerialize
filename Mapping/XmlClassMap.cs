@@ -33,7 +33,7 @@ namespace Org.Edgerunner.DotSerialize.Mapping
    ///    Class used to define the xml layout for a given class type.
    /// </summary>
    /// <typeparam name="T">Class type for which the layout is being defined.</typeparam>
-   public abstract class XmlClassMap<T> : IXmlClassMap<T>
+   public abstract class XmlClassMap<T> : ClassMapBase, IXmlClassMap<T>
    {
       private string _Namespace;
       private string _RootNodeName;
@@ -125,7 +125,7 @@ namespace Org.Edgerunner.DotSerialize.Mapping
          throw new MappingException(string.Format("'{0}' is not a property or field reference.", member.Name));
       }
 
-      internal TypeInfo GetTypeInfo()
+      internal override TypeInfo GetTypeInfo()
       {
          var type = typeof(T);
          var memberInfo = new List<TypeMemberInfo>(_Mappings.Count);
