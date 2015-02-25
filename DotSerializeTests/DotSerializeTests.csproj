@@ -93,7 +93,8 @@
     <Compile Include="DataTypes\Dog.cs" />
     <Compile Include="DataTypes\Owner.cs" />
     <Compile Include="DataTypes\Person.cs" />
-    <Compile Include="Maps\CatMap.cs" />
+    <Compile Include="Maps\CatMap1.cs" />
+    <Compile Include="Maps\CatMap2.cs" />
     <Compile Include="SerializerTests\SerializerTests.cs" />
     <Compile Include="TypeInspectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -126,6 +127,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithMap1ResultsInProperOutput.approved.xml" />
+    <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithMap2ResultsInProperOutput.approved.xml" />
+    <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithoutMapResultsInProperOutput.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperFile.approved.xml" />
   </ItemGroup>
   <Choose>
