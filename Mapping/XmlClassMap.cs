@@ -35,8 +35,8 @@ namespace Org.Edgerunner.DotSerialize.Mapping
    /// <typeparam name="T">Class type for which the layout is being defined.</typeparam>
    public abstract class XmlClassMap<T> : ClassMapBase, IXmlClassMap<T>
    {
-      private string _Namespace;
-      private string _RootNodeName;
+      protected string _Namespace;
+      protected string _RootNodeName;
       protected readonly List<XmlNodeMap> _Mappings;
 
       /// <summary>

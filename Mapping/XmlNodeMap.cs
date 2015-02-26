@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Runtime.CompilerServices;
 using Org.Edgerunner.DotSerialize.Reflection;
 
 namespace Org.Edgerunner.DotSerialize.Mapping
