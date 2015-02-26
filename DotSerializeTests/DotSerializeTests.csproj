@@ -93,6 +93,7 @@
     <Compile Include="DataTypes\Dog.cs" />
     <Compile Include="DataTypes\Owner.cs" />
     <Compile Include="DataTypes\Person.cs" />
+    <Compile Include="DataTypes\Pet.cs" />
     <Compile Include="Maps\CatMap1.cs" />
     <Compile Include="Maps\CatMap2.cs" />
     <Compile Include="SerializerTests\SerializerTests.cs" />
