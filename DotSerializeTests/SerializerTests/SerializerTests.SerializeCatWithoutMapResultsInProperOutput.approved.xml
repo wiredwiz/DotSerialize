@@ -1,0 +1,7 @@
+﻿<Cat xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Cat,  DotSerializeTests" dts:id="1" dts:src="true">
+  <Name>Puss</Name>
+  <BirthDate>12/05/2000 00:00:00</BirthDate>
+  <Breed>Saimese</Breed>
+  <_Owner xsi:nil="true" />
+  <Selfish>True</Selfish>
+</Cat>
