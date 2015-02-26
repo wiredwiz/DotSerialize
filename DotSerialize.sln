@@ -27,4 +27,14 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		ConfigurationFilter = 
+		AssemblyInfoFilePath = 
+		UpdateAssemblyVersion = True
+		UpdateAssemblyFileVersion = True
+		UpdateAssemblyInfoVersion = True
+		AssemblyVersionSettings = None.None.Increment.DayOfYearStamp
+		AssemblyFileVersionSettings = None.None.Increment.DayOfYearStamp
+		AssemblyInfoVersionSettings = None.None.Increment.DayOfYearStamp
+	EndGlobalSection
 EndGlobal
