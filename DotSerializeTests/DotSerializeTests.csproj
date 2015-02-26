@@ -132,6 +132,8 @@
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithMap1ResultsInProperOutput.approved.xml" />
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithMap2ResultsInProperOutput.approved.xml" />
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithoutMapResultsInProperOutput.approved.xml" />
+    <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeDogOmittingTypesResultsInProperOutput.approved.xml" />
+    <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatDisablingReferentialIntegrityResultsInProperOutput.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperOutput.approved.xml" />
   </ItemGroup>
   <ItemGroup />

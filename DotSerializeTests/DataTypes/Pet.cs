@@ -18,6 +18,8 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
       public virtual string Breed { get; set; }
       [XmlElement(Order = 2)]
       public virtual DateTime BirthDate { get; set; }
+      public double Weight { get; set; }
+      public double Height { get; set; }
       [XmlIgnore]
       public virtual double Age
       {

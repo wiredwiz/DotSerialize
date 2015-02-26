@@ -12,8 +12,8 @@ namespace Org.Edgerunner.DotSerialize.Tests
       public void InspectDogReturnsInfoWithFiveTypeMembers()
       {
          var info = new Reflection.TypeInspector().GetInfo(typeof(Dog));
-         Assert.AreEqual<int>(8, info.MemberInfoByEntityName.Count);
-         Assert.AreEqual<int>(8, info.MemberInfoByName.Count);
+         Assert.AreEqual<int>(10, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual<int>(10, info.MemberInfoByName.Count);
       }
 
       [TestMethod]
