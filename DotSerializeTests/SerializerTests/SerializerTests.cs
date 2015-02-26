@@ -17,6 +17,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using ApprovalTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.Edgerunner.DotSerialize.Tests.DataTypes;
@@ -38,6 +40,9 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       private const string SerializeDogOmittingTypesResultsInProperOutput_Approved =
          "SerializerTests.SerializeDogOmittingTypesResultsInProperOutput.approved.xml";
 
+      private const string SerializeCatDECultureResultsInProperOutput_Approved =
+         "SerializerTests.SerializeCatDECultureResultsInProperOutput.approved.xml";
+
       private const string SerializeCatWithoutMapResultsInProperOutput_Approved =
          "SerializerTests.SerializeCatWithoutMapResultsInProperOutput.approved.xml";
 
@@ -56,6 +61,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          Utilities.ExtractEmbeddedFile(SerializeDogResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeDogOmittingTypesResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatOmittingReferentialIntegrityResultsInProperOutput_Approved);
+         Utilities.ExtractEmbeddedFile(SerializeCatDECultureResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithoutMapResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithMap1ResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithMap2ResultsInProperOutput_Approved);
@@ -67,6 +73,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          Utilities.DeleteFile(SerializeDogResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeDogOmittingTypesResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatOmittingReferentialIntegrityResultsInProperOutput_Approved);
+         Utilities.DeleteFile(SerializeCatDECultureResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithoutMapResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithMap1ResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithMap2ResultsInProperOutput_Approved);
@@ -82,9 +89,9 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var child2 = new Owner("Sally", "P", "Smith") { BirthDate = new DateTime(2001, 1, 1) };
          owner.Father = father;
          owner.Mother = mother;
-         father.Children = new System.Collections.Generic.List<Person> { owner };
-         mother.Children = new System.Collections.Generic.List<Person> { owner };
-         owner.Children = new System.Collections.Generic.List<Person> { child1, child2 };
+         father.Children = new List<Person> { owner };
+         mother.Children = new List<Person> { owner };
+         owner.Children = new List<Person> { child1, child2 };
          child1.Father = owner;
          child2.Father = owner;
          var dog = new Dog("Fido", "Golden Retriever", true, owner)
@@ -110,16 +117,16 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var child2 = new Owner("Sally", "P", "Smith") { BirthDate = new DateTime(2001, 1, 1) };
          owner.Father = father;
          owner.Mother = mother;
-         father.Children = new System.Collections.Generic.List<Person> { owner };
-         mother.Children = new System.Collections.Generic.List<Person> { owner };
-         owner.Children = new System.Collections.Generic.List<Person> { child1, child2 };
+         father.Children = new List<Person> { owner };
+         mother.Children = new List<Person> { owner };
+         owner.Children = new List<Person> { child1, child2 };
          child1.Father = owner;
          child2.Father = owner;
          var dog = new Dog("Fido", "Golden Retriever", true, owner)
-         {
-            BirthDate = new DateTime(2003, 5, 10),
-            Collar = DogCollarFactory.GetCollar(20, true)
-         };
+                   {
+                      BirthDate = new DateTime(2003, 5, 10),
+                      Collar = DogCollarFactory.GetCollar(20, true)
+                   };
          owner.Pets = new Pet[] { dog };
          child1.Pets = new Pet[] { dog };
          child2.Pets = new Pet[] { dog };
@@ -140,8 +147,41 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       [TestMethod]
       public void SerializeCatDisablingReferentialIntegrityResultsInProperOutput()
       {
-         var cat = new Cat { Name = "Puss", Breed = "Saimese", Selfish = true, BirthDate = new DateTime(2000, 12, 5) };
+         var cat = new Cat 
+         {
+            Name = "Puss",
+            Breed = "Saimese",
+            Selfish = true,
+            BirthDate = new DateTime(2000, 12, 5),
+            Height = 30.48,
+            Weight = 2.26796
+         };
          var serializer = new Serializer { Settings = { DisableReferentialIntegrity = true, OmitTypeWhenPossible = true } };
+         string xml = serializer.SerializeObject(cat);
+         Approvals.VerifyXml(xml);
+      }
+
+      [TestMethod]
+      public void SerializeCatDECultureResultsInProperOutput()
+      {
+         var cat = new Cat
+                   {
+                      Name = "Puss",
+                      Breed = "Saimese",
+                      Selfish = true,
+                      BirthDate = new DateTime(2000, 12, 5),
+                      Height = 30.48,
+                      Weight = 2.26796
+                   };
+         var serializer = new Serializer
+                          {
+                             Settings =
+                             {
+                                DisableReferentialIntegrity = true,
+                                OmitTypeWhenPossible = true,
+                                Culture = CultureInfo.GetCultureInfo("de-DE")
+                             }
+                          };
          string xml = serializer.SerializeObject(cat);
          Approvals.VerifyXml(xml);
       }
@@ -173,7 +213,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var serializer = new Serializer();
          string xml = serializer.SerializeObject(cat);
          var cat2 = serializer.DeserializeObject<Cat>(xml);
-         Assert.AreEqual<Cat>(cat, cat2);
+         Assert.AreEqual(cat, cat2);
       }
 
       [TestMethod]
