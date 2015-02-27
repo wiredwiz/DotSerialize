@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 
@@ -72,6 +73,38 @@ namespace Org.Edgerunner.DotSerialize.Tests
          Assert.AreEqual("acme.org", info.Namespace);
          Assert.AreEqual(6, info.MemberInfoByEntityName.Count);
          Assert.AreEqual(6, info.MemberInfoByName.Count);
+      }
+
+      [TestMethod]
+      public void InspectSellableWidgetReturnsInfoWithTenTypeMembers()
+      {
+         var info = new Reflection.TypeInspector().GetInfo(typeof(SellableWidget));
+         Assert.AreEqual("SaleWidget", info.EntityName);
+         Assert.AreEqual("acme.net", info.Namespace);
+         Assert.AreEqual(10, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(10, info.MemberInfoByName.Count);
+      }
+
+      [TestMethod]
+      public void InspectInventoriedWidgetReturnsInfoWithEightTypeMembers()
+      {
+         var info = new Reflection.TypeInspector().GetInfo(typeof(InventoriedWidget));
+         Assert.AreEqual("InventoriedWidget", info.EntityName);
+         Assert.AreEqual("acme.org", info.Namespace);
+         Assert.AreEqual(8, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(8, info.MemberInfoByName.Count);
+         int elements = 0;
+         int attributes = 0;
+         foreach (var item in info.MemberInfoByEntityName)
+         {
+            Assert.AreEqual(999, item.Value.Order);
+            if (item.Value.IsAttribute)
+               attributes++;
+            else
+               elements++;
+         }
+         Assert.AreEqual(7, attributes);
+         Assert.AreEqual(1, elements);
       }
    }
 }
