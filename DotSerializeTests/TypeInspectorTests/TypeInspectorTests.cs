@@ -25,7 +25,7 @@ namespace Org.Edgerunner.DotSerialize.Tests
       }
 
       [TestMethod]
-      public void InspectOwnerReturnsInfoWithRootNodeNameDogOwner()
+      public void InspectOwnerReturnsInfoWithRootNodeNamePetOwner()
       {
          var info = new Reflection.TypeInspector().GetInfo(typeof(Owner));
          Assert.AreEqual<string>("PetOwner", info.EntityName);
