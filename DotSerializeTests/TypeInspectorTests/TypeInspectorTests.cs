@@ -53,5 +53,25 @@ namespace Org.Edgerunner.DotSerialize.Tests
          Assert.AreEqual<int>(3, info.MemberInfoByEntityName.Count);
          Assert.AreEqual<int>(3, info.MemberInfoByName.Count);
       }
+
+      [TestMethod]
+      public void InspectWidgetReturnsInfoWithSevenTypeMembers()
+      {
+         var info = new Reflection.TypeInspector().GetInfo(typeof(Widget));
+         Assert.AreEqual("Widget", info.EntityName);
+         Assert.AreEqual("acme.org", info.Namespace);
+         Assert.AreEqual(7, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(7, info.MemberInfoByName.Count);
+      }
+
+      [TestMethod]
+      public void InspectHazardousWidgetReturnsInfoWithSixTypeMembers()
+      {
+         var info = new Reflection.TypeInspector().GetInfo(typeof(HazardousWidget));
+         Assert.AreEqual("Widget", info.EntityName);
+         Assert.AreEqual("acme.org", info.Namespace);
+         Assert.AreEqual(6, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(6, info.MemberInfoByName.Count);
+      }
    }
 }
