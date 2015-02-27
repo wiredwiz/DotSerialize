@@ -67,6 +67,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationTypes" />
@@ -94,6 +95,8 @@
     <Compile Include="DataTypes\Owner.cs" />
     <Compile Include="DataTypes\Person.cs" />
     <Compile Include="DataTypes\Pet.cs" />
+    <Compile Include="DataTypes\Widget.cs" />
+    <Compile Include="DataTypes\HazardousWidget.cs" />
     <Compile Include="MappingTests\MappingTests.cs" />
     <Compile Include="Maps\CatMap1.cs" />
     <Compile Include="Maps\CatMap2.cs" />

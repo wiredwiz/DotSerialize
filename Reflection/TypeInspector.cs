@@ -80,22 +80,24 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          string rootName = null;
          string @namespace = null;
          List<TypeMemberInfo> infoList = null;
-         var rootAttrib = type.Attribute<XmlRootAttribute>();
-         if (rootAttrib != null)
+         XmlRootAttribute rootNode = GetRootNodeInfo(type);
+         Type workingType = type;
+         while (rootNode == null)
          {
-            rootName = rootAttrib.GetPropertyValue("Name").ToString();
-            @namespace = rootAttrib.GetPropertyValue("Namespace").ToString();
+            workingType = workingType.BaseType;
+            if ((workingType == null) || (workingType == typeof(object)))
+               break;
+            rootNode = GetRootNodeInfo(workingType);
+         }
+         if (rootNode == null)
+         {
+            rootName = CleanNodeName(type.Name());
+            @namespace = string.Empty;
          }
          else
-            rootName = CleanNodeName(type.Name());
-         var dcAttrib = type.Attribute<DataContractAttribute>();
-         if (dcAttrib != null)
          {
-            WhiteListMode = true;
-            rootName = !string.IsNullOrEmpty(dcAttrib.Name) ? dcAttrib.GetPropertyValue("Name").ToString() : rootName;
-            @namespace = !string.IsNullOrEmpty(dcAttrib.Namespace)
-               ? dcAttrib.GetPropertyValue("Namespace").ToString()
-               : @namespace;
+            rootName = rootNode.Name;
+            @namespace = rootNode.Namespace;
          }
          infoList = GetFieldMembersInfo(type);
          infoList.AddRange(GetPropertyMembersInfo(type));
@@ -123,6 +125,26 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          result = new TypeInfo(type.Name, type, rootName, @namespace, infoList);
          _Cache.AddInfo(result);
          return result;
+      }
+
+      private XmlRootAttribute GetRootNodeInfo(Type type)
+      {
+         WhiteListMode = false;
+         var rootAttrib = type.Attribute<XmlRootAttribute>();
+         if (rootAttrib != null)
+            return rootAttrib;
+
+         var dcAttrib = type.Attribute<DataContractAttribute>();
+         if (dcAttrib != null)
+         {
+            rootAttrib = new XmlRootAttribute(CleanNodeName(type.Name()));
+            WhiteListMode = true;
+            rootAttrib.Name = !string.IsNullOrEmpty(dcAttrib.Name) ? dcAttrib.GetPropertyValue("Name").ToString() : rootAttrib.Name;
+            rootAttrib.Namespace = !string.IsNullOrEmpty(dcAttrib.Namespace)
+               ? dcAttrib.Namespace
+               : string.Empty;
+         }
+         return rootAttrib;
       }
 
       /// <summary>
@@ -212,7 +234,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                   memberInfo.Name = field.Name;
                   memberInfo.Type = TypeMemberInfo.MemberType.Field;
                }
-               else if (!ignore)
+               else if (!ignore && !WhiteListMode)
                   memberInfo = new TypeMemberInfo(field.Name,
                                                   TypeMemberInfo.MemberType.Field,
                                                   autoProperty.Name,
@@ -301,11 +323,11 @@ namespace Org.Edgerunner.DotSerialize.Reflection
                }
                else
                {
-                  entityName = dataMemberAttribute.GetPropertyValue("Name").ToString();
-                  ordering = (int)dataMemberAttribute.GetPropertyValue("Order");
+                  entityName = dataMemberAttribute.Name ?? string.Empty;
+                  ordering = dataMemberAttribute.Order;
                }
                entityName = string.IsNullOrEmpty(entityName) ? property.Name : entityName;
-               ordering = ordering == 0 ? 999 : ordering;
+               ordering = ordering == -1 ? 999 : ordering;
                memberInfo = new TypeMemberInfo(property.Name,
                                                TypeMemberInfo.MemberType.Property,
                                                entityName,
