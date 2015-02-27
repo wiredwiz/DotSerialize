@@ -9,7 +9,7 @@ namespace Org.Edgerunner.DotSerialize.Tests
    public class TypeInspectorTests
    {
       [TestMethod]
-      public void InspectDogReturnsInfoWithFiveTypeMembers()
+      public void InspectDogReturnsInfoWithTenTypeMembers()
       {
          var info = new Reflection.TypeInspector().GetInfo(typeof(Dog));
          Assert.AreEqual<int>(10, info.MemberInfoByEntityName.Count);
@@ -17,7 +17,7 @@ namespace Org.Edgerunner.DotSerialize.Tests
       }
 
       [TestMethod]
-      public void InspectOwnerReturnsInfoWithThreeTypeMembers()
+      public void InspectOwnerReturnsInfoWithSixTypeMembers()
       {
          var info = new Reflection.TypeInspector().GetInfo(typeof(Owner));
          Assert.AreEqual<int>(6, info.MemberInfoByEntityName.Count);
@@ -32,7 +32,7 @@ namespace Org.Edgerunner.DotSerialize.Tests
       }
 
       [TestMethod]
-      public void InspectPersonReturnsInfoWithOneTypeMember()
+      public void InspectPersonReturnsInfoWithFiveTypeMember()
       {
          var info = new Reflection.TypeInspector().GetInfo(typeof(Person));
          Assert.AreEqual<int>(5, info.MemberInfoByEntityName.Count);
