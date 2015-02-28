@@ -104,9 +104,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          var duplicateElements = from x in infoList
                                  where !x.IsAttribute
                                  group x by x.EntityName
-                                    into grouped
-                                    where (grouped.Count() > 1)
-                                    select grouped.Key;
+                                 into grouped
+                                 where (grouped.Count() > 1)
+                                 select grouped.Key;
          if (duplicateElements.Count() != 0)
             throw new TypeLayoutException(string.Format("Element node name \"{0}\" is used for more than one member of Type {1}",
                                                         duplicateElements.First(),
@@ -114,9 +114,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          var duplicateAttribs = from x in infoList
                                 where x.IsAttribute
                                 group x by x.EntityName
-                                   into grouped
-                                   where (grouped.Count() > 1)
-                                   select grouped.Key;
+                                into grouped
+                                where (grouped.Count() > 1)
+                                select grouped.Key;
          if (duplicateAttribs.Count() != 0)
             throw new TypeLayoutException(string.Format(
                                                         "Attribute node name \"{0}\" is used for more than one member of Type {1}",
@@ -127,28 +127,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          return result;
       }
 
-      private XmlRootAttribute GetRootNodeInfo(Type type)
-      {
-         WhiteListMode = false;
-         var rootAttrib = type.Attribute<XmlRootAttribute>();
-         if (rootAttrib != null)
-            return rootAttrib;
-
-         var dcAttrib = type.Attribute<DataContractAttribute>();
-         if (dcAttrib != null)
-         {
-            rootAttrib = new XmlRootAttribute(CleanNodeName(type.Name()));
-            WhiteListMode = true;
-            rootAttrib.Name = !string.IsNullOrEmpty(dcAttrib.Name) ? dcAttrib.GetPropertyValue("Name").ToString() : rootAttrib.Name;
-            rootAttrib.Namespace = !string.IsNullOrEmpty(dcAttrib.Namespace)
-               ? dcAttrib.Namespace
-               : string.Empty;
-         }
-         return rootAttrib;
-      }
-
       /// <summary>
-      /// Extracts a <see cref="TypeInfo"/> instance from an class map and adds it to the internal cache.
+      ///    Extracts a <see cref="TypeInfo" /> instance from an class map and adds it to the internal cache.
       /// </summary>
       /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.ClassMapBase" /> instance to register.</param>
       public void RegisterMap(ClassMapBase map)
@@ -170,49 +150,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             else
                builder.Append(item);
          return builder.ToString();
-      }
-
-      protected virtual List<TypeMemberInfo> GetFieldMembersInfo(Type type)
-      {
-         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>();
-         // Get information for fields
-         var allFields = type.Fields(Flags.InstanceAnyVisibility);
-         var results = from p in allFields
-                       group p by p.Name
-                          into g
-                          select new { FieldName = g.Key, Value = g.ToList() };
-         foreach (var item in results)
-         {
-            bool ignore;
-            var fields = item.Value;
-            var memberInfo = GetFieldMemberInfo(type, fields, out ignore);
-            if (!ignore && (memberInfo != null))
-               infoList.Add(memberInfo);
-         }
-
-         return infoList;
-      }
-
-      protected virtual List<TypeMemberInfo> GetPropertyMembersInfo(Type type)
-      {
-         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>();
-         var allProperties = type.Properties(Flags.InstanceAnyVisibility);
-         var results = from p in allProperties
-                       group p by p.Name
-                          into g
-                          select new { PropertyName = g.Key, Value = g.ToList() };
-         foreach (var item in results)
-         {
-            bool ignore;
-            if (PropertiesToExclude.Contains(item.PropertyName))
-               continue;
-            var properties = item.Value;
-            var memberInfo = GetPropertyMemberInfo(type, properties, out ignore);
-            if (!ignore && (memberInfo != null))
-               infoList.Add(memberInfo);
-         }
-
-         return infoList;
       }
 
       protected virtual TypeMemberInfo GetFieldMemberInfo(Type type, List<FieldInfo> fields, out bool ignore)
@@ -280,11 +217,32 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             }
          if ((memberInfo == null) && !ignore && !WhiteListMode)
             memberInfo = new TypeMemberInfo(topLevelField.Name,
-                                               TypeMemberInfo.MemberType.Field,
-                                               topLevelField.Name,
-                                               topLevelField.FieldType,
-                                               false) { Order = ordering };
+                                            TypeMemberInfo.MemberType.Field,
+                                            topLevelField.Name,
+                                            topLevelField.FieldType,
+                                            false) { Order = ordering };
          return memberInfo;
+      }
+
+      protected virtual List<TypeMemberInfo> GetFieldMembersInfo(Type type)
+      {
+         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>();
+         // Get information for fields
+         var allFields = type.Fields(Flags.InstanceAnyVisibility);
+         var results = from p in allFields
+                       group p by p.Name
+                       into g
+                       select new { FieldName = g.Key, Value = g.ToList() };
+         foreach (var item in results)
+         {
+            bool ignore;
+            var fields = item.Value;
+            var memberInfo = GetFieldMemberInfo(type, fields, out ignore);
+            if (!ignore && (memberInfo != null))
+               infoList.Add(memberInfo);
+         }
+
+         return infoList;
       }
 
       protected virtual TypeMemberInfo GetPropertyMemberInfo(Type type, List<PropertyInfo> properties, out bool ignore)
@@ -301,7 +259,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          foreach (var property in properties)
          {
             // If any of our AttributesToIgnore are found then set the ignore flag
-            ignore = _Settings.AttributesToIgnore.Any(attribute => property.HasAttribute(attribute.GetType()));            
+            ignore = _Settings.AttributesToIgnore.Any(attribute => property.HasAttribute(attribute.GetType()));
             var elementAttrib = property.Attribute<XmlElementAttribute>();
             var attribAttribute = property.Attribute<XmlAttributeAttribute>();
             var dataMemberAttribute = property.Attribute<DataMemberAttribute>();
@@ -338,6 +296,50 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          }
 
          return memberInfo;
+      }
+
+      protected virtual List<TypeMemberInfo> GetPropertyMembersInfo(Type type)
+      {
+         List<TypeMemberInfo> infoList = new List<TypeMemberInfo>();
+         var allProperties = type.Properties(Flags.InstanceAnyVisibility);
+         var results = from p in allProperties
+                       group p by p.Name
+                       into g
+                       select new { PropertyName = g.Key, Value = g.ToList() };
+         foreach (var item in results)
+         {
+            bool ignore;
+            if (PropertiesToExclude.Contains(item.PropertyName))
+               continue;
+            var properties = item.Value;
+            var memberInfo = GetPropertyMemberInfo(type, properties, out ignore);
+            if (!ignore && (memberInfo != null))
+               infoList.Add(memberInfo);
+         }
+
+         return infoList;
+      }
+
+      private XmlRootAttribute GetRootNodeInfo(Type type)
+      {
+         WhiteListMode = false;
+         var rootAttrib = type.Attribute<XmlRootAttribute>();
+         if (rootAttrib != null)
+            return rootAttrib;
+
+         var dcAttrib = type.Attribute<DataContractAttribute>();
+         if (dcAttrib != null)
+         {
+            rootAttrib = new XmlRootAttribute(CleanNodeName(type.Name()));
+            WhiteListMode = true;
+            rootAttrib.Name = !string.IsNullOrEmpty(dcAttrib.Name)
+               ? dcAttrib.GetPropertyValue("Name").ToString()
+               : rootAttrib.Name;
+            rootAttrib.Namespace = !string.IsNullOrEmpty(dcAttrib.Namespace)
+               ? dcAttrib.Namespace
+               : string.Empty;
+         }
+         return rootAttrib;
       }
    }
 }

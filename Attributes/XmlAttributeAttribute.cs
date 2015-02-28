@@ -24,8 +24,6 @@ namespace Org.Edgerunner.DotSerialize.Attributes
    ]
    public class XmlAttributeAttribute : Attribute
    {
-      public string Name { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="XmlAttributeAttribute" /> class.
       /// </summary>
@@ -34,5 +32,7 @@ namespace Org.Edgerunner.DotSerialize.Attributes
       {
          Name = name;
       }
+
+      public string Name { get; set; }
    }
 }

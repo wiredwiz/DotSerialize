@@ -23,13 +23,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public class TypeInfo
    {
-      public string Name { get; set; }
-      public Type DataType { get; set; }
-      public string EntityName { get; set; }
-      public string Namespace { get; set; }
-      public IDictionary<string, TypeMemberInfo> MemberInfoByName { get; set; }
-      public IDictionary<string, TypeMemberInfo> MemberInfoByEntityName { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="TypeInfo" /> class.
       /// </summary>
@@ -119,5 +112,12 @@ namespace Org.Edgerunner.DotSerialize.Reflection
             MemberInfoByEntityName.Add(field.EntityName, field);
          }
       }
+
+      public string Name { get; set; }
+      public Type DataType { get; set; }
+      public string EntityName { get; set; }
+      public string Namespace { get; set; }
+      public IDictionary<string, TypeMemberInfo> MemberInfoByName { get; set; }
+      public IDictionary<string, TypeMemberInfo> MemberInfoByEntityName { get; set; }
    }
 }

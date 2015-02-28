@@ -35,13 +35,8 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
 
       #endregion
 
-      [XmlAttribute]
-      public TypeOf Type { get; set; }
-
-      [XmlAttribute]
-      public double Width { get; set; }
-
-      [XmlAttribute]
-      public double Diameter { get; set; }
+      [XmlAttribute] public TypeOf Type { get; set; }
+      [XmlAttribute] public double Width { get; set; }
+      [XmlAttribute] public double Diameter { get; set; }
    }
 }

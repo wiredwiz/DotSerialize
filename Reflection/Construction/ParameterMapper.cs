@@ -24,8 +24,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
 {
    internal static class ParameterMapper
    {
-      #region Static Methods
-
       public static Dictionary<ParameterInfo, TypeMemberInfo> MapTypeMembersToParameters(Type type,
                                                                                          IList<ParameterInfo> parameters,
                                                                                          IList<TypeMemberInfo> members,
@@ -49,7 +47,5 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          }
          return result;
       }
-
-      #endregion
    }
 }

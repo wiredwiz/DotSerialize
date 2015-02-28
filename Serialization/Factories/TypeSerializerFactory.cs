@@ -21,17 +21,13 @@ using System.Collections.Generic;
 using Fasterflect;
 using Ninject;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
+
 //using Org.Edgerunner.DotSerialize.Utilities;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Factories
 {
    public class TypeSerializerFactory : ITypeSerializerFactory
    {
-      protected IKernel Kernel { get; set; }
-      public IList<Type> CustomerSerializerTypes { get; set; }
-      protected Dictionary<Type, ITypeSerializer> SerializerInstances { get; set; }
-      protected DefaultTypeSerializer DefaultSerializer { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="TypeSerializerFactory" /> class.
       /// </summary>
@@ -44,6 +40,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
          SerializerInstances = new Dictionary<Type, ITypeSerializer>();
          DefaultSerializer = null;
       }
+
+      protected IKernel Kernel { get; set; }
+      public IList<Type> CustomerSerializerTypes { get; set; }
+      protected Dictionary<Type, ITypeSerializer> SerializerInstances { get; set; }
+      protected DefaultTypeSerializer DefaultSerializer { get; set; }
 
       #region ITypeSerializerFactory Members
 
@@ -66,7 +67,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
          }
 
          foreach (Type item in CustomerSerializerTypes)
-         {
             if (item.IsGenericType)
             {
                var targetType = item.GetGenericArguments()[0];
@@ -77,7 +77,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Factories
                      return SerializerInstances[type] as ITypeSerializer<T>;
                   }
             }
-         }
          return null;
       }
 

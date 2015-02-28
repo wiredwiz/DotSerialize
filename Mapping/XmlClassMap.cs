@@ -98,6 +98,15 @@ namespace Org.Edgerunner.DotSerialize.Mapping
 
       #endregion
 
+      internal override TypeInfo GetTypeInfo()
+      {
+         var type = typeof(T);
+         var memberInfo = new List<TypeMemberInfo>(_Mappings.Count);
+         memberInfo.AddRange(_Mappings.Select(mapping => mapping.Info));
+         var info = new TypeInfo(type.Name, type, _RootNodeName, _Namespace, memberInfo);
+         return info;
+      }
+
       /// <summary>
       ///    Maps a property to a CSV field.
       /// </summary>
@@ -123,15 +132,6 @@ namespace Org.Edgerunner.DotSerialize.Mapping
          }
 
          throw new MappingException(string.Format("'{0}' is not a property or field reference.", member.Name));
-      }
-
-      internal override TypeInfo GetTypeInfo()
-      {
-         var type = typeof(T);
-         var memberInfo = new List<TypeMemberInfo>(_Mappings.Count);
-         memberInfo.AddRange(_Mappings.Select(mapping => mapping.Info));
-         var info = new TypeInfo(type.Name, type, _RootNodeName, _Namespace, memberInfo);
-         return info;
       }
    }
 }
