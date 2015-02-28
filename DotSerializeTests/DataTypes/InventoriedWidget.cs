@@ -38,7 +38,6 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
       [XmlIgnore]
       public override bool BeingConstructed { get; set; }
       [DataMember(Order=8)]
-      [XmlElement]
       public virtual int QuantityInInventory { get; set; }
    }
 }

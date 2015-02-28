@@ -9,6 +9,11 @@ namespace Org.Edgerunner.DotSerialize.Tests
    [TestClass]
    public class TypeInspectorTests
    {
+      public string BFN(string name)
+      {
+         return string.Format("<{0}>k__BackingField", name);
+      }
+
       [TestMethod]
       public void InspectDogReturnsInfoWithTenTypeMembers()
       {
@@ -97,7 +102,7 @@ namespace Org.Edgerunner.DotSerialize.Tests
          int attributes = 0;
          foreach (var item in info.MemberInfoByEntityName)
          {
-            Assert.AreEqual(999, item.Value.Order);
+            Assert.AreEqual(item.Value.Name == BFN("QuantityInInventory") ? 8 : 999, item.Value.Order);
             if (item.Value.IsAttribute)
                attributes++;
             else
