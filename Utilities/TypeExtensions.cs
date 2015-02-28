@@ -22,8 +22,6 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class TypeExtensions
    {
-      #region Static Methods
-
       public static object GetDefaultValue(this Type t)
       {
          if (t.IsValueType)
@@ -31,7 +29,5 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 
          return null;
       }
-
-      #endregion
    }
 }

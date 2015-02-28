@@ -25,13 +25,20 @@ namespace Org.Edgerunner.DotSerialize.Tests
 {
    public static class Utilities
    {
+      public static void DeleteFile(string fileName)
+      {
+         if (File.Exists(fileName))
+            File.Delete(fileName);
+      }
+
       public static void ExtractEmbeddedFile(string fileName)
       {
          var assembly = Assembly.GetExecutingAssembly();
          using (var resourceStream = assembly.GetManifestResourceStream(fileName))
          {
             if (resourceStream == null)
-               throw new MissingManifestResourceException(string.Format("Embedded resource file {0} could not be accessed", fileName));
+               throw new MissingManifestResourceException(string.Format("Embedded resource file {0} could not be accessed",
+                                                                        fileName));
 
             using (var sr = new StreamReader(resourceStream))
                using (var sw = File.CreateText(fileName))
@@ -40,12 +47,6 @@ namespace Org.Edgerunner.DotSerialize.Tests
                   sw.Flush();
                }
          }
-      }
-
-      public static void DeleteFile(string fileName)
-      {
-         if (File.Exists(fileName))
-            File.Delete(fileName);
       }
    }
 }

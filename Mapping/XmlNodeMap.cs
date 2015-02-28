@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Runtime.CompilerServices;
 using Org.Edgerunner.DotSerialize.Reflection;
 
 namespace Org.Edgerunner.DotSerialize.Mapping
@@ -35,13 +34,12 @@ namespace Org.Edgerunner.DotSerialize.Mapping
       internal TypeMemberInfo Info { get; set; }
 
       /// <summary>
-      ///    Specifies the name to use for the xml attribute or element node.
+      ///    Specifies whether the xml node should be an attribute
       /// </summary>
-      /// <param name="name">Name to use.</param>
       /// <returns>Current node map instance.</returns>
-      public XmlNodeMap UsingName(string name)
+      public XmlNodeMap AsAttribute()
       {
-         Info.EntityName = name;
+         Info.IsAttribute = true;
          return this;
       }
 
@@ -57,12 +55,13 @@ namespace Org.Edgerunner.DotSerialize.Mapping
       }
 
       /// <summary>
-      ///    Specifies whether the xml node should be an attribute
+      ///    Specifies the name to use for the xml attribute or element node.
       /// </summary>
+      /// <param name="name">Name to use.</param>
       /// <returns>Current node map instance.</returns>
-      public XmlNodeMap AsAttribute()
+      public XmlNodeMap UsingName(string name)
       {
-         Info.IsAttribute = true;
+         Info.EntityName = name;
          return this;
       }
    }

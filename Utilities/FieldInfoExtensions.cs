@@ -25,8 +25,6 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class FieldInfoExtensions
    {
-      #region Static Methods
-
       public static PropertyInfo GetEncapsulatingAutoProperty(this FieldInfo info)
       {
          var propertyName = NamingUtils.GetAutoPropertyName(info.Name);
@@ -43,7 +41,5 @@ namespace Org.Edgerunner.DotSerialize.Utilities
             return false;
          return info.HasAttribute<CompilerGeneratedAttribute>();
       }
-
-      #endregion
    }
 }

@@ -23,8 +23,6 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class NamingUtils
    {
-      #region Static Methods
-
       public static string GetAutoPropertyName(string backingFieldName)
       {
          var result = Regex.Match(backingFieldName, "<(.+)>k__BackingField", RegexOptions.Compiled);
@@ -32,7 +30,5 @@ namespace Org.Edgerunner.DotSerialize.Utilities
             return null;
          return result.Groups[1].Value;
       }
-
-      #endregion
    }
 }

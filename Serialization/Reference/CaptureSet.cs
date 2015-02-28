@@ -24,10 +24,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public class CaptureSet
    {
-      public Type Type { get; set; }
-      public TypeMemberInfo CurrentMember { get; set; }
-      public List<CaptureNode> CaptureNodes { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="CaptureSet" /> class.
       /// </summary>
@@ -38,5 +34,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          CurrentMember = null;
          CaptureNodes = new List<CaptureNode>();
       }
+
+      public Type Type { get; set; }
+      public TypeMemberInfo CurrentMember { get; set; }
+      public List<CaptureNode> CaptureNodes { get; set; }
    }
 }

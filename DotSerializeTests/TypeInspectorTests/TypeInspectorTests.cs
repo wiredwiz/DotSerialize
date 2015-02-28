@@ -1,7 +1,25 @@
-﻿using System;
+﻿#region Apache License 2.0
+
+// Copyright 2015 Thaddeus Ryker
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 
 namespace Org.Edgerunner.DotSerialize.Tests
@@ -15,65 +33,25 @@ namespace Org.Edgerunner.DotSerialize.Tests
       }
 
       [TestMethod]
-      public void InspectDogReturnsInfoWithTenTypeMembers()
-      {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(Dog));
-         Assert.AreEqual<int>(10, info.MemberInfoByEntityName.Count);
-         Assert.AreEqual<int>(10, info.MemberInfoByName.Count);
-      }
-
-      [TestMethod]
-      public void InspectOwnerReturnsInfoWithSixTypeMembers()
-      {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(Owner));
-         Assert.AreEqual<int>(6, info.MemberInfoByEntityName.Count);
-         Assert.AreEqual<int>(6, info.MemberInfoByName.Count);
-      }
-
-      [TestMethod]
-      public void InspectOwnerReturnsInfoWithRootNodeNamePetOwner()
-      {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(Owner));
-         Assert.AreEqual<string>("PetOwner", info.EntityName);
-      }
-
-      [TestMethod]
-      public void InspectPersonReturnsInfoWithFiveTypeMember()
-      {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(Person));
-         Assert.AreEqual<int>(5, info.MemberInfoByEntityName.Count);
-         Assert.AreEqual<int>(5, info.MemberInfoByName.Count);
-      }
-
-      [TestMethod]
-      public void InspectListOfNullableIntReturnsCleanRootNodeName()
-      {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(List<int?>));
-         Assert.AreEqual<string>("List_int__", info.EntityName);
-      }
-
-      [TestMethod]
       public void InspectBoneReturnsInfoWithThreeTypeMembers()
       {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(Bone));
-         Assert.AreEqual<int>(3, info.MemberInfoByEntityName.Count);
-         Assert.AreEqual<int>(3, info.MemberInfoByName.Count);
+         var info = new TypeInspector().GetInfo(typeof(Bone));
+         Assert.AreEqual(3, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(3, info.MemberInfoByName.Count);
       }
 
       [TestMethod]
-      public void InspectWidgetReturnsInfoWithSevenTypeMembers()
+      public void InspectDogReturnsInfoWithTenTypeMembers()
       {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(Widget));
-         Assert.AreEqual("Widget", info.EntityName);
-         Assert.AreEqual("acme.org", info.Namespace);
-         Assert.AreEqual(7, info.MemberInfoByEntityName.Count);
-         Assert.AreEqual(7, info.MemberInfoByName.Count);
+         var info = new TypeInspector().GetInfo(typeof(Dog));
+         Assert.AreEqual(10, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(10, info.MemberInfoByName.Count);
       }
 
       [TestMethod]
       public void InspectHazardousWidgetReturnsInfoWithSixTypeMembers()
       {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(HazardousWidget));
+         var info = new TypeInspector().GetInfo(typeof(HazardousWidget));
          Assert.AreEqual("Widget", info.EntityName);
          Assert.AreEqual("acme.org", info.Namespace);
          Assert.AreEqual(6, info.MemberInfoByEntityName.Count);
@@ -81,19 +59,9 @@ namespace Org.Edgerunner.DotSerialize.Tests
       }
 
       [TestMethod]
-      public void InspectSellableWidgetReturnsInfoWithTenTypeMembers()
-      {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(SellableWidget));
-         Assert.AreEqual("SaleWidget", info.EntityName);
-         Assert.AreEqual("acme.net", info.Namespace);
-         Assert.AreEqual(10, info.MemberInfoByEntityName.Count);
-         Assert.AreEqual(10, info.MemberInfoByName.Count);
-      }
-
-      [TestMethod]
       public void InspectInventoriedWidgetReturnsInfoWithEightTypeMembers()
       {
-         var info = new Reflection.TypeInspector().GetInfo(typeof(InventoriedWidget));
+         var info = new TypeInspector().GetInfo(typeof(InventoriedWidget));
          Assert.AreEqual("InventoriedWidget", info.EntityName);
          Assert.AreEqual("acme.org", info.Namespace);
          Assert.AreEqual(8, info.MemberInfoByEntityName.Count);
@@ -110,6 +78,56 @@ namespace Org.Edgerunner.DotSerialize.Tests
          }
          Assert.AreEqual(7, attributes);
          Assert.AreEqual(1, elements);
+      }
+
+      [TestMethod]
+      public void InspectListOfNullableIntReturnsCleanRootNodeName()
+      {
+         var info = new TypeInspector().GetInfo(typeof(List<int?>));
+         Assert.AreEqual("List_int__", info.EntityName);
+      }
+
+      [TestMethod]
+      public void InspectOwnerReturnsInfoWithRootNodeNamePetOwner()
+      {
+         var info = new TypeInspector().GetInfo(typeof(Owner));
+         Assert.AreEqual("PetOwner", info.EntityName);
+      }
+
+      [TestMethod]
+      public void InspectOwnerReturnsInfoWithSixTypeMembers()
+      {
+         var info = new TypeInspector().GetInfo(typeof(Owner));
+         Assert.AreEqual(6, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(6, info.MemberInfoByName.Count);
+      }
+
+      [TestMethod]
+      public void InspectPersonReturnsInfoWithFiveTypeMember()
+      {
+         var info = new TypeInspector().GetInfo(typeof(Person));
+         Assert.AreEqual(5, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(5, info.MemberInfoByName.Count);
+      }
+
+      [TestMethod]
+      public void InspectSellableWidgetReturnsInfoWithTenTypeMembers()
+      {
+         var info = new TypeInspector().GetInfo(typeof(SellableWidget));
+         Assert.AreEqual("SaleWidget", info.EntityName);
+         Assert.AreEqual("acme.net", info.Namespace);
+         Assert.AreEqual(10, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(10, info.MemberInfoByName.Count);
+      }
+
+      [TestMethod]
+      public void InspectWidgetReturnsInfoWithSevenTypeMembers()
+      {
+         var info = new TypeInspector().GetInfo(typeof(Widget));
+         Assert.AreEqual("Widget", info.EntityName);
+         Assert.AreEqual("acme.org", info.Namespace);
+         Assert.AreEqual(7, info.MemberInfoByEntityName.Count);
+         Assert.AreEqual(7, info.MemberInfoByName.Count);
       }
    }
 }

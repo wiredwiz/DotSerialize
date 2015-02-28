@@ -23,11 +23,6 @@ namespace Org.Edgerunner.DotSerialize.Attributes
    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
    public class XmlElementAttribute : Attribute
    {
-      public string Name { get; set; }
-      public int Order { get; set; }
-
-      #region Constructors
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="XmlElementAttribute" /> class.
       /// </summary>
@@ -59,6 +54,7 @@ namespace Org.Edgerunner.DotSerialize.Attributes
          Order = order;
       }
 
-      #endregion
+      public string Name { get; set; }
+      public int Order { get; set; }
    }
 }

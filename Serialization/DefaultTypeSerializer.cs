@@ -17,38 +17,29 @@
 #endregion
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Xml;
-using Fasterflect;
-using Org.Edgerunner.DotSerialize.Exceptions;
-using Org.Edgerunner.DotSerialize.Properties;
 using Org.Edgerunner.DotSerialize.Reflection;
-using Org.Edgerunner.DotSerialize.Reflection.Construction;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
-using Org.Edgerunner.DotSerialize.Utilities;
-using TypeInfo = Org.Edgerunner.DotSerialize.Reflection.TypeInfo;
 
 namespace Org.Edgerunner.DotSerialize.Serialization
 {
-   public class DefaultTypeSerializer : TypeSerializerBase<object>   
+   public class DefaultTypeSerializer : TypeSerializerBase<object>
    {
       /// <summary>
-      /// Initializes a new instance of the <see cref="DefaultTypeSerializer"/> class.
+      ///    Initializes a new instance of the <see cref="DefaultTypeSerializer" /> class.
       /// </summary>
       /// <param name="settings"></param>
       /// <param name="factory"></param>
       /// <param name="inspector"></param>
       /// <param name="refManager"></param>
-      public DefaultTypeSerializer(Settings settings, ITypeSerializerFactory factory, ITypeInspector inspector, IReferenceManager refManager)
+      public DefaultTypeSerializer(Settings settings,
+                                   ITypeSerializerFactory factory,
+                                   ITypeInspector inspector,
+                                   IReferenceManager refManager)
          : base(settings, factory, inspector, refManager)
       {
-         
       }
 
       public virtual T Deserialize<T>(XmlReader reader)

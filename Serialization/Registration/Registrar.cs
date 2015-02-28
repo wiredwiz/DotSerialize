@@ -23,8 +23,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Registration
 {
    public class Registrar<T>
    {
-      protected Serializer CurrentSerializer { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="Registrar" /> class.
       /// </summary>
@@ -34,9 +32,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Registration
          CurrentSerializer = currentSerializer;
       }
 
+      protected Serializer CurrentSerializer { get; set; }
+
       public void ToTypeSerializer<TImplementation>(params object[] constructorArguments)
       {
-          CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation), constructorArguments);
+         CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation), constructorArguments);
       }
    }
 }
