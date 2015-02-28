@@ -24,8 +24,6 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class ObjectExtensions
    {
-      #region Static Methods
-
       public static void SetArrayFieldValue(this object obj, string name, object value, int index)
       {
          var type = obj.GetType();
@@ -53,7 +51,5 @@ namespace Org.Edgerunner.DotSerialize.Utilities
             throw new TargetException("The value of property \"{0}\" is null.");
          array.SetValue(value, index);
       }
-
-      #endregion
    }
 }

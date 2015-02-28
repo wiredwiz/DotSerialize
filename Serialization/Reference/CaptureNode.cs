@@ -23,10 +23,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public class CaptureNode
    {
-      public int Id { get; set; }
-      public TypeMemberInfo MemberInfo { get; set; }
-      public int Index { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="CaptureNode" /> class.
       /// </summary>
@@ -51,5 +47,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          MemberInfo = memberInfo;
          Index = -1;
       }
+
+      public int Id { get; set; }
+      public TypeMemberInfo MemberInfo { get; set; }
+      public int Index { get; set; }
    }
 }

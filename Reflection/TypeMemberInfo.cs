@@ -23,21 +23,15 @@ namespace Org.Edgerunner.DotSerialize.Reflection
 {
    public class TypeMemberInfo : IEquatable<TypeMemberInfo>
    {
-      public string Name { get; set; }
-      public MemberType Type { get; set; }
-      public string EntityName { get; set; }
-      public Type DataType { get; set; }
-      public bool IsAttribute { get; set; }
-      public int Order { get; set; }
+      #region MemberType enum
 
-      public string ConstructorFriendlyName
+      public enum MemberType
       {
-         get
-         {
-            string friendlyName = NamingUtils.GetAutoPropertyName(Name);
-            return string.IsNullOrEmpty(friendlyName) ? Name : friendlyName;
-         }
+         Field,
+         Property
       }
+
+      #endregion
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="TypeMemberInfo" /> class.
@@ -87,15 +81,21 @@ namespace Org.Edgerunner.DotSerialize.Reflection
          IsAttribute = isAttribute;
       }
 
-      #region MemberType enum
+      public string Name { get; set; }
+      public MemberType Type { get; set; }
+      public string EntityName { get; set; }
+      public Type DataType { get; set; }
+      public bool IsAttribute { get; set; }
+      public int Order { get; set; }
 
-      public enum MemberType
+      public string ConstructorFriendlyName
       {
-         Field,
-         Property
+         get
+         {
+            string friendlyName = NamingUtils.GetAutoPropertyName(Name);
+            return string.IsNullOrEmpty(friendlyName) ? Name : friendlyName;
+         }
       }
-
-      #endregion
 
       #region IEquatable<TypeMemberInfo> Members
 

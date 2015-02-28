@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Xml;
 using Fasterflect;
@@ -32,7 +31,6 @@ using Org.Edgerunner.DotSerialize.Reflection.Construction;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
 using Org.Edgerunner.DotSerialize.Utilities;
-using TypeInfo = Org.Edgerunner.DotSerialize.Reflection.TypeInfo;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 {
@@ -595,6 +593,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             throw new SerializerException(string.Format("Cannot parse unexpected primitive type {0}", type.Name()));
          return result;
       }
+
       protected virtual string FormatType(string assemblyQualifiedName)
       {
          string[] parts = assemblyQualifiedName.Split(',');

@@ -28,11 +28,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public class ReferenceManager : IReferenceManager
    {
-      protected Dictionary<int, ReferenceNode> ReferencesByGuid { get; set; }
-      protected Dictionary<object, int> ReferencesByInstance { get; set; }
-      protected Stack<CaptureSet> CaptureStack { get; set; }
-      protected int CurrentId { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="ReferenceManager" /> class.
       /// </summary>
@@ -43,6 +38,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          CaptureStack = new Stack<CaptureSet>();
          CurrentId = 1;
       }
+
+      protected Dictionary<int, ReferenceNode> ReferencesByGuid { get; set; }
+      protected Dictionary<object, int> ReferencesByInstance { get; set; }
+      protected Stack<CaptureSet> CaptureStack { get; set; }
+      protected int CurrentId { get; set; }
 
       #region IReferenceManager Members
 

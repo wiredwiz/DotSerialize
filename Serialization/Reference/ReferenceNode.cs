@@ -23,13 +23,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
    public sealed class ReferenceNode
    {
       private object _SourceObject;
-      public MemberReferenceList References { get; private set; }
-
-      public object SourceObject
-      {
-         get { return _SourceObject; }
-         set { UpdateSourceReference(value); }
-      }
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="ReferenceNode" /> class.
@@ -48,6 +41,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          References = new MemberReferenceList();
          _SourceObject = null;
+      }
+
+      public MemberReferenceList References { get; private set; }
+
+      public object SourceObject
+      {
+         get { return _SourceObject; }
+         set { UpdateSourceReference(value); }
       }
 
       private void UpdateSourceReference(object newValue)

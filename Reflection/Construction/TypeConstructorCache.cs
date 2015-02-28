@@ -45,6 +45,20 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          _Mappings[type].Add(GetHash(info), constructorMap);
       }
 
+      protected int GetHash(IList<TypeMemberInfo> info)
+      {
+         if (info.Count == 0)
+            return 0;
+         if (info.Count == 1)
+            return info[0].GetHashCode();
+         info = info.OrderBy(x => x.Name).ToList();
+         //info.Sort((x, y) => x.Name.CompareTo(y));
+         int result = info[0].GetHashCode();
+         for (int i = 1; i < info.Count; i++)
+            result = (result * 397) ^ info[i].GetHashCode();
+         return result;
+      }
+
       public ConstructorMap GetMappingFor(Type type, IList<TypeMemberInfo> info)
       {
          if (type == null) throw new ArgumentNullException("type");
@@ -58,20 +72,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          if (!typeMappings.ContainsKey(key))
             return null;
          return typeMappings[key];
-      }
-
-      protected int GetHash(IList<TypeMemberInfo> info)
-      {
-         if (info.Count == 0)
-            return 0;
-         if (info.Count == 1)
-            return info[0].GetHashCode();
-         info = info.OrderBy(x => x.Name).ToList();
-         //info.Sort((x, y) => x.Name.CompareTo(y));
-         int result = info[0].GetHashCode();
-         for (int i = 1; i < info.Count; i++)
-            result = (result * 397) ^ info[i].GetHashCode();
-         return result;
       }
    }
 }

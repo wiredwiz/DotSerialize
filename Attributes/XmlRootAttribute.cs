@@ -23,9 +23,6 @@ namespace Org.Edgerunner.DotSerialize.Attributes
    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Interface)]
    public class XmlRootAttribute : Attribute
    {
-      public string Name { get; set; }
-      public string Namespace { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="XmlRootAttribute" /> class.
       /// </summary>
@@ -46,5 +43,8 @@ namespace Org.Edgerunner.DotSerialize.Attributes
          Name = name;
          Namespace = @namespace;
       }
+
+      public string Name { get; set; }
+      public string Namespace { get; set; }
    }
 }

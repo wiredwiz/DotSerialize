@@ -26,12 +26,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public sealed class MemberReference : IEquatable<MemberReference>
    {
-      public object Source { get; set; }
-      public MemberTypes Type { get; set; }
-      public string Name { get; set; }
-      public bool IsIndexReference { get; set; }
-      public int ArrayIndex { get; set; }
-
       /// <summary>
       ///    Initializes a new instance of the <see cref="MemberReference" /> class.
       /// </summary>
@@ -62,6 +56,12 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          IsIndexReference = true;
          ArrayIndex = arrayIndex;
       }
+
+      public object Source { get; set; }
+      public MemberTypes Type { get; set; }
+      public string Name { get; set; }
+      public bool IsIndexReference { get; set; }
+      public int ArrayIndex { get; set; }
 
       #region IEquatable<MemberReference> Members
 

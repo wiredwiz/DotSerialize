@@ -40,42 +40,17 @@ using Org.Edgerunner.DotSerialize.Utilities;
 namespace Org.Edgerunner.DotSerialize
 {
    /// <summary>
-   /// Class used to serialize and deserialize data.
+   ///    Class used to serialize and deserialize data.
    /// </summary>
    public class Serializer
    {
       /// <summary>
-      /// The current Serializer instance to use in static method calls.
+      ///    The current Serializer instance to use in static method calls.
       /// </summary>
       private static Serializer _Instance;
-      /// <summary>
-      /// Gets or sets the Settings instance to use with the Serializer.
-      /// </summary>
-      /// <value>The settings.</value>
-      public Settings Settings { get; set; }
-      /// <summary>
-      /// Gets or sets the current Ninject kernel.
-      /// </summary>
-      /// <value>The kernel.</value>
-      protected IKernel Kernel { get; set; }
-      /// <summary>
-      /// Gets or sets the registered custom type serializers.
-      /// </summary>
-      /// <value>The registered custom type serializers.</value>
-      protected IList<Type> RegisteredTypeSerializers { get; set; }
 
       /// <summary>
-      /// The current Serializer instance to use in static method calls.
-      /// </summary>
-      /// <value>The instance.</value>
-      public static Serializer Instance
-      {
-         get { return _Instance ?? (_Instance = new Serializer()); }
-         set { _Instance = value; }
-      }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Serializer" /> class.
+      ///    Initializes a new instance of the <see cref="Serializer" /> class.
       /// </summary>
       /// <param name="settings">The Settings to use.</param>
       public Serializer(Settings settings)
@@ -87,7 +62,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="Serializer" /> class.
+      ///    Initializes a new instance of the <see cref="Serializer" /> class.
       /// </summary>
       public Serializer()
       {
@@ -98,7 +73,35 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Clears the custom type serializer registrations.
+      ///    Gets or sets the Settings instance to use with the Serializer.
+      /// </summary>
+      /// <value>The settings.</value>
+      public Settings Settings { get; set; }
+
+      /// <summary>
+      ///    Gets or sets the current Ninject kernel.
+      /// </summary>
+      /// <value>The kernel.</value>
+      protected IKernel Kernel { get; set; }
+
+      /// <summary>
+      ///    Gets or sets the registered custom type serializers.
+      /// </summary>
+      /// <value>The registered custom type serializers.</value>
+      protected IList<Type> RegisteredTypeSerializers { get; set; }
+
+      /// <summary>
+      ///    The current Serializer instance to use in static method calls.
+      /// </summary>
+      /// <value>The instance.</value>
+      public static Serializer Instance
+      {
+         get { return _Instance ?? (_Instance = new Serializer()); }
+         set { _Instance = value; }
+      }
+
+      /// <summary>
+      ///    Clears the custom type serializer registrations.
       /// </summary>
       public void ClearTypeSerializerRegistrations()
       {
@@ -109,18 +112,18 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Deserializes an object from a Stream and returns it as Type T.
+      ///    Deserializes an object from a Stream and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="stream">The Stream to read from.</param>
       /// <returns>Object of Type T.</returns>
       /// <example>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
       /// var serializer = new Serializer();
       /// var user;
       /// using (FileStream stream = File.Open(@"C:\user.xml", FileMode.Open))
       ///   user = serializer.DeserializeObject&lt;User&gt;(stream);</code>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
       /// Dim serializer = New Serializer()
       /// Dim user
       /// Using stream As FileStream = File.Open("C:\user.xml", FileMode.Open)
@@ -134,16 +137,16 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Deserializes an object from an XmlDocument and returns it as Type T.
+      ///    Deserializes an object from an XmlDocument and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="document">The XmlDocument to read from.</param>
       /// <returns>Object of Type T.</returns>
       /// <example>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
       /// var serializer = new Serializer();
       /// var user = serializer.DeserializeObject&lt;User&gt;(xmlDoc);</code>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
       /// Dim serializer = New Serializer()
       /// Dim user = serializer.DeserializeObject(Of User)(xmlDoc)</code>
       /// </example>
@@ -153,16 +156,16 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Deserializes an object from a TextReader and returns it as Type T.
+      ///    Deserializes an object from a TextReader and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="reader">The TextReader to read from.</param>
       /// <returns>Object of Type T.</returns>
       /// <example>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
       /// var serializer = new Serializer();
       /// var user = serializer.DeserializeObject&lt;User&gt;(reader);</code>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
       /// Dim serializer = New Serializer()
       /// Dim user = serializer.DeserializeObject(Of User)(reader)</code>
       /// </example>
@@ -173,17 +176,20 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Deserializes an object from a XmlReader and returns it as Type T.
+      ///    Deserializes an object from a XmlReader and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="reader">The XmlReader to read from.</param>
       /// <returns>Object of Type T.</returns>
-      /// <exception caption="" cref="SerializerException">Thrown if the root node cannot be found or if there is more than one root node.</exception>
+      /// <exception caption="" cref="SerializerException">
+      ///    Thrown if the root node cannot be found or if there is more than one
+      ///    root node.
+      /// </exception>
       /// <example>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
       /// var serializer = new Serializer();
       /// var user = serializer.DeserializeObject&lt;User&gt;(reader);</code>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
       /// Dim serializer = New Serializer()
       /// Dim user = serializer.DeserializeObject(Of User)(reader)</code>
       /// </example>
@@ -227,16 +233,16 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Deserializes an object from a string and returns it as Type T.
+      ///    Deserializes an object from a string and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="xml">The string containing valid XML.</param>
       /// <returns>Object of Type T.</returns>
       /// <example>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
       /// var serializer = new Serializer();
       /// var user = serializer.DeserializeObject&lt;User&gt;(someXmlString);</code>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
       /// Dim serializer = New Serializer()
       /// Dim user = serializer.DeserializeObject(Of User)(someXmlString)</code>
       /// </example>
@@ -247,16 +253,16 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Deserializes an object from a file and returns it as Type T.
+      ///    Deserializes an object from a file and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="fileName">Name of the file to read.</param>
       /// <returns>Object of Type T.</returns>
       /// <example>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="C#">
       /// var serializer = new Serializer();
       /// var user = serializer.DeserializeObjectFromFile&lt;User&gt;(@"C:\user.xml");</code>
-      /// 	<code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
+      ///    <code title="Deserializing a user object" description="" groupname="DeserializeFromFile" lang="VB">
       /// Dim serializer = New Serializer()
       /// Dim user = serializer.DeserializeObjectFromFile(Of User)("C:\user.xml")</code>
       /// </example>
@@ -267,7 +273,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Loads the default Ninject bindings.
+      ///    Loads the default Ninject bindings.
       /// </summary>
       public virtual void LoadDefaultBindings()
       {
@@ -279,10 +285,10 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Registers an <see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap"/> instance for a specified data type 
-      /// that contains a fluent mapping of how the data type should be serialized and deserialized.
+      ///    Registers an <see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap" /> instance for a specified data type
+      ///    that contains a fluent mapping of how the data type should be serialized and deserialized.
       /// </summary>
-      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap"/> instance to register.</param>
+      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.XmlClassMap" /> instance to register.</param>
       /// <typeparam name="T">Data type for which the class map is being registered.</typeparam>
       /// <returns></returns>
       public virtual Serializer RegisterClassMap<T>() where T : ClassMapBase
@@ -294,7 +300,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Registers a given Type to be handled by a custom type serializer.
+      ///    Registers a given Type to be handled by a custom type serializer.
       /// </summary>
       /// <typeparam name="T">The Type to be handled</typeparam>
       /// <returns>A Registrar&lt;T&gt; instance.</returns>
@@ -304,7 +310,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied string.
+      ///    Serializes an object and writes it to the supplied string.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="obj">The object to serialize.</param>
@@ -318,7 +324,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied Stream.
+      ///    Serializes an object and writes it to the supplied Stream.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="stream">The Stream to write to.</param>
@@ -330,7 +336,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied TextWriter.
+      ///    Serializes an object and writes it to the supplied TextWriter.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="writer">The TextWriter to write to.</param>
@@ -342,7 +348,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied XmlWriter.
+      ///    Serializes an object and writes it to the supplied XmlWriter.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="writer">The XmlWriter to write to.</param>
@@ -365,17 +371,17 @@ namespace Org.Edgerunner.DotSerialize
 
          try
          {
-         // Attempt to fetch a custom type serializer
-         ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
-         var typeSerializer = factory.GetTypeSerializer<T>();
-         if (typeSerializer != null)
-            typeSerializer.Serialize(writer, obj);
-         else
-         // Since there was no bound custom type serializer we default to the GenericTypeSerializer
-         {
-            var defaultSerializer = factory.GetDefaultSerializer();
-            defaultSerializer.Serialize(writer, obj);
-         }
+            // Attempt to fetch a custom type serializer
+            ITypeSerializerFactory factory = Kernel.Get<ITypeSerializerFactory>();
+            var typeSerializer = factory.GetTypeSerializer<T>();
+            if (typeSerializer != null)
+               typeSerializer.Serialize(writer, obj);
+            else
+            // Since there was no bound custom type serializer we default to the GenericTypeSerializer
+            {
+               var defaultSerializer = factory.GetDefaultSerializer();
+               defaultSerializer.Serialize(writer, obj);
+            }
          }
          catch (StackOverflowException ex)
          {
@@ -392,7 +398,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied XmlDocument.
+      ///    Serializes an object and writes it to the supplied XmlDocument.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="document">The XmlDocument to write to.</param>
@@ -406,7 +412,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to a file with the specified file name.
+      ///    Serializes an object and writes it to a file with the specified file name.
       /// </summary>
       /// <typeparam name="T">The type being Serialized</typeparam>
       /// <param name="fileName">Name of the file to write to.</param>
@@ -419,14 +425,14 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Unregisters the custom ITypeSerializer linked to Type.
+      ///    Unregisters the custom ITypeSerializer linked to Type.
       /// </summary>
       /// <typeparam name="T">The Type to unregister the customer ITypeSerializer for.</typeparam>
       public virtual void UnRegisterType<T>()
       {
          var type = typeof(ITypeSerializer<T>);
          if (RegisteredTypeSerializers.Contains(type))
-         {            
+         {
             Kernel.Unbind(type);
             RegisteredTypeSerializers.Remove(type);
             BindITypeSerializationFactory();
@@ -434,7 +440,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Binds the default type serializer implementation in the current Ninject Kernel.
+      ///    Binds the default type serializer implementation in the current Ninject Kernel.
       /// </summary>
       protected virtual void BindDefaultTypeSerializer()
       {
@@ -442,7 +448,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Binds the IReferenceManager implementation in the current Ninject Kernel.
+      ///    Binds the IReferenceManager implementation in the current Ninject Kernel.
       /// </summary>
       protected virtual void BindIReferenceManager()
       {
@@ -450,7 +456,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Binds the ISerializationInformationCache implementation in the current Ninject Kernel.
+      ///    Binds the ISerializationInformationCache implementation in the current Ninject Kernel.
       /// </summary>
       protected virtual void BindISerializationInfoCache()
       {
@@ -458,7 +464,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Binds the ITypeInspector implementation in the current Ninject Kernel.
+      ///    Binds the ITypeInspector implementation in the current Ninject Kernel.
       /// </summary>
       protected virtual void BindITypeInspector()
       {
@@ -466,7 +472,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Binds the ITypeSerializationFactory implementation in the current Ninject Kernel.
+      ///    Binds the ITypeSerializationFactory implementation in the current Ninject Kernel.
       /// </summary>
       protected virtual void BindITypeSerializationFactory()
       {
@@ -474,7 +480,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Binds the Settings in the current Ninject Kernel.
+      ///    Binds the Settings in the current Ninject Kernel.
       /// </summary>
       protected virtual void BindSettings()
       {
@@ -482,7 +488,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Loads the default Ninject Kernel.
+      ///    Loads the default Ninject Kernel.
       /// </summary>
       protected virtual void LoadDefaultKernel()
       {
@@ -492,7 +498,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Reads from the XmlReader until an element node is encountered.
+      ///    Reads from the XmlReader until an element node is encountered.
       /// </summary>
       /// <param name="reader">The XmlReader to read from.</param>
       /// <returns><c>true</c> if the reader locates an element node, <c>false</c> otherwise.</returns>
@@ -510,7 +516,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Registers a specified ITypeSerializer to a custom type serializer implementation.
+      ///    Registers a specified ITypeSerializer to a custom type serializer implementation.
       /// </summary>
       /// <param name="sourceInterface">The ITypeSerializer to register for.</param>
       /// <param name="implementation">The ITypeSerializer implementation to register against.</param>
@@ -528,68 +534,86 @@ namespace Org.Edgerunner.DotSerialize
       #region Static Methods
 
       /// <summary>
-      /// Deserializes an object from a Stream and returns it as Type T.
+      ///    Deserializes an object from a Stream and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="stream">The Stream to read from.</param>
       /// <returns>Object of Type T.</returns>
-      /// <remarks>Calls the DeserializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the DeserializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static T Deserialize<T>(Stream stream)
       {
          return Instance.DeserializeObject<T>(stream);
       }
 
       /// <summary>
-      /// Deserializes an object from an XmlDocument and returns it as Type T.
+      ///    Deserializes an object from an XmlDocument and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="document">The XmlDocument to read from.</param>
       /// <returns>Object of Type T.</returns>
-      /// <remarks>Calls the DeserializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the DeserializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static T Deserialize<T>(XmlDocument document)
       {
          return Instance.DeserializeObject<T>(document);
       }
 
       /// <summary>
-      /// Deserializes an object from a TextReader and returns it as Type T.
+      ///    Deserializes an object from a TextReader and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="reader">The TextReader to read from.</param>
       /// <returns>Object of Type T.</returns>
-      /// <remarks>Calls the DeserializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the DeserializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static T Deserialize<T>(TextReader reader)
       {
          return Instance.DeserializeObject<T>(reader);
       }
 
       /// <summary>
-      /// Deserializes an object from a XmlReader and returns it as Type T.
+      ///    Deserializes an object from a XmlReader and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="reader">The XmlReader to read from.</param>
       /// <returns>Object of Type T.</returns>
-      /// <remarks>Calls the DeserializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
-      /// <exception caption="" cref="SerializerException">Thrown if the root node cannot be found or if there is more than one root node.</exception>
+      /// <remarks>
+      ///    Calls the DeserializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
+      /// <exception caption="" cref="SerializerException">
+      ///    Thrown if the root node cannot be found or if there is more than one
+      ///    root node.
+      /// </exception>
       public static T Deserialize<T>(XmlReader reader)
       {
          return Instance.DeserializeObject<T>(reader);
       }
 
       /// <summary>
-      /// Deserializes an object from a string and returns it as Type T.
+      ///    Deserializes an object from a string and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="xml">The string containing valid XML.</param>
       /// <returns>Object of Type T.</returns>
-      /// <remarks>Calls the DeserializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the DeserializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static T Deserialize<T>(string xml)
       {
          return Instance.DeserializeObject<T>(xml);
       }
 
       /// <summary>
-      /// Deserializes an object from a file and returns it as Type T.
+      ///    Deserializes an object from a file and returns it as Type T.
       /// </summary>
       /// <typeparam name="T">The Type being deserialized</typeparam>
       /// <param name="fileName">Name of the file to read.</param>
@@ -602,7 +626,7 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied string.
+      ///    Serializes an object and writes it to the supplied string.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="obj">The object to serialize.</param>
@@ -613,55 +637,67 @@ namespace Org.Edgerunner.DotSerialize
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied Stream.
+      ///    Serializes an object and writes it to the supplied Stream.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="stream">The Stream to write to.</param>
       /// <param name="obj">The object to serialize.</param>
-      /// <remarks>Calls the SerializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the SerializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static void Serialize<T>(Stream stream, T obj)
       {
          Instance.SerializeObject(stream, obj);
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied TextWriter.
+      ///    Serializes an object and writes it to the supplied TextWriter.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="writer">The TextWriter to write to.</param>
       /// <param name="obj">The object to serialize.</param>
-      /// <remarks>Calls the SerializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the SerializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static void Serialize<T>(TextWriter writer, T obj)
       {
          Instance.SerializeObject(writer, obj);
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied XmlWriter.
+      ///    Serializes an object and writes it to the supplied XmlWriter.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="writer">The XmlWriter to write to.</param>
       /// <param name="obj">The object to serialize.</param>
-      /// <remarks>Calls the SerializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the SerializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static void Serialize<T>(XmlWriter writer, T obj)
       {
          Instance.SerializeObject(writer, obj);
       }
 
       /// <summary>
-      /// Serializes an object and writes it to the supplied XmlDocument.
+      ///    Serializes an object and writes it to the supplied XmlDocument.
       /// </summary>
       /// <typeparam name="T">The Type being Serialized</typeparam>
       /// <param name="document">The XmlDocument to write to.</param>
       /// <param name="obj">The object to serialize.</param>
-      /// <remarks>Calls the SerializeObject method with the same signature on the Serializer instance stored in property Instance.</remarks>
+      /// <remarks>
+      ///    Calls the SerializeObject method with the same signature on the Serializer instance stored in property
+      ///    Instance.
+      /// </remarks>
       public static void Serialize<T>(out XmlDocument document, T obj)
       {
          Instance.SerializeObject(out document, obj);
       }
 
       /// <summary>
-      /// Serializes an object and writes it to a file with the specified file name.
+      ///    Serializes an object and writes it to a file with the specified file name.
       /// </summary>
       /// <typeparam name="T">The type being Serialized</typeparam>
       /// <param name="fileName">Name of the file to write to.</param>
