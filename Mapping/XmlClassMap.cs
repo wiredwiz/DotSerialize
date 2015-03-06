@@ -99,7 +99,7 @@ namespace Org.Edgerunner.DotSerialize.Mapping
       #endregion
 
       /// <summary>
-      ///    Maps a property to a CSV field.
+      ///    Maps a property to an xml node.
       /// </summary>
       /// <param name="expression">The property to map.</param>
       /// <returns>The property mapping.</returns>
@@ -123,6 +123,35 @@ namespace Org.Edgerunner.DotSerialize.Mapping
          }
 
          throw new MappingException(string.Format("'{0}' is not a property or field reference.", member.Name));
+      }
+
+      /// <summary>
+      /// Maps a property to an xml node.
+      /// </summary>
+      /// <param name="memberType">Type of member to map.</param>
+      /// <param name="memberName">Name of member to map.</param>
+      /// <returns>The property mapping.</returns>
+      protected virtual XmlNodeMap Map(TypeMemberInfo.MemberType memberType, string memberName)
+      {
+         if (string.IsNullOrEmpty(memberName)) throw new ArgumentNullException("memberName");
+         Type objType = typeof(T);
+         Type dataType;
+         switch (memberType)
+         {
+            case TypeMemberInfo.MemberType.Field:
+               var fld = objType.Field(memberName);
+               dataType = fld.FieldType;
+               break;
+            case TypeMemberInfo.MemberType.Property:
+               var prop = objType.Property(memberName);
+               dataType = prop.PropertyType;
+               break;
+            default:
+               throw new MappingException("Unknown member type");
+         }
+         var nodeMap = new XmlNodeMap(memberName, memberType, dataType);
+         _Mappings.Add(nodeMap);
+         return nodeMap;
       }
 
       internal override TypeInfo GetTypeInfo()
