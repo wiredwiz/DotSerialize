@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using Ninject;
+using Ninject.Syntax;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Mapping;
 using Org.Edgerunner.DotSerialize.Properties;
@@ -304,7 +305,7 @@ namespace Org.Edgerunner.DotSerialize
       /// </summary>
       /// <typeparam name="T">The Type to be handled</typeparam>
       /// <returns>A Registrar&lt;T&gt; instance.</returns>
-      public Registrar<T> RegisterType<T>()
+      public Registrar<T> RegisterType<T>() where T : ITypeSerializer
       {
          return new Registrar<T>(this);
       }
@@ -520,15 +521,13 @@ namespace Org.Edgerunner.DotSerialize
       /// </summary>
       /// <param name="sourceInterface">The ITypeSerializer to register for.</param>
       /// <param name="implementation">The ITypeSerializer implementation to register against.</param>
-      /// <param name="constructorArguments">Constructor arguments to be passed into new instances of the custom type serializer.</param>
-      internal void RegisterTypeSerializer(Type sourceInterface, Type implementation, params object[] constructorArguments)
+      internal IBindingWhenInNamedWithOrOnSyntax<object> RegisterTypeSerializer(Type sourceInterface, Type implementation)
       {
          var bindingSyntax = Kernel.Rebind(sourceInterface).To(implementation);
-         foreach (object arg in constructorArguments)
-            bindingSyntax.WithConstructorArgument(arg.GetType(), arg);
          if (!RegisteredTypeSerializers.Contains(sourceInterface))
             RegisteredTypeSerializers.Add(sourceInterface);
          BindITypeSerializationFactory();
+         return bindingSyntax;
       }
 
       #region Static Methods
