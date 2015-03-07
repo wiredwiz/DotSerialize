@@ -54,6 +54,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.2.2.65")]
-[assembly: AssemblyFileVersion("1.2.2.65")]
+[assembly: AssemblyVersion("1.2.2.66")]
+[assembly: AssemblyFileVersion("1.2.2.66")]
 [assembly: InternalsVisibleTo("DotSerializeTests")]
