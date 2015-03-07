@@ -17,11 +17,12 @@
 #endregion
 
 using System;
+using Ninject.Syntax;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Registration
 {
-   public class Registrar<T>
+   public class Registrar<T> where T : ITypeSerializer
    {
       /// <summary>
       ///    Initializes a new instance of the <see cref="Registrar" /> class.
@@ -34,9 +35,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Registration
 
       protected Serializer CurrentSerializer { get; set; }
 
-      public void ToTypeSerializer<TImplementation>(params object[] constructorArguments)
+      public RegistrarBinding<TImplementation> ToTypeSerializer<TImplementation>() where TImplementation : ITypeSerializer
       {
-         CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation), constructorArguments);
+         return new RegistrarBinding<TImplementation>(CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation)));
       }
    }
 }
