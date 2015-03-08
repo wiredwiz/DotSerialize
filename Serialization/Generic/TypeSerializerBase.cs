@@ -173,6 +173,32 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          writer.WriteEndElement();
       }
 
+      protected virtual void WriteReferenceIsNullAttribute(XmlWriter writer)
+      {
+         writer.WriteAttributeString(Resources.ReferenceisNull,
+                                     Resources.XsiUri,
+                                     true.ToString().ToLowerInvariant());
+      }
+
+      protected virtual void WriteReferenceTypeAttribute(XmlWriter writer, Type actualType)
+      {
+         writer.WriteAttributeString(Resources.ReferenceType,
+                                     Resources.DotserializeUri,
+                                     FormatType(actualType.AssemblyQualifiedName));
+      }
+
+      protected virtual void WriteReferenceIdAttribute(XmlWriter writer, int id)
+      {
+         writer.WriteAttributeString(Resources.ReferenceId, Resources.DotserializeUri, id.ToString());
+      }
+
+      protected virtual void WriteReferenceIsSourceAttribute(XmlWriter writer)
+      {
+         writer.WriteAttributeString(Resources.ReferenceSource,
+                                     Resources.DotserializeUri,
+                                     true.ToString().ToLowerInvariant());
+      }
+
       public virtual void Serialize(XmlWriter writer, Type type, object obj)
       {
          if (writer == null) throw new ArgumentNullException("writer");
@@ -189,16 +215,12 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             if (obj == null)
             {
                actualType = type;
-               writer.WriteAttributeString(Resources.ReferenceisNull,
-                                           Resources.XsiUri,
-                                           true.ToString().ToLowerInvariant());
+               WriteReferenceIsNullAttribute(writer);
                return;
             }
             actualType = obj.GetType();
             if ((actualType != type) || (!Settings.OmitTypeWhenPossible))
-               writer.WriteAttributeString(Resources.ReferenceType,
-                                           Resources.DotserializeUri,
-                                           FormatType(actualType.AssemblyQualifiedName));
+               WriteReferenceTypeAttribute(writer, actualType);
             // check for struct before writing reference id
             if (!type.IsValueType && !Settings.DisableReferentialIntegrity)
             {
@@ -206,16 +228,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                if (RefManager.IsRegistered(obj))
                {
                   id = RefManager.GetObjectId(obj);
-                  writer.WriteAttributeString(Resources.ReferenceId, Resources.DotserializeUri, id.ToString());
+                  WriteReferenceIdAttribute(writer, id);
                   // since this object has already been serialized once there is no need to write out the rest of the object
                   return;
                }
                // Given that the instance has not already been seen we keep writing
                id = RefManager.RegisterId(obj);
-               writer.WriteAttributeString(Resources.ReferenceId, Resources.DotserializeUri, id.ToString());
-               writer.WriteAttributeString(Resources.ReferenceSource,
-                                           Resources.DotserializeUri,
-                                           true.ToString().ToLowerInvariant());
+               WriteReferenceIdAttribute(writer, id);
+               WriteReferenceIsSourceAttribute(writer);
             }
 
             if (TypeHelper.IsArray(type))
@@ -545,7 +565,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
       }
 
       /// <summary>
-      /// Retrieves the value from the current xml node that the reader is on.
+      ///    Retrieves the value from the current xml node that the reader is on.
       /// </summary>
       /// <param name="reader">The reader to read from.</param>
       /// <returns>A string containing the contents of the node</returns>
