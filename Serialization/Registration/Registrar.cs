@@ -22,7 +22,11 @@ using Org.Edgerunner.DotSerialize.Serialization.Generic;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Registration
 {
-   public class Registrar<T> where T : ITypeSerializer
+   /// <summary>
+   /// Type serializer registrar.
+   /// </summary>
+   /// <typeparam name="T">Type of object for which a custom serializer is being registered.</typeparam>
+   public class Registrar<T>
    {
       /// <summary>
       ///    Initializes a new instance of the <see cref="Registrar" /> class.
@@ -35,6 +39,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Registration
 
       protected Serializer CurrentSerializer { get; set; }
 
+      /// <summary>
+      /// Registers a custom type serializer to the registrar type.
+      /// </summary>
+      /// <typeparam name="TImplementation">Type of custom serializer.</typeparam>
+      /// <returns></returns>
       public RegistrarBinding<TImplementation> ToTypeSerializer<TImplementation>() where TImplementation : ITypeSerializer
       {
          return new RegistrarBinding<TImplementation>(CurrentSerializer.RegisterTypeSerializer(typeof(ITypeSerializer<T>), typeof(TImplementation)));

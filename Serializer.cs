@@ -305,7 +305,7 @@ namespace Org.Edgerunner.DotSerialize
       /// </summary>
       /// <typeparam name="T">The Type to be handled</typeparam>
       /// <returns>A Registrar&lt;T&gt; instance.</returns>
-      public Registrar<T> RegisterType<T>() where T : ITypeSerializer
+      public Registrar<T> RegisterType<T>()
       {
          return new Registrar<T>(this);
       }
