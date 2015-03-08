@@ -538,10 +538,20 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          bool isElement = (reader.NodeType == XmlNodeType.Element);
          if (isElement)
             ReadToTextNode(reader);
-         var result = Enum.Parse(type, reader.ReadContentAsString());
+         var result = Enum.Parse(type, GetNodeContents(reader));
          if (isElement)
             ReadToElementEndNode(reader);
          return result;
+      }
+
+      /// <summary>
+      /// Retrieves the value from the current xml node that the reader is on.
+      /// </summary>
+      /// <param name="reader">The reader to read from.</param>
+      /// <returns>A string containing the contents of the node</returns>
+      protected virtual string GetNodeContents(XmlReader reader)
+      {
+         return reader.ReadContentAsString();
       }
 
       protected virtual object DeserializePrimitive(Type type, XmlReader reader)
@@ -556,7 +566,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             result = type.GetDefaultValue();
          else
          {
-            string primitiveValue = reader.ReadContentAsString();
+            string primitiveValue = GetNodeContents(reader);
             result = ParsePrimitive(type, primitiveValue);
          }
          if (isElement)
