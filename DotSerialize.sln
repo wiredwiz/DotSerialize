@@ -7,12 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotSerializeTests", "DotSer
 EndProject
 Global
 	GlobalSection(AutomaticVersions) = postSolution
-		UpdateAssemblyVersion.Debug|Any CPU = True
-		UpdateAssemblyFileVersion.Debug|Any CPU = True
-		UpdateAssemblyInfoVersion.Debug|Any CPU = True
-		AssemblyVersionSettings.Debug|Any CPU = None.None.None.DayOfYearStamp
-		AssemblyFileVersionSettings.Debug|Any CPU = None.None.None.DayOfYearStamp
-		AssemblyInfoVersionSettings.Debug|Any CPU = None.None.None.DayOfYearStamp
+		UpdateAssemblyVersion.Release|Any CPU = True
+		UpdateAssemblyFileVersion.Release|Any CPU = True
+		UpdateAssemblyInfoVersion.Release|Any CPU = True
+		AssemblyVersionSettings.Release|Any CPU = None.None.Increment.DayOfYearStamp
+		AssemblyFileVersionSettings.Release|Any CPU = None.None.Increment.DayOfYearStamp
+		AssemblyInfoVersionSettings.Release|Any CPU = None.None.Increment.DayOfYearStamp
 	EndGlobalSection
 	GlobalSection(MercurialSourceControlSolutionProperties) = preSolution
 		SolutionIsControlled = True
