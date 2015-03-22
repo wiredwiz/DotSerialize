@@ -368,10 +368,10 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
       protected virtual bool ReadToTextNode(XmlReader reader)
       {
          if (reader == null) throw new ArgumentNullException("reader");
-         while (reader.NodeType != XmlNodeType.Text)
+         while ((reader.NodeType != XmlNodeType.Text) && (reader.NodeType != XmlNodeType.EndElement))
             if (!reader.Read())
                return false;
-         return true;
+         return (reader.NodeType == XmlNodeType.Text);
       }
 
       protected virtual bool ReadToElementEndNode(XmlReader reader)
@@ -580,17 +580,25 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          if (reader == null) throw new ArgumentNullException("reader");
          object result = null;
          bool isElement = (reader.NodeType == XmlNodeType.Element);
-         if (isElement)
-            ReadToTextNode(reader);
          if (reader.IsEmptyElement)
             result = type.GetDefaultValue();
          else
          {
-            string primitiveValue = GetNodeContents(reader);
-            result = ParsePrimitive(type, primitiveValue);
-         }
-         if (isElement)
-            ReadToElementEndNode(reader);
+            bool hasContent = true;
+            if (isElement)
+               hasContent = ReadToTextNode(reader);
+            // If element was not empty and type is string then value should be an empty string.
+            // This is only necessary because string is actually a class even though we treat it like a primitive.
+            if (!hasContent)
+               result = type == typeof(String) ? string.Empty : type.GetDefaultValue();
+            else
+            {
+               string primitiveValue = GetNodeContents(reader);
+               result = ParsePrimitive(type, primitiveValue);
+               if (isElement)
+                  ReadToElementEndNode(reader);
+            }
+         }         
          return result;
       }
 
