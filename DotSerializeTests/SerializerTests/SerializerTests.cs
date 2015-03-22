@@ -78,6 +78,16 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       }
 
       [TestMethod]
+      public void DeserializeCatWithoutMapAndNoNameSucceeds()
+      {
+         var cat = new Cat { Name = string.Empty, Breed = "Saimese", Selfish = true, BirthDate = new DateTime(2000, 12, 5) };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(cat);
+         var cat2 = serializer.DeserializeObject<Cat>(xml);
+         Assert.AreEqual(cat, cat2);
+      }
+
+      [TestMethod]
       public void DeserializeMaintainsReferentialIntegrity()
       {
          var owner = new Owner("Joe", "J", "Smith") { BirthDate = new DateTime(1970, 3, 20) };
