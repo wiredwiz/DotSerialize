@@ -25,6 +25,18 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class TypeHelper
    {
+      private static readonly Type _ByteType = typeof(Byte);
+      private static readonly Type _Int16Type = typeof(Int16);
+      private static readonly Type _Int32Type = typeof(Int32);
+      private static readonly Type _Int64Type = typeof(Int64);
+      private static readonly Type _SingleType = typeof(Single);
+      private static readonly Type _DoubleType = typeof(Double);
+      private static readonly Type _DecimalType = typeof(Decimal);
+      private static readonly Type _CharType = typeof(Char);
+      private static readonly Type _StringType = typeof(String);
+      private static readonly Type _BooleanType = typeof(Boolean);
+      private static readonly Type _DateTimeType = typeof(DateTime);
+
       /// <summary>
       ///    Gets the member expression.
       /// </summary>
@@ -96,23 +108,9 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 
       public static bool IsPrimitive(Type type)
       {
-         switch (type.FullName)
-         {
-            case "System.Byte":
-            case "System.Int16":
-            case "System.Int32":
-            case "System.Int64":
-            case "System.Single":
-            case "System.Double":
-            case "System.Decimal":
-            case "System.Boolean":
-            case "System.DateTime":
-            case "System.Char":
-            case "System.String":
-               return true;
-            default:
-               return false;
-         }
+         return type == _StringType || type == _Int32Type || type == _BooleanType  ||
+                type == _Int64Type || type == _DateTimeType || type == _SingleType || type == _DoubleType ||
+                type == _DecimalType || type == _ByteType || type == _Int16Type || type == _CharType;
       }
 
       public static bool IsReferenceSource(XmlReader reader)
