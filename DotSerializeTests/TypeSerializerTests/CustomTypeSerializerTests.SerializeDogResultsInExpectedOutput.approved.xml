@@ -1,6 +1,6 @@
 ﻿<Dog xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" dts:src="true">
   <Name>King Fido</Name>
-  <BirthDate>05/10/2003 00:00:00</BirthDate>
+  <BirthDate>2003-05-10T00:00:00.0000000</BirthDate>
   <Breed>Golden Retriever</Breed>
   <Collar dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.DogCollar,  DotSerializeTests" dts:id="2" dts:src="true">
     <Length>20</Length>
