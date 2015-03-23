@@ -425,21 +425,21 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             result = ((String)obj).ToString(culture);
          if (type == TypeHelper.CharType)
          {
-            var val = Char.GetNumericValue((char)obj);
+            var val = (int)(char)obj;
             result = val.ToString(culture);
          }
          if (type == TypeHelper.ByteType)
             result = ((Byte)obj).ToString(culture);
          if (type == TypeHelper.SingleType)
-            result = ((Single)obj).ToString(culture);
+            result = ((Single)obj).ToString("R", culture);
          if (type == TypeHelper.DoubleType)
-            result = ((Double)obj).ToString(culture);
+            result = ((Double)obj).ToString("R", culture);
          if (type == TypeHelper.DecimalType)
             result = ((Decimal)obj).ToString(culture);
          if (type == TypeHelper.BooleanType)
             result = ((Boolean)obj).ToString(culture);
          if (type == TypeHelper.DateTimeType)
-            result = ((DateTime)obj).ToString(culture);
+            result = ((DateTime)obj).ToString("o", culture);
 
          return result;
       }
@@ -631,8 +631,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          else if (type == TypeHelper.CharType)
          {
 
-            result = Double.Parse(primitiveValue, Settings.Culture);
-            result = (Char)result;
+            var val = int.Parse(primitiveValue, Settings.Culture);
+            result = (Char)val;
          }
          else if (type == TypeHelper.ByteType)
             result = Byte.Parse(primitiveValue, Settings.Culture);

@@ -1,6 +1,6 @@
 ﻿<Dog xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:id="1" dts:src="true">
   <Name>Fido</Name>
-  <BirthDate>05/10/2003 00:00:00</BirthDate>
+  <BirthDate>2003-05-10T00:00:00.0000000</BirthDate>
   <Breed>Golden Retriever</Breed>
   <Collar dts:id="2" dts:src="true">
     <Length>20</Length>
@@ -10,10 +10,10 @@
     <Pets dts:id="4" dts:src="true">
       <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" />
     </Pets>
-    <BirthDate>03/20/1970 00:00:00</BirthDate>
+    <BirthDate>1970-03-20T00:00:00.0000000</BirthDate>
     <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="5" dts:src="true">
       <Pets xsi:nil="true" />
-      <BirthDate>04/16/1948 00:00:00</BirthDate>
+      <BirthDate>1948-04-16T00:00:00.0000000</BirthDate>
       <Father xsi:nil="true" />
       <Mother xsi:nil="true" />
       <Children dts:id="6" dts:src="true">
@@ -31,7 +31,7 @@
     </Father>
     <Mother dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="8" dts:src="true">
       <Pets xsi:nil="true" />
-      <BirthDate>06/12/1951 00:00:00</BirthDate>
+      <BirthDate>1951-06-12T00:00:00.0000000</BirthDate>
       <Father xsi:nil="true" />
       <Mother xsi:nil="true" />
       <Children dts:id="9" dts:src="true">
@@ -53,7 +53,7 @@
           <Pets dts:id="14" dts:src="true">
             <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" />
           </Pets>
-          <BirthDate>03/22/2000 00:00:00</BirthDate>
+          <BirthDate>2000-03-22T00:00:00.0000000</BirthDate>
           <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="3" />
           <Mother xsi:nil="true" />
           <Children xsi:nil="true" />
@@ -63,7 +63,7 @@
           <Pets dts:id="16" dts:src="true">
             <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" />
           </Pets>
-          <BirthDate>01/01/2001 00:00:00</BirthDate>
+          <BirthDate>2001-01-01T00:00:00.0000000</BirthDate>
           <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="3" />
           <Mother xsi:nil="true" />
           <Children xsi:nil="true" />
