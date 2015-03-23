@@ -25,17 +25,20 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class TypeHelper
    {
-      private static readonly Type _ByteType = typeof(Byte);
-      private static readonly Type _Int16Type = typeof(Int16);
-      private static readonly Type _Int32Type = typeof(Int32);
-      private static readonly Type _Int64Type = typeof(Int64);
-      private static readonly Type _SingleType = typeof(Single);
-      private static readonly Type _DoubleType = typeof(Double);
-      private static readonly Type _DecimalType = typeof(Decimal);
-      private static readonly Type _CharType = typeof(Char);
-      private static readonly Type _StringType = typeof(String);
-      private static readonly Type _BooleanType = typeof(Boolean);
-      private static readonly Type _DateTimeType = typeof(DateTime);
+      public static readonly Type ByteType = typeof(Byte);
+      public static readonly Type Int16Type = typeof(Int16);
+      public static readonly Type Int32Type = typeof(Int32);
+      public static readonly Type Int64Type = typeof(Int64);
+      public static readonly Type UInt16Type = typeof(UInt16);
+      public static readonly Type UInt32Type = typeof(UInt32);
+      public static readonly Type UInt64Type = typeof(UInt64);
+      public static readonly Type SingleType = typeof(Single);
+      public static readonly Type DoubleType = typeof(Double);
+      public static readonly Type DecimalType = typeof(Decimal);
+      public static readonly Type CharType = typeof(Char);
+      public static readonly Type StringType = typeof(String);
+      public static readonly Type BooleanType = typeof(Boolean);
+      public static readonly Type DateTimeType = typeof(DateTime);
 
       /// <summary>
       ///    Gets the member expression.
@@ -108,9 +111,10 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 
       public static bool IsPrimitive(Type type)
       {
-         return type == _StringType || type == _Int32Type || type == _BooleanType  ||
-                type == _Int64Type || type == _DateTimeType || type == _SingleType || type == _DoubleType ||
-                type == _DecimalType || type == _ByteType || type == _Int16Type || type == _CharType;
+         return type == StringType || type == Int32Type || type == BooleanType  ||
+                type == Int64Type || type == DateTimeType || type == SingleType || type == DoubleType ||
+                type == DecimalType || type == ByteType || type == Int16Type || type == CharType ||
+                type == UInt16Type || type == UInt32Type || type == UInt64Type;
       }
 
       public static bool IsReferenceSource(XmlReader reader)
