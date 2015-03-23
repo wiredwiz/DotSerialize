@@ -409,36 +409,27 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             culture = CultureInfo.InvariantCulture;
          string result = null;
 
-         if (type == TypeHelper.Int16Type)
+         if (type == typeof(Int16))
             result = ((Int16)obj).ToString(culture);
-         if (type == TypeHelper.Int32Type)
+         if (type == typeof(Int32))
             result = ((Int32)obj).ToString(culture);
-         if (type == TypeHelper.Int64Type)
+         if (type == typeof(Int64))
             result = ((Int64)obj).ToString(culture);
-         if (type == TypeHelper.UInt16Type)
-            result = ((UInt16)obj).ToString(culture);
-         if (type == TypeHelper.UInt32Type)
-            result = ((UInt32)obj).ToString(culture);
-         if (type == TypeHelper.UInt64Type)
-            result = ((UInt64)obj).ToString(culture);
-         if (type == TypeHelper.StringType)
+         if (type == typeof(String))
             result = ((String)obj).ToString(culture);
-         if (type == TypeHelper.CharType)
-         {
-            var val = Char.GetNumericValue((char)obj);
-            result = val.ToString(culture);
-         }
-         if (type == TypeHelper.ByteType)
+         if (type == typeof(Char))
+            result = ((Char)obj).ToString(culture);
+         if (type == typeof(Byte))
             result = ((Byte)obj).ToString(culture);
-         if (type == TypeHelper.SingleType)
+         if (type == typeof(Single))
             result = ((Single)obj).ToString(culture);
-         if (type == TypeHelper.DoubleType)
+         if (type == typeof(Double))
             result = ((Double)obj).ToString(culture);
-         if (type == TypeHelper.DecimalType)
+         if (type == typeof(Decimal))
             result = ((Decimal)obj).ToString(culture);
-         if (type == TypeHelper.BooleanType)
+         if (type == typeof(Boolean))
             result = ((Boolean)obj).ToString(culture);
-         if (type == TypeHelper.DateTimeType)
+         if (type == typeof(DateTime))
             result = ((DateTime)obj).ToString(culture);
 
          return result;
@@ -607,44 +598,34 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                if (isElement)
                   ReadToElementEndNode(reader);
             }
-         }
+         }         
          return result;
       }
 
       protected virtual object ParsePrimitive(Type type, string primitiveValue)
       {
          object result = null;
-         if (type == TypeHelper.Int16Type)
+         if (type == typeof(Int16))
             result = Int16.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.Int32Type)
+         else if (type == typeof(Int32))
             result = Int32.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.Int64Type)
+         else if (type == typeof(Int64))
             result = Int64.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.UInt16Type)
-            result = UInt16.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.UInt32Type)
-            result = UInt32.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.UInt64Type)
-            result = UInt64.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.StringType)
+         else if (type == typeof(string))
             result = primitiveValue;
-         else if (type == TypeHelper.CharType)
-         {
-            
-            result = Double.Parse(primitiveValue, Settings.Culture);
-            result = (Char)result;
-         }
-         else if (type == TypeHelper.ByteType)
+         else if (type == typeof(Char))
+            result = Convert.ToChar(primitiveValue, Settings.Culture);
+         else if (type == typeof(Byte))
             result = Byte.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.SingleType)
+         else if (type == typeof(Single))
             result = Single.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.DoubleType)
+         else if (type == typeof(Double))
             result = Double.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.DecimalType)
+         else if (type == typeof(Decimal))
             result = Decimal.Parse(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.BooleanType)
+         else if (type == typeof(Boolean))
             result = Convert.ToBoolean(primitiveValue, Settings.Culture);
-         else if (type == TypeHelper.DateTimeType)
+         else if (type == typeof(DateTime))
             result = DateTime.Parse(primitiveValue, Settings.Culture);
          else
             throw new SerializerException(string.Format("Cannot parse unexpected primitive type {0}", type.Name()));
