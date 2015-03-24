@@ -630,7 +630,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             result = primitiveValue;
          else if (type == TypeHelper.CharType)
          {
-
             var val = int.Parse(primitiveValue, Settings.Culture);
             result = (Char)val;
          }
