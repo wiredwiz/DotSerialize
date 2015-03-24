@@ -123,7 +123,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <seealso cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo"/>
       public static T CreateInstance<T>(IDictionary<TypeMemberInfo, object> data, bool useConstructor = false)
       {
-         return (T)CreateInstance(typeof(T), data, false);
+         return (T)CreateInstance(typeof(T), data, useConstructor);
       }
 
       /// <summary>Attempts to create an instance of Type and populate its members with data from the supplied IDictionary.</summary>
