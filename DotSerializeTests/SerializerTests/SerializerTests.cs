@@ -234,6 +234,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
             BooleanDat = true,
             StringDat = "test",
             ByteDat = Convert.ToByte(true),
+            SbyteDat = Convert.ToSByte(-22),
             CharDat = 'h',
             DecimalDat = (decimal)1.3,
             SingleDat = (Single)423.323,
@@ -251,6 +252,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var newPrim = serializer.DeserializeObject<PrimitiveTypesTester>(xml);
          Assert.AreEqual(prim.StringDat, newPrim.StringDat);
          Assert.AreEqual(prim.ByteDat, newPrim.ByteDat);
+         Assert.AreEqual(prim.SbyteDat, newPrim.SbyteDat);
          Assert.AreEqual(prim.CharDat, newPrim.CharDat);
          Assert.AreEqual(prim.DecimalDat, newPrim.DecimalDat);
          Assert.AreEqual(prim.SingleDat, newPrim.SingleDat);
@@ -273,6 +275,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
             BooleanDat = true,
             StringDat = string.Empty,
             ByteDat = Convert.ToByte(true),
+            SbyteDat = Convert.ToSByte(-22),
             CharDat = Char.MinValue,
             DecimalDat = (decimal)1.3,
             SingleDat = 0,
@@ -290,6 +293,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var newPrim = serializer.DeserializeObject<PrimitiveTypesTester>(xml);
          Assert.AreEqual(prim.StringDat, newPrim.StringDat);
          Assert.AreEqual(prim.ByteDat, newPrim.ByteDat);
+         Assert.AreEqual(prim.SbyteDat, newPrim.SbyteDat);
          Assert.AreEqual(prim.CharDat, newPrim.CharDat);
          Assert.AreEqual(prim.DecimalDat, newPrim.DecimalDat);
          Assert.AreEqual(prim.SingleDat, newPrim.SingleDat);
@@ -312,6 +316,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
             BooleanDat = false,
             StringDat = string.Empty,
             ByteDat = Convert.ToByte(false),
+            SbyteDat = sbyte.MinValue,
             CharDat = Char.MinValue,
             DecimalDat = decimal.MinValue,
             SingleDat = Single.MinValue,
@@ -329,6 +334,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var newPrim = serializer.DeserializeObject<PrimitiveTypesTester>(xml);
          Assert.AreEqual(prim.StringDat, newPrim.StringDat);
          Assert.AreEqual(prim.ByteDat, newPrim.ByteDat);
+         Assert.AreEqual(prim.SbyteDat, newPrim.SbyteDat);
          Assert.AreEqual(prim.CharDat, newPrim.CharDat);
          Assert.AreEqual(prim.DecimalDat, newPrim.DecimalDat);
          Assert.AreEqual(prim.SingleDat, newPrim.SingleDat);
@@ -351,6 +357,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
             BooleanDat = true,
             StringDat = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan nunc",
             ByteDat = Convert.ToByte(true),
+            SbyteDat = sbyte.MaxValue,
             CharDat = Char.MaxValue,
             DecimalDat = decimal.MaxValue,
             SingleDat = Single.MaxValue,
@@ -368,6 +375,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var newPrim = serializer.DeserializeObject<PrimitiveTypesTester>(xml);
          Assert.AreEqual(prim.StringDat, newPrim.StringDat);
          Assert.AreEqual(prim.ByteDat, newPrim.ByteDat);
+         Assert.AreEqual(prim.SbyteDat, newPrim.SbyteDat);
          Assert.AreEqual(prim.CharDat, newPrim.CharDat);
          Assert.AreEqual(prim.DecimalDat, newPrim.DecimalDat);
          Assert.AreEqual(prim.SingleDat, newPrim.SingleDat);
