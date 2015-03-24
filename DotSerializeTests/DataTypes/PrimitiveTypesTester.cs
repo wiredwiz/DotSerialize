@@ -12,6 +12,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.DataTypes
       public char CharDat { get; set; }
       public bool BooleanDat { get; set; }
       public Byte ByteDat { get; set; }
+      public SByte SbyteDat { get; set; }
       public Int16 Int16Dat { get; set; }
       public Int32 Int32Dat { get; set; }
       public Int64 Int64Dat { get; set; }
