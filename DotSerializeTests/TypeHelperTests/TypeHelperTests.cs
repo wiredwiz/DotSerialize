@@ -138,5 +138,12 @@ namespace Org.Edgerunner.DotSerialize.Tests.TypeHelperTests
          Assert.IsTrue(TypeHelper.IsPrimitive(typeof(byte)));
          Assert.IsTrue(TypeHelper.IsPrimitive(typeof(Byte)));
       }
+
+      [TestMethod]
+      public void IsPrimitiveSByteEvaluatesTrue()
+      {
+         Assert.IsTrue(TypeHelper.IsPrimitive(typeof(sbyte)));
+         Assert.IsTrue(TypeHelper.IsPrimitive(typeof(SByte)));
+      }
    }
 }
