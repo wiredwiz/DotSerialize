@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Utilities;
 
@@ -166,7 +167,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
                      break;
          }
          if (result == null)
-            throw new Exception(string.Format("Unable to create instance of type \"{0}\"", type.Name()));
+            result = FormatterServices.GetUninitializedObject(type);
 
          result = result.WrapIfValueType();
          foreach (var memberInfo in data.Keys)
