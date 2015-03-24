@@ -26,6 +26,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
    public static class TypeHelper
    {
       public static readonly Type ByteType = typeof(Byte);
+      public static readonly Type SByteType = typeof(SByte);
       public static readonly Type Int16Type = typeof(Int16);
       public static readonly Type Int32Type = typeof(Int32);
       public static readonly Type Int64Type = typeof(Int64);
@@ -114,7 +115,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          return type == StringType || type == Int32Type || type == BooleanType  ||
                 type == Int64Type || type == DateTimeType || type == SingleType || type == DoubleType ||
                 type == DecimalType || type == ByteType || type == Int16Type || type == CharType ||
-                type == UInt16Type || type == UInt32Type || type == UInt64Type;
+                type == UInt16Type || type == UInt32Type || type == UInt64Type || type == SByteType;
       }
 
       public static bool IsReferenceSource(XmlReader reader)

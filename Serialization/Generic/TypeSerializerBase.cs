@@ -430,6 +430,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          }
          if (type == TypeHelper.ByteType)
             result = ((Byte)obj).ToString(culture);
+         if (type == TypeHelper.SByteType)
+            result = ((SByte)obj).ToString(culture);
          if (type == TypeHelper.SingleType)
             result = ((Single)obj).ToString("R", culture);
          if (type == TypeHelper.DoubleType)
@@ -635,6 +637,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          }
          else if (type == TypeHelper.ByteType)
             result = Byte.Parse(primitiveValue, Settings.Culture);
+         else if (type == TypeHelper.SByteType)
+            result = SByte.Parse(primitiveValue, Settings.Culture);
          else if (type == TypeHelper.SingleType)
             result = Single.Parse(primitiveValue, Settings.Culture);
          else if (type == TypeHelper.DoubleType)
