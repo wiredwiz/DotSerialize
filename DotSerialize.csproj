@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9449735A-E7DA-4A68-8CE0-228F409829BF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Org.Edgerunner.DotSerialize</RootNamespace>
+    <AssemblyName>DotSerialize</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>&lt;Project Location In Database&gt;</SccProjectName>
+    <SccLocalPath>&lt;Local Binding Root of Project&gt;</SccLocalPath>
+    <SccAuxPath>&lt;Source Control Database&gt;</SccAuxPath>
+    <SccProvider>Mercurial Source Control Package</SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\DotSerialize.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\DotSerialize.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Fasterflect">
+      <HintPath>packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\XmlAttributeAttribute.cs" />
+    <Compile Include="Attributes\XmlElementAttribute.cs" />
+    <Compile Include="Attributes\XmlIgnoreAttribute.cs" />
+    <Compile Include="Attributes\XmlRootAttribute.cs" />
+    <Compile Include="Exceptions\MappingException.cs" />
+    <Compile Include="Mapping\ClassMapBase.cs" />
+    <Compile Include="Mapping\IXmlClassMap.cs" />
+    <Compile Include="Mapping\XmlClassMap.cs" />
+    <Compile Include="Mapping\XmlNodeMap.cs" />
+    <Compile Include="Reflection\Construction\IHelperFactory.cs" />
+    <Compile Include="Serialization\Registration\Registrar.cs" />
+    <Compile Include="Exceptions\ReferenceException.cs" />
+    <Compile Include="Exceptions\SerializerException.cs" />
+    <Compile Include="Exceptions\TypeLayoutException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Reflection\Caching\ISerializationInfoCache.cs" />
+    <Compile Include="Reflection\Caching\SerializationInfoCache.cs" />
+    <Compile Include="Reflection\Caching\SerializationInfoCacheBase.cs" />
+    <Compile Include="Reflection\Caching\WeakSerializationInfoCache.cs" />
+    <Compile Include="Reflection\Construction\ConstructorMap.cs" />
+    <Compile Include="Reflection\Construction\ParameterMapper.cs" />
+    <Compile Include="Reflection\Construction\TypeConstructorCache.cs" />
+    <Compile Include="Reflection\ITypeInspector.cs" />
+    <Compile Include="Reflection\TypeInspector.cs" />
+    <Compile Include="Reflection\TypeInfo.cs" />
+    <Compile Include="Reflection\TypeMemberInfo.cs" />
+    <Compile Include="Serialization\Reference\CaptureNode.cs" />
+    <Compile Include="Serialization\Reference\CaptureSet.cs" />
+    <Compile Include="Serialization\Registration\RegistrarBinding.cs" />
+    <Compile Include="Serializer.cs" />
+    <Compile Include="Reflection\Construction\TypeFactory.cs" />
+    <Compile Include="Serialization\ITypeSerializer.cs" />
+    <Compile Include="Serialization\Reference\IReferenceManager.cs" />
+    <Compile Include="Serialization\Reference\ReferenceNode.cs" />
+    <Compile Include="Serialization\Reference\MemberReference.cs" />
+    <Compile Include="Serialization\Reference\MemberReferenceList.cs" />
+    <Compile Include="Serialization\Reference\ReferenceManager.cs" />
+    <Compile Include="Serialization\DefaultTypeSerializer.cs" />
+    <Compile Include="Serialization\Generic\ITypeSerializer.cs" />
+    <Compile Include="Serialization\Factories\ITypeSerializerFactory.cs" />
+    <Compile Include="Serialization\Generic\TypeSerializerBase.cs" />
+    <Compile Include="Serialization\Factories\TypeSerializerFactory.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Utilities\FieldInfoExtensions.cs" />
+    <Compile Include="Utilities\NamingUtils.cs" />
+    <Compile Include="Utilities\ObjectExtensions.cs" />
+    <Compile Include="Utilities\PropertyInfoExtensions.cs" />
+    <Compile Include="Utilities\TypeExtensions.cs" />
+    <Compile Include="Utilities\TypeHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ReadMe.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties DocumentXCommentEditorState="&lt;HtmlEditState&gt;&#xA;  &lt;Attributes&gt;&#xA;    &lt;Attribute key=&quot;TabContainerSelectedTabIndex&quot; valuetype=&quot;integer&quot;&gt;1&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;scrollPosition&quot; valuetype=&quot;integer&quot;&gt;114&lt;/Attribute&gt;&#xA;  &lt;/Attributes&gt;&#xA;&lt;/HtmlEditState&gt;" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

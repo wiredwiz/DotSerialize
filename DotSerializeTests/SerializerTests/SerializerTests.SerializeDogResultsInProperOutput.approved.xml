@@ -1,0 +1,86 @@
+﻿<Dog xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" dts:src="true">
+  <Name>Fido</Name>
+  <BirthDate>2003-05-10T00:00:00.0000000</BirthDate>
+  <Breed>Golden Retriever</Breed>
+  <Collar dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.DogCollar,  DotSerializeTests" dts:id="2" dts:src="true">
+    <Length>20</Length>
+    <Studded>True</Studded>
+  </Collar>
+  <_Owner dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="3" dts:src="true">
+    <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[],  DotSerializeTests" dts:id="4" dts:src="true">
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" />
+    </Pets>
+    <BirthDate>1970-03-20T00:00:00.0000000</BirthDate>
+    <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="5" dts:src="true">
+      <Pets xsi:nil="true" />
+      <BirthDate>1948-04-16T00:00:00.0000000</BirthDate>
+      <Father xsi:nil="true" />
+      <Mother xsi:nil="true" />
+      <Children dts:type="System.Collections.Generic.List`1[[Org.Edgerunner.DotSerialize.Tests.DataTypes.Person,  DotSerializeTests" dts:id="6" dts:src="true">
+        <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[],  DotSerializeTests" dts:id="7" dts:src="true">
+          <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="3" />
+          <item xsi:nil="true" />
+          <item xsi:nil="true" />
+          <item xsi:nil="true" />
+        </_items>
+        <_size>1</_size>
+        <_version>1</_version>
+        <_syncRoot xsi:nil="true" />
+      </Children>
+      <FullName>John K Smith</FullName>
+    </Father>
+    <Mother dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="8" dts:src="true">
+      <Pets xsi:nil="true" />
+      <BirthDate>1951-06-12T00:00:00.0000000</BirthDate>
+      <Father xsi:nil="true" />
+      <Mother xsi:nil="true" />
+      <Children dts:type="System.Collections.Generic.List`1[[Org.Edgerunner.DotSerialize.Tests.DataTypes.Person,  DotSerializeTests" dts:id="9" dts:src="true">
+        <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[],  DotSerializeTests" dts:id="10" dts:src="true">
+          <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="3" />
+          <item xsi:nil="true" />
+          <item xsi:nil="true" />
+          <item xsi:nil="true" />
+        </_items>
+        <_size>1</_size>
+        <_version>1</_version>
+        <_syncRoot xsi:nil="true" />
+      </Children>
+      <FullName>Jane M Smith</FullName>
+    </Mother>
+    <Children dts:type="System.Collections.Generic.List`1[[Org.Edgerunner.DotSerialize.Tests.DataTypes.Person,  DotSerializeTests" dts:id="11" dts:src="true">
+      <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[],  DotSerializeTests" dts:id="12" dts:src="true">
+        <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="13" dts:src="true">
+          <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[],  DotSerializeTests" dts:id="14" dts:src="true">
+            <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" />
+          </Pets>
+          <BirthDate>2000-03-22T00:00:00.0000000</BirthDate>
+          <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="3" />
+          <Mother xsi:nil="true" />
+          <Children xsi:nil="true" />
+          <FullName>Simon P Smith</FullName>
+        </item>
+        <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="15" dts:src="true">
+          <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[],  DotSerializeTests" dts:id="16" dts:src="true">
+            <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" />
+          </Pets>
+          <BirthDate>2001-01-01T00:00:00.0000000</BirthDate>
+          <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner,  DotSerializeTests" dts:id="3" />
+          <Mother xsi:nil="true" />
+          <Children xsi:nil="true" />
+          <FullName>Sally P Smith</FullName>
+        </item>
+        <item xsi:nil="true" />
+        <item xsi:nil="true" />
+      </_items>
+      <_size>2</_size>
+      <_version>2</_version>
+      <_syncRoot xsi:nil="true" />
+    </Children>
+    <FullName>Joe J Smith</FullName>
+  </_Owner>
+  <HasCollar>True</HasCollar>
+  <Nose>Normal</Nose>
+  <Bone dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Bone,  DotSerializeTests" Type="Chicken" Width="0" Diameter="0" />
+  <Weight>0</Weight>
+  <Height>0</Height>
+</Dog>
