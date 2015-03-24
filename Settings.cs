@@ -66,7 +66,7 @@ namespace Org.Edgerunner.DotSerialize
       ///    The serializer will only omit the type attribute if the value stored within a member is of the exact same
       ///    type as the member declaration.
       /// </requirements>
-      /// <remarks>This setting is not yet supported.</remarks>
+      /// <remarks>The default value is false.</remarks>
       public bool OmitTypeWhenPossible { get; set; }
 
       /// <summary>
@@ -111,6 +111,12 @@ namespace Org.Edgerunner.DotSerialize
       /// </summary>
       /// <remarks>Not yet supported</remarks>
       public bool StrictMode { get; set; }
+
+      /// <summary>
+      ///    Specifies whether the serializer should attempt to use an object's constructor when deserializing data into an object instance.  
+      /// </summary>
+      /// <remarks>The default value is false.</remarks>
+      public bool UseTypeConstructors { get; set; }
 
       /// <summary>Default settings instance.</summary>
       public static Settings Default
