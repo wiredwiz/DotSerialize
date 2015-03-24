@@ -108,7 +108,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                   if (reader.NodeType == XmlNodeType.Element)
                      DeserializeElementMember(reader, info, memberValues);
 
-            result = TypeFactory.CreateInstance(actualType, memberValues);
+            result = TypeFactory.CreateInstance(actualType, memberValues, Settings.UseTypeConstructors);
             if (result == null)
                throw new SerializerException(string.Format("Unable to create an instance of type \"{0}\".", type.Name()));
 
