@@ -1,15 +1,15 @@
-﻿<Dog xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog,  DotSerializeTests" dts:id="1" dts:src="true">
+﻿<Dog xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog, DotSerializeTests" dts:id="1" dts:src="true">
   <Name>King Fido</Name>
   <BirthDate>2003-05-10T00:00:00.0000000</BirthDate>
   <Breed>Golden Retriever</Breed>
-  <Collar dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.DogCollar,  DotSerializeTests" dts:id="2" dts:src="true">
+  <Collar dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.DogCollar, DotSerializeTests" dts:id="2" dts:src="true">
     <Length>20</Length>
     <Studded>True</Studded>
   </Collar>
   <_Owner xsi:nil="true" />
   <HasCollar>True</HasCollar>
   <Nose>Normal</Nose>
-  <Bone dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Bone,  DotSerializeTests" Type="Chicken" Width="0" Diameter="0" />
+  <Bone dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Bone, DotSerializeTests" Type="Chicken" Width="0" Diameter="0" />
   <Weight>0</Weight>
   <Height>0</Height>
 </Dog>

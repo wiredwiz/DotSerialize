@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
@@ -166,7 +167,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          /// </returns>
          public string ToString(string format)
          {
-            return Name + FormatGenerics(format) + FormatArray();
+            return Name + FormatGenerics(format) + (IsPointer ? "*" : string.Empty) + FormatArray();
          }
 
          protected string FormatArray()
@@ -214,20 +215,27 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          if (string.IsNullOrEmpty(format) || (format == "U"))
             return String.Format("{0}, {1}, {2}, {3}, {4}", Type.ToString(format), Assembly.Name, FormatVersion(), FormatCulture(), FormatPublicKeyToken());
 
+         var values = new List<string>(4);
+         values.AddRange(format.Select(item => ConvertFormatChar(item)));
+         return string.Join(", ", values);
+      }
 
-
+      protected string ConvertFormatChar(char format)
+      {
          switch (format)
          {
-            case "t":
-               return Type.ToString(format);
-            case "T":
-               return String.Format("{0}, {1}", Type.ToString(format), Assembly.Name);
-            case "V":
-               return String.Format("{0}, {1}, {2}", Type.ToString(format), Assembly.Name, FormatVersion());
-            case "C":
-               return String.Format("{0}, {1}, {2}, {3}", Type.ToString(format), Assembly.Name, FormatVersion(), FormatCulture());
+            case 't':
+               return Type.ToString(format.ToString());
+            case 'T':
+               return String.Format("{0}, {1}", Type.ToString(format.ToString()), Assembly.Name);
+            case 'V':
+               return FormatVersion();
+            case 'C':
+               return FormatCulture();
+            case 'K':
+               return FormatPublicKeyToken();
             default:
-               throw new ArgumentException(string.Format("\"{0}\" is not a valid format string", format));
+               throw new ArgumentException(string.Format("\"{0}\" is not a valid format character", format));
          }
       }
 

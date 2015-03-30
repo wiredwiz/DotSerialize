@@ -317,13 +317,5 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
          var aqn = Parse(typeof(List<string>[,,]).AssemblyQualifiedName);
          Assert.AreEqual(_Buffer, aqn.ToString());
       }
-
-      [TestMethod]
-      public void Foo()
-      {
-         var name = typeof(int*[]).AssemblyQualifiedName;
-         Type type = Type.GetType(name);
-         Assert.AreEqual(typeof(String), type);
-      }
    }
 }
