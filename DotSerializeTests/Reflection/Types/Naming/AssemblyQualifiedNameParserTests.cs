@@ -317,5 +317,12 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
          var aqn = Parse(typeof(List<string>[,,]).AssemblyQualifiedName);
          Assert.AreEqual(_Buffer, aqn.ToString());
       }
+
+      [TestMethod]
+      public void FormatAssemblyQualifiedNameForStringListArrayOfArrayOfArrayMatchesOrginalText()
+      {
+         var aqn = Parse(typeof(List<string>[][][]).AssemblyQualifiedName);
+         Assert.AreEqual(_Buffer, aqn.ToString());
+      }
    }
 }
