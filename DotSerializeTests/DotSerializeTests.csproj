@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -114,6 +114,7 @@
     <Compile Include="MappingTests\MappingTests.cs" />
     <Compile Include="Maps\CatMap1.cs" />
     <Compile Include="Maps\CatMap2.cs" />
+    <Compile Include="Reflection\Types\Naming\AssemblyQualifiedNameParserTests.cs" />
     <Compile Include="SerializerTests\SerializerTests.cs" />
     <Compile Include="TypeHelperTests\TypeHelperTests.cs" />
     <Compile Include="TypeInspectorTests\TypeInspectorTests.cs" />

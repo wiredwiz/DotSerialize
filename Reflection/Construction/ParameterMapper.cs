@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Construction
 {

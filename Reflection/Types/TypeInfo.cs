@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Org.Edgerunner.DotSerialize.Reflection
+namespace Org.Edgerunner.DotSerialize.Reflection.Types
 {
    public class TypeInfo
    {
@@ -59,7 +59,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       /// <param name="name"></param>
       /// <param name="dataType"></param>
       /// <param name="entityName"></param>
-      /// <param name="@namespace"></param>
+      /// <param name="namespace"></param>
       public TypeInfo(string name, Type dataType, string entityName, string @namespace)
       {
          Name = name;
@@ -96,7 +96,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection
       /// <param name="name"></param>
       /// <param name="dataType"></param>
       /// <param name="entityName"></param>
-      /// <param name="@namespace"></param>
+      /// <param name="namespace"></param>
       /// <param name="members"></param>
       public TypeInfo(string name, Type dataType, string entityName, string @namespace, IList<TypeMemberInfo> members)
       {

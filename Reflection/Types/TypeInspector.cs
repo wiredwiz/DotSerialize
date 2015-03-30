@@ -29,7 +29,7 @@ using Org.Edgerunner.DotSerialize.Mapping;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Utilities;
 
-namespace Org.Edgerunner.DotSerialize.Reflection
+namespace Org.Edgerunner.DotSerialize.Reflection.Types
 {
    public class TypeInspector : ITypeInspector
    {
