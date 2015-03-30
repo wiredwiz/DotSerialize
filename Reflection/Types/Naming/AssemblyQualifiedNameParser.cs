@@ -97,6 +97,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
 
       protected int ReadArrayDimensions()
       {
+         // TODO: Add support for jagged arrays
          int dimensions = 1;
          if (Peek() != '[')
             throw InvalidNameException(_Position + 1);
