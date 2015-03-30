@@ -36,7 +36,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
       public TypeInfo Type { get; internal set; }
       public AssemblyInfo Assembly { get; internal set; }
       public Version Version { get; internal set; }
-      public CultureInfo Culture { get; internal set; }
+      public string Culture { get; internal set; }
       public string PublicKeyToken { get; internal set; }
 
       #region Nested type: AssemblyInfo
@@ -52,7 +52,18 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
             Name = name;
          }
 
-         public string Name { get; protected set; }
+         public string Name { get; internal set; }
+
+         /// <summary>
+         /// Returns a string that represents the current object.
+         /// </summary>
+         /// <returns>
+         /// A string that represents the current object.
+         /// </returns>
+         public override string ToString()
+         {
+            return Name;
+         }
       }
 
       #endregion
@@ -68,42 +79,171 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          internal TypeInfo(string name)
          {
             Name = name;
-            IsArray = false;
+            ArrayDimensions = 0;
+            IsPointer = false;
             IsGeneric = false;
-            SubTypes = new List<TypeInfo>();
+            SubTypes = new List<AssemblyQualifiedName>();
          }
          /// <summary>
          /// Initializes a new instance of the <see cref="TypeInfo"/> class.
          /// </summary>
          /// <param name="name"></param>
-         /// <param name="isArray"></param>
-         internal TypeInfo(string name, bool isArray)
+         /// <param name="isPointer"></param>
+         public TypeInfo(string name, bool isPointer)
          {
-            IsArray = isArray;
+            IsPointer = isPointer;
+            Name = name;
+            ArrayDimensions = 0;
+            IsGeneric = false;
+            SubTypes = new List<AssemblyQualifiedName>();
+         }
+         /// <summary>
+         /// Initializes a new instance of the <see cref="TypeInfo"/> class.
+         /// </summary>
+         /// <param name="name"></param>
+         /// <param name="arrayDimensions"></param>
+         internal TypeInfo(string name, int arrayDimensions)
+         {
+            ArrayDimensions = arrayDimensions;
+            Name = name;
+            IsPointer = false;
+            IsGeneric = false;
+            SubTypes = new List<AssemblyQualifiedName>();
+         }
+         /// <summary>
+         /// Initializes a new instance of the <see cref="TypeInfo"/> class.
+         /// </summary>
+         /// <param name="name"></param>
+         /// <param name="isPointer"></param>
+         /// <param name="arrayDimensions"></param>
+         public TypeInfo(string name, bool isPointer, int arrayDimensions)
+         {
+            ArrayDimensions = arrayDimensions;
+            IsPointer = isPointer;
             Name = name;
             IsGeneric = false;
-            SubTypes = new List<TypeInfo>();
+            SubTypes = new List<AssemblyQualifiedName>();
          }
          /// <summary>
          /// Initializes a new instance of the <see cref="TypeInfo"/> class.
          /// </summary>
          /// <param name="name"></param>
-         /// <param name="isArray"></param>
+         /// <param name="isPointer"></param>
+         /// <param name="arrayDimensions"></param>
          /// <param name="isGeneric"></param>
          /// <param name="subTypes"></param>
-         internal TypeInfo(string name, bool isArray, bool isGeneric, List<TypeInfo> subTypes)
+         internal TypeInfo(string name, bool isPointer, int arrayDimensions, bool isGeneric, List<AssemblyQualifiedName> subTypes)
          {
-            IsArray = isArray;
+            ArrayDimensions = arrayDimensions;
+            IsPointer = false;
             IsGeneric = isGeneric;
             Name = name;
             SubTypes = subTypes;
          }
-         public bool IsArray { get; protected set; }
-         public bool IsGeneric { get; protected set; }
-         public string Name { get; protected set; }
-         public List<TypeInfo> SubTypes { get; protected set; }
+         public int ArrayDimensions { get; internal set; }
+         public bool IsGeneric { get; internal set; }
+         public bool IsPointer { get; internal set; }
+         public string Name { get; internal set; }
+         public List<AssemblyQualifiedName> SubTypes { get; internal set; }
+
+         /// <summary>
+         /// Returns a string that represents the current object.
+         /// </summary>
+         /// <returns>
+         /// A string that represents the current object.
+         /// </returns>
+         public override string ToString()
+         {
+            return ToString(string.Empty);
+         }
+
+         /// <summary>
+         /// Returns a string that represents the current object.
+         /// </summary>
+         /// <param name="format">A format string.</param>
+         /// <returns>
+         /// A string that represents the current object.
+         /// </returns>
+         public string ToString(string format)
+         {
+            return Name + FormatGenerics(format) + FormatArray();
+         }
+
+         protected string FormatArray()
+         {
+            if (ArrayDimensions == 0)
+               return string.Empty;
+            if (ArrayDimensions == 1)
+               return "[]";
+            return String.Format("[{0}]", new string(',', ArrayDimensions - 1));
+         }
+
+         protected string FormatGenerics(string format)
+         {
+            if (!IsGeneric)
+               return string.Empty;
+            var types = new string[SubTypes.Count];
+            for (int i = 0; i < SubTypes.Count; i++)
+               types[i] = String.Format("[{0}]", SubTypes[i].ToString(format));
+            return String.Format("`{0}[{1}]", SubTypes.Count, string.Join(",", types));
+         }
       }
 
       #endregion
+
+      /// <summary>
+      /// Returns a string that represents the current object.
+      /// </summary>
+      /// <returns>
+      /// A string that represents the current object.
+      /// </returns>
+      public override string ToString()
+      {
+         return ToString(string.Empty);
+      }
+
+      /// <summary>
+      /// Returns a string that represents the current object.
+      /// </summary>
+      /// <param name="format">A format string.</param>
+      /// <returns>
+      /// A string that represents the current object.
+      /// </returns>
+      public string ToString(string format)
+      {
+         if (string.IsNullOrEmpty(format) || (format == "U"))
+            return String.Format("{0}, {1}, {2}, {3}, {4}", Type.ToString(format), Assembly.Name, FormatVersion(), FormatCulture(), FormatPublicKeyToken());
+
+
+
+         switch (format)
+         {
+            case "t":
+               return Type.ToString(format);
+            case "T":
+               return String.Format("{0}, {1}", Type.ToString(format), Assembly.Name);
+            case "V":
+               return String.Format("{0}, {1}, {2}", Type.ToString(format), Assembly.Name, FormatVersion());
+            case "C":
+               return String.Format("{0}, {1}, {2}, {3}", Type.ToString(format), Assembly.Name, FormatVersion(), FormatCulture());
+            default:
+               throw new ArgumentException(string.Format("\"{0}\" is not a valid format string", format));
+         }
+      }
+
+      protected string FormatVersion()
+      {
+         return "Version=" + Version;
+      }
+
+      protected string FormatCulture()
+      {
+         return "Culture=" + Culture;
+      }
+
+      protected string FormatPublicKeyToken()
+      {
+         return "PublicKeyToken=" + PublicKeyToken;
+      }
    }
 }
