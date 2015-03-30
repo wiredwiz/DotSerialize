@@ -30,7 +30,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Caching
 
       public override TypeInfo GetInfo(Type type)
       {
-         return _InternalCache.ContainsKey(type) ? _InternalCache[type] : null;
+         TypeInfo value;
+         return _InternalCache.TryGetValue(type, out value) ? value : null;
       }
    }
 }

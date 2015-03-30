@@ -95,12 +95,21 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          }
       }
 
-      protected int ReadArrayDimensions()
+      protected List<int> ReadArrayDimensions()
       {
-         // TODO: Add support for jagged arrays
-         int dimensions = 1;
          if (Peek() != '[')
             throw InvalidNameException(_Position + 1);
+
+         var dimensions = new List<int>();
+         while (Peek() == '[')
+            dimensions.Add(ReadArrayDimension());
+
+         return dimensions;
+      }
+
+      protected int ReadArrayDimension()
+      {
+         int dimensions = 1;
          while (true)
          {
             var d = Read();
@@ -207,9 +216,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          }
          else if (d == '*')
          {
-            var dimensions = 0;
-            if (Peek() == '[')
-               dimensions = ReadArrayDimensions();
+            var dimensions = Peek() == '[' ? ReadArrayDimensions() : new List<int>();
             result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), true, dimensions);
          }
          else if (d == '`')
@@ -217,10 +224,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
             // we have a generic
             var num = ReadNumber();
             var subs = ReadGenericDefinition(num);
-            var dimensions = 0;
-            if (Peek() == '[')
-               dimensions = ReadArrayDimensions();
-            result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), false, dimensions, true, subs);
+            var dimensions = Peek() == '[' ? ReadArrayDimensions() : new List<int>();
+            result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), false, dimensions, subs);
          }
          else if (d == '[')
          {

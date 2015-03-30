@@ -65,14 +65,16 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          if (type == null) throw new ArgumentNullException("type");
          if (info == null) throw new ArgumentNullException("info");
 
-         if (!_Mappings.ContainsKey(type))
+         Dictionary<int, ConstructorMap> typeMappings;
+         if (!_Mappings.TryGetValue(type, out typeMappings))
             return null;
 
-         var typeMappings = _Mappings[type];
          int key = GetHash(info);
-         if (!typeMappings.ContainsKey(key))
+         ConstructorMap value;
+         if (!typeMappings.TryGetValue(key, out value))
             return null;
-         return typeMappings[key];
+
+         return value;
       }
    }
 }

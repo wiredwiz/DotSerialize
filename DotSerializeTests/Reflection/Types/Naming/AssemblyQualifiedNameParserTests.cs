@@ -116,8 +116,8 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
       {
          _Buffer = "System.String[], mscorlib";
          _Position = 13;
-         var dim = ReadArrayDimensions();
-         Assert.AreEqual(1, dim);
+         var arrayDim = ReadArrayDimensions();
+         Assert.AreEqual(1, arrayDim[0]);
          Assert.AreEqual(',', Peek());
          Assert.AreEqual(15, _Position);
       }
@@ -127,8 +127,8 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
       {
          _Buffer = "System.String[,,], mscorlib";
          _Position = 13;
-         var dim = ReadArrayDimensions();
-         Assert.AreEqual(3, dim);
+         var arrayDim = ReadArrayDimensions();
+         Assert.AreEqual(3, arrayDim[0]);
          Assert.AreEqual(',', Peek());
          Assert.AreEqual(17, _Position);
       }
