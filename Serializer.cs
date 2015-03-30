@@ -29,6 +29,7 @@ using Org.Edgerunner.DotSerialize.Mapping;
 using Org.Edgerunner.DotSerialize.Properties;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 using Org.Edgerunner.DotSerialize.Serialization;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;

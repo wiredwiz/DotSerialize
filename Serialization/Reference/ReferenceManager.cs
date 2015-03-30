@@ -23,6 +23,7 @@ using System.Reflection;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {

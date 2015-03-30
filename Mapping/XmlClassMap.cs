@@ -24,8 +24,9 @@ using System.Reflection;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Reflection;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 using Org.Edgerunner.DotSerialize.Utilities;
-using TypeInfo = Org.Edgerunner.DotSerialize.Reflection.TypeInfo;
+using TypeInfo = Org.Edgerunner.DotSerialize.Reflection.Types.TypeInfo;
 
 namespace Org.Edgerunner.DotSerialize.Mapping
 {
