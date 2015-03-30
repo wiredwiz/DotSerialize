@@ -19,7 +19,7 @@
 using System;
 using Org.Edgerunner.DotSerialize.Mapping;
 
-namespace Org.Edgerunner.DotSerialize.Reflection
+namespace Org.Edgerunner.DotSerialize.Reflection.Types
 {
    public interface ITypeInspector
    {

@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Caching
 {

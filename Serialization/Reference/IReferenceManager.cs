@@ -18,6 +18,7 @@
 
 using System;
 using Org.Edgerunner.DotSerialize.Reflection;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
