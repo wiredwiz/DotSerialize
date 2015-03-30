@@ -74,6 +74,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
             case '[':
             case ']':
             case '`':
+            case '*':
                return true;
             default:
                return false;
@@ -94,29 +95,30 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          }
       }
 
-      protected string ReadArrayDefinition()
+      protected int ReadArrayDimensions()
       {
-         var sb = new StringBuilder();
+         int dimensions = 1;
          if (Peek() != '[')
-            throw InvalidNameException();
+            throw InvalidNameException(_Position + 1);
          while (true)
          {
             var d = Read();
-            sb.Append(d);
             switch (d)
             {
                case ' ':
-               case ',':
                case '[':
                case ']':
                   break;
+               case ',':
+                  dimensions++;
+                  break;
                default:
-                  throw InvalidNameException();
+                  throw InvalidNameException(_Position);
             }
             if (d == ']')
                break;
          }
-         return sb.ToString();
+         return dimensions;
       }
 
       protected int ReadNumber()
@@ -124,86 +126,193 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          var sb = new StringBuilder();
          var digit = Read();
          if (!char.IsDigit(digit))
-            throw InvalidNameException();
+            throw InvalidNameException(_Position);
+         sb.Append(digit);
          while (char.IsNumber(digit = Read()))
             sb.Append(digit);
-         if (sb.Length == 0)
-            throw InvalidNameException();
          Back();
          int num;
          if (!int.TryParse(sb.ToString(), out num))
-            throw InvalidNameException();
+            throw InvalidNameException(_Position);
          return num;
       }
 
-      protected ParserException InvalidNameException()
+      protected StringBuilder ReadNonSpecialText()
       {
-         return new ParserException(string.Format("\"{0}\" is not a valid AssemblyQualifiedName", _Buffer));
+         char d = Read();
+         if (d == Eof)
+            throw InvalidNameException(_Position);
+         var sb = new StringBuilder();
+         var escape = false;
+         while ((d != Eof) && (!IsSpecial(d) || escape))
+         {
+            if (escape)
+               escape = false;
+            sb.Append(d);
+            if (d == '\\')
+               escape = true;
+            d = Read();
+         }
+         Back();
+         return sb;
+      }
+
+      protected ParserException InvalidNameException(int position)
+      {
+         return InvalidNameException(position, null);
+      }
+
+      protected ParserException InvalidNameException(int position, Exception ex)
+      {
+         return new ParserException(string.Format("\"{0}\" is not a valid AssemblyQualifiedName.  Parse error at position {1}", _Buffer, position), ex);
       }
 
       protected AssemblyQualifiedName ReadAssemblyQualifiedName()
       {
-         throw new NotImplementedException();
+         var result = new AssemblyQualifiedName { Type = ReadTypeName() };
+         if (!ReadPartSeparator())
+            return result;
+         result.Assembly = ReadAssemblyName();
+         if (!ReadPartSeparator())
+            return result;
+         result.Version = ReadVersion();
+         if (!ReadPartSeparator())
+            return result;
+         result.Culture = ReadCulture();
+         if (!ReadPartSeparator())
+            return result;
+         result.PublicKeyToken = ReadPublicKeyToken();
+         return result;
       }
 
+      protected bool ReadPartSeparator()
+      {
+         var d = Read();
+         if (d == Eof)
+            return false;
+         if (d != ',')
+            throw InvalidNameException(_Position);
+         return true;
+      }
       protected AssemblyQualifiedName.TypeInfo ReadTypeName()
       {
+         var sb = ReadNonSpecialText();
          char d = Read();
-         if (d == Eof)
-            throw InvalidNameException();
-         var sb = new StringBuilder();
-         while (!IsSpecial(d))
-         {
-            sb.Append(d);
-         }
          AssemblyQualifiedName.TypeInfo result = null;
          if (d == ',')
          {
+            Back();
             result = new AssemblyQualifiedName.TypeInfo(sb.ToString());
-         }         
+         }
+         else if (d == '*')
+         {
+            var dimensions = 0;
+            if (Peek() == '[')
+               dimensions = ReadArrayDimensions();
+            result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), true, dimensions);
+         }
          else if (d == '`')
          {
             // we have a generic
             var num = ReadNumber();
             var subs = ReadGenericDefinition(num);
-            result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), false, true, subs);
+            var dimensions = 0;
             if (Peek() == '[')
-               sb.Append(ReadArrayDefinition());
+               dimensions = ReadArrayDimensions();
+            result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), false, dimensions, true, subs);
          }
          else if (d == '[')
          {
             Back();
-            sb.Append(ReadArrayDefinition());
-            result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), true);
+            result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), ReadArrayDimensions());
          }
          return result;
       }
 
-      protected List<AssemblyQualifiedName.TypeInfo> ReadGenericDefinition(int expectedTypeDeclarations)
+      protected List<AssemblyQualifiedName> ReadGenericDefinition(int expectedTypeDeclarations)
       {
-         var num = new StringBuilder();
-         
-         return null;
+         if (expectedTypeDeclarations < 1)
+            throw new ArgumentOutOfRangeException("expectedTypeDeclarations", "expectedTypeDeclarations must be positive integer.");
+         var subs = new List<AssemblyQualifiedName>(expectedTypeDeclarations);
+         if (Read() != '[')
+            throw InvalidNameException(_Position);
+         for (int i = 1; i <= expectedTypeDeclarations; i++)
+         {
+            subs.Add(ReadGenericType());
+            if (i != expectedTypeDeclarations)
+            {
+               SkipWhiteSpace();
+               var d = Read();
+               if (d != ',')
+                  throw InvalidNameException(_Position);
+               SkipWhiteSpace();
+            }
+         }
+         if (Read() != ']')
+            throw InvalidNameException(_Position);
+         return subs;
       }
 
-      protected string ReadAssemblyName()
+      protected AssemblyQualifiedName ReadGenericType()
       {
-         throw new NotImplementedException();
+         if (Read() != '[')
+            throw InvalidNameException(_Position);
+         var result = ReadAssemblyQualifiedName();
+         if (Read() != ']')
+            throw InvalidNameException(_Position);
+         return result;
       }
 
+      protected AssemblyQualifiedName.AssemblyInfo ReadAssemblyName()
+      {
+         return new AssemblyQualifiedName.AssemblyInfo(ReadNonSpecialText().ToString().Trim());
+      }
+
+      private void ReadKeyForKeyValuePair(string keyToRead)
+      {
+         var pos = _Position + 1;
+         var key = ReadText(keyToRead.Length);
+         if (key != keyToRead)
+            throw InvalidNameException(pos);
+         if (Read() != '=')
+            throw InvalidNameException(_Position);
+      }
       protected Version ReadVersion()
       {
-         throw new NotImplementedException();
+         SkipWhiteSpace();
+         ReadKeyForKeyValuePair("Version");
+         Version vers;
+         try
+         {
+            vers = new Version(ReadNonSpecialText().ToString());
+         }
+         catch (ArgumentException ex)
+         {
+            throw InvalidNameException(_Position + 1, ex);
+         }
+         catch (FormatException ex)
+         {
+            throw InvalidNameException(_Position + 1, ex);
+         }
+         catch (OverflowException ex)
+         {
+            throw InvalidNameException(_Position + 1, ex);
+         }
+         return vers;
       }
 
-      protected CultureInfo ReadCulture()
+      protected string ReadCulture()
       {
-         throw new NotImplementedException();
+         SkipWhiteSpace();
+         ReadKeyForKeyValuePair("Culture");
+         return ReadNonSpecialText().ToString().Trim();
       }
 
-      protected string RedPublicKeyToken()
+      protected string ReadPublicKeyToken()
       {
-         throw new NotImplementedException();
+         SkipWhiteSpace();
+         ReadKeyForKeyValuePair("PublicKeyToken");
+         return ReadNonSpecialText().ToString().Trim();
       }
    }
 }
