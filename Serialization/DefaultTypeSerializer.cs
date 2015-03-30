@@ -19,6 +19,7 @@
 using System;
 using System.Xml;
 using Org.Edgerunner.DotSerialize.Reflection;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Generic;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;

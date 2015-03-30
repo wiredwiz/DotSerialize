@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.Edgerunner.DotSerialize.Reflection;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 
 namespace Org.Edgerunner.DotSerialize.Tests

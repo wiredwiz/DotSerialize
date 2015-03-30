@@ -28,6 +28,7 @@ using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Properties;
 using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Construction;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 using Org.Edgerunner.DotSerialize.Serialization.Factories;
 using Org.Edgerunner.DotSerialize.Serialization.Reference;
 using Org.Edgerunner.DotSerialize.Utilities;
@@ -656,7 +657,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
       protected virtual string FormatType(string assemblyQualifiedName)
       {
-         string[] parts = assemblyQualifiedName.Split(',');
+         string[] parts = ParseQualifiedName(assemblyQualifiedName);
          StringBuilder result = new StringBuilder();
          result.AppendFormat("{0}, {1}", parts[0], parts[1]);
          if (Settings.IncludeAssemblyVersionWithType)
@@ -666,6 +667,33 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          if (Settings.IncludeAssemblyKeyWithType)
             result.AppendFormat(", {0}", parts[4]);
          return result.ToString();
+      }
+
+      protected virtual string[] ParseQualifiedName(string assemblyQualifiedName)
+      {
+         var result = new string[5];
+         var partIndex = 0;
+         var bcount = 0;
+         var sb = new StringBuilder();
+         foreach (var t in assemblyQualifiedName) 
+         {
+            if (t == '[')
+               ++bcount;
+            else if (t == ']')
+               --bcount;
+
+            if ((bcount == 0) && (t == ','))
+            {
+               result[partIndex] = sb.ToString();
+               sb.Clear();
+               partIndex++;
+            }
+            else
+               sb.Append(t);
+         }
+         if (sb.Length > 0)
+            result[partIndex] = sb.ToString();
+         return result;
       }
    }
 }

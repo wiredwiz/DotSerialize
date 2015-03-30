@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Xml;
 using Org.Edgerunner.DotSerialize.Properties;
@@ -40,6 +41,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
       public static readonly Type StringType = typeof(String);
       public static readonly Type BooleanType = typeof(Boolean);
       public static readonly Type DateTimeType = typeof(DateTime);
+      private static readonly Dictionary<string, Type> _TypeNameCache = new Dictionary<string, Type>(); 
       
       /// <summary>
       ///    Gets the member expression.
@@ -87,7 +89,15 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          if (reader == null) throw new ArgumentNullException("reader");
          try
          {
-            return Type.GetType(reader.GetAttribute(Resources.ReferenceType, Resources.DotserializeUri), true);
+            var typeName = reader.GetAttribute(Resources.ReferenceType, Resources.DotserializeUri);
+            if (string.IsNullOrEmpty(typeName))
+               return null;
+            Type value;
+            if (_TypeNameCache.TryGetValue(typeName, out value))
+               return value;
+            var type = Type.GetType(typeName, true);
+            _TypeNameCache[typeName] = type;
+            return type;
          }
          catch (ArgumentNullException ex)
          {

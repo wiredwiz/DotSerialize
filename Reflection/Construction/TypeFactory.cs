@@ -110,17 +110,17 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <summary>Attempts to create an instance of T and populate its members with data from the supplied IDictionary.</summary>
       /// <typeparam name="T">Type of instance to be created.</typeparam>
       /// <param name="data">
-      /// IDictionary containing mappings of
+      ///    IDictionary containing mappings of
       /// <see cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo"/> instances to object data.
       /// </param>
       /// <param name="useConstructor">Specifies whether an object's constructor should be used when creating a new instance.</param>
       /// <returns>A new instance of type T populated with the data from the data argument.</returns>
-      /// <exception caption=""cref="System.TypeLoadException">T is not a valid type.</exception>
-      /// <exception caption=""cref="System.Reflection.TargetInvocationException">
-      /// Unable to automatically create a new instance
-      /// of type.
+      /// <exception caption="" cref="System.TypeLoadException">T is not a valid type.</exception>
+      /// <exception caption="" cref="System.Reflection.TargetInvocationException">
+      ///    Unable to automatically create a new instance
+      ///    of type.
       /// </exception>
-      /// <seealso cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo"/>
+      /// <seealso cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo" />
       public static T CreateInstance<T>(IDictionary<TypeMemberInfo, object> data, bool useConstructor = false)
       {
          return (T)CreateInstance(typeof(T), data, useConstructor);
@@ -129,17 +129,17 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <summary>Attempts to create an instance of Type and populate its members with data from the supplied IDictionary.</summary>
       /// <param name="type">Type of instance to be created.</param>
       /// <param name="data">
-      /// IDictionary containing mappings of
+      ///    IDictionary containing mappings of
       /// <see cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo"/> instances to object data.
       /// </param>
       /// <param name="useConstructor">Specifies whether an object's constructor should be used when creating a new instance.</param>
       /// <returns>A new instance of type Type populated with the data from the data argument.</returns>
-      /// <exception caption=""cref="System.ArgumentNullException">type is null</exception>
-      /// <exception caption=""cref="System.Reflection.TargetInvocationException">
-      /// Unable to automatically create a new instance
-      /// of type.
+      /// <exception caption="" cref="System.ArgumentNullException">type is null</exception>
+      /// <exception caption="" cref="System.Reflection.TargetInvocationException">
+      ///    Unable to automatically create a new instance
+      ///    of type.
       /// </exception>
-      /// <seealso cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo"/>
+      /// <seealso cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo" />
       public static object CreateInstance(Type type, IDictionary<TypeMemberInfo, object> data, bool useConstructor = false)
       {
          object result = null;
@@ -150,30 +150,30 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          {
             if (useConstructor)
             {
-               var memberInfoList = data.Keys.ToList();
-               var cachedMap = Cache.GetMappingFor(type, memberInfoList);
-               if (cachedMap != null)
-                  if (cachedMap.Parameters.Count == 0)
-                     result = AttemptCreation(cachedMap.Constructor);
-                  else
-                  {
-                     object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
-                     result = AttemptCreation(cachedMap.Constructor, paramValues);
-                  }
-               // If there was no cached mapping or if the mapping no longer works, we try to find a new one
-               if (result == null)
-               {
-                  var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
-                  if (constructors.Count == 0)
-                     result = Activator.CreateInstance(type);
-                  else
-                     foreach (var constructor in constructors)
-                        if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
-                           break;
-               }
+         var memberInfoList = data.Keys.ToList();
+         var cachedMap = Cache.GetMappingFor(type, memberInfoList);
+         if (cachedMap != null)
+            if (cachedMap.Parameters.Count == 0)
+               result = AttemptCreation(cachedMap.Constructor);
+            else
+            {
+               object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
+               result = AttemptCreation(cachedMap.Constructor, paramValues);
+            }
+         // If there was no cached mapping or if the mapping no longer works, we try to find a new one
+         if (result == null)
+         {
+            var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
+            if (constructors.Count == 0)
+               result = Activator.CreateInstance(type);
+            else
+               foreach (var constructor in constructors)
+                  if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
+                     break;
+         }
             }
 
-            if (result == null)
+         if (result == null)
                result = FormatterServices.GetUninitializedObject(type);
          }
 
