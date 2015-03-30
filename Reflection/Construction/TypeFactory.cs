@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Fasterflect;
+using Org.Edgerunner.DotSerialize.Reflection.Types;
 using Org.Edgerunner.DotSerialize.Utilities;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Construction
@@ -111,7 +112,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <typeparam name="T">Type of instance to be created.</typeparam>
       /// <param name="data">
       ///    IDictionary containing mappings of
-      /// <see cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo"/> instances to object data.
+      /// <see cref="TypeMemberInfo"/> instances to object data.
       /// </param>
       /// <param name="useConstructor">Specifies whether an object's constructor should be used when creating a new instance.</param>
       /// <returns>A new instance of type T populated with the data from the data argument.</returns>
@@ -120,7 +121,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       ///    Unable to automatically create a new instance
       ///    of type.
       /// </exception>
-      /// <seealso cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo" />
+      /// <seealso cref="TypeMemberInfo" />
       public static T CreateInstance<T>(IDictionary<TypeMemberInfo, object> data, bool useConstructor = false)
       {
          return (T)CreateInstance(typeof(T), data, useConstructor);
@@ -130,7 +131,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <param name="type">Type of instance to be created.</param>
       /// <param name="data">
       ///    IDictionary containing mappings of
-      /// <see cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo"/> instances to object data.
+      /// <see cref="TypeMemberInfo"/> instances to object data.
       /// </param>
       /// <param name="useConstructor">Specifies whether an object's constructor should be used when creating a new instance.</param>
       /// <returns>A new instance of type Type populated with the data from the data argument.</returns>
@@ -139,7 +140,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       ///    Unable to automatically create a new instance
       ///    of type.
       /// </exception>
-      /// <seealso cref="Org.Edgerunner.DotSerialize.Reflection.TypeMemberInfo" />
+      /// <seealso cref="TypeMemberInfo" />
       public static object CreateInstance(Type type, IDictionary<TypeMemberInfo, object> data, bool useConstructor = false)
       {
          object result = null;
