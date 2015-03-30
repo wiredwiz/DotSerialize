@@ -80,9 +80,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          internal TypeInfo(string name)
          {
             Name = name;
-            ArrayDimensions = 0;
+            ArrayDimensions = new List<int>();
             IsPointer = false;
-            IsGeneric = false;
             SubTypes = new List<AssemblyQualifiedName>();
          }
          /// <summary>
@@ -94,8 +93,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          {
             IsPointer = isPointer;
             Name = name;
-            ArrayDimensions = 0;
-            IsGeneric = false;
+            ArrayDimensions = new List<int>();
             SubTypes = new List<AssemblyQualifiedName>();
          }
          /// <summary>
@@ -103,12 +101,11 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          /// </summary>
          /// <param name="name"></param>
          /// <param name="arrayDimensions"></param>
-         internal TypeInfo(string name, int arrayDimensions)
+         internal TypeInfo(string name, List<int> arrayDimensions)
          {
             ArrayDimensions = arrayDimensions;
             Name = name;
             IsPointer = false;
-            IsGeneric = false;
             SubTypes = new List<AssemblyQualifiedName>();
          }
          /// <summary>
@@ -117,12 +114,11 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          /// <param name="name"></param>
          /// <param name="isPointer"></param>
          /// <param name="arrayDimensions"></param>
-         public TypeInfo(string name, bool isPointer, int arrayDimensions)
+         public TypeInfo(string name, bool isPointer, List<int> arrayDimensions)
          {
             ArrayDimensions = arrayDimensions;
             IsPointer = isPointer;
             Name = name;
-            IsGeneric = false;
             SubTypes = new List<AssemblyQualifiedName>();
          }
          /// <summary>
@@ -131,18 +127,19 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          /// <param name="name"></param>
          /// <param name="isPointer"></param>
          /// <param name="arrayDimensions"></param>
-         /// <param name="isGeneric"></param>
          /// <param name="subTypes"></param>
-         internal TypeInfo(string name, bool isPointer, int arrayDimensions, bool isGeneric, List<AssemblyQualifiedName> subTypes)
+         internal TypeInfo(string name, bool isPointer, List<int> arrayDimensions, List<AssemblyQualifiedName> subTypes)
          {
             ArrayDimensions = arrayDimensions;
-            IsPointer = false;
-            IsGeneric = isGeneric;
+            IsPointer = isPointer;
             Name = name;
             SubTypes = subTypes;
          }
-         public int ArrayDimensions { get; internal set; }
-         public bool IsGeneric { get; internal set; }
+         public List<int> ArrayDimensions { get; internal set; }
+         public bool IsGeneric
+         {
+            get { return SubTypes.Count != 0; }
+         }
          public bool IsPointer { get; internal set; }
          public string Name { get; internal set; }
          public List<AssemblyQualifiedName> SubTypes { get; internal set; }
@@ -172,11 +169,18 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
 
          protected string FormatArray()
          {
-            if (ArrayDimensions == 0)
+            if (ArrayDimensions.Count == 0)
                return string.Empty;
-            if (ArrayDimensions == 1)
-               return "[]";
-            return String.Format("[{0}]", new string(',', ArrayDimensions - 1));
+
+            var dimText = new StringBuilder();
+            foreach (int dimensions in ArrayDimensions)
+            {
+               if (dimensions == 1)
+                  dimText.Append("[]");
+               else
+                  dimText.AppendFormat("[{0}]", new string(',', dimensions - 1));
+            }
+            return dimText.ToString();
          }
 
          protected string FormatGenerics(string format)

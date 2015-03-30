@@ -30,9 +30,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Caching
 
       public override TypeInfo GetInfo(Type type)
       {
-         if (!_InternalCache.ContainsKey(type))
+         WeakReference<TypeInfo> reference;
+         if (!_InternalCache.TryGetValue(type, out reference))
             return null;
-         var reference = _InternalCache[type];
          TypeInfo result;
          if (reference.TryGetTarget(out result))
             return result;

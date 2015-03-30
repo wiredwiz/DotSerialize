@@ -118,9 +118,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          if (id == 0) throw new ArgumentNullException("id");
 
-         if (!ReferencesByGuid.ContainsKey(id))
+         ReferenceNode value;
+         if (!ReferencesByGuid.TryGetValue(id, out value))
             throw new ReferenceException(string.Format("No object exists for id {0}", id));
-         return ReferencesByGuid[id].SourceObject;
+
+         return value.SourceObject;
       }
 
       public virtual int GetObjectId(object obj)
@@ -148,9 +150,10 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          if (id == 0) throw new ArgumentNullException("id");
 
-         if (!ReferencesByGuid.ContainsKey(id))
+         ReferenceNode value;
+         if (!ReferencesByGuid.TryGetValue(id, out value))
             throw new ReferenceException(string.Format("No reference exists for id {0}", id));
-         return ReferencesByGuid[id].References;
+         return value.References;
       }
 
       public virtual int RegisterId(int id, object obj)
