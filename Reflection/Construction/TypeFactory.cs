@@ -145,8 +145,9 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       {
          object result = null;
 
-         if (Helpers.ContainsKey(type))
-            result = Helpers[type].CreateInstance();
+         IHelperFactory value;
+         if (Helpers.TryGetValue(type, out value))
+            result = value.CreateInstance();
          else
          {
             if (useConstructor)
