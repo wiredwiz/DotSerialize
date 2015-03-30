@@ -198,7 +198,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
       {
          _Buffer = @" Version=4,";
          _Position = 0;
-         var vers = ReadVersion();
+         ReadVersion();
       }
 
       [TestMethod]
@@ -207,7 +207,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
       {
          _Buffer = @" Version=4.2147483648,";
          _Position = 0;
-         var vers = ReadVersion();
+         ReadVersion();
       }
 
       [TestMethod]
@@ -228,7 +228,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
       {
          _Buffer = @" Version=4.-1.0.0";
          _Position = 0;
-         var vers = ReadVersion();
+         ReadVersion();
       }
 
       [TestMethod]
@@ -237,7 +237,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.Reflection.Types.Naming
       {
          _Buffer = @" Version=4.0.f.0";
          _Position = 0;
-         var vers = ReadVersion();
+         ReadVersion();
       }
 
       [TestMethod]
