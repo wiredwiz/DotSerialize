@@ -106,6 +106,7 @@
     <Compile Include="DataTypes\DogCollar.cs" />
     <Compile Include="DataTypes\DogCollarFactory.cs" />
     <Compile Include="DataTypes\Dog.cs" />
+    <Compile Include="DataTypes\JaggedChessBoard.cs" />
     <Compile Include="DataTypes\Owner.cs" />
     <Compile Include="DataTypes\Person.cs" />
     <Compile Include="DataTypes\Pet.cs" />
@@ -160,6 +161,7 @@
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeDogOmittingTypesResultsInProperOutput.approved.xml" />
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatDisablingReferentialIntegrityResultsInProperOutput.approved.xml" />
     <Content Include="ChessBoard Tests\ChessBoardTests.InitialBoardSerializesProperly.approved.xml" />
+    <Content Include="ChessBoard Tests\ChessBoardTests.InitialJaggedBoardSerializesProperly.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeCatDECultureResultsInProperOutput.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperOutput.approved.xml" />
   </ItemGroup>

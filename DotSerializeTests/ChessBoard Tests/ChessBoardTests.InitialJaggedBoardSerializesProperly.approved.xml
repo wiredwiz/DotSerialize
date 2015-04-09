@@ -1,0 +1,148 @@
+﻿<JaggedChessBoard xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.JaggedChessBoard, DotSerializeTests" dts:id="1" dts:src="true">
+  <_Position dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[][], DotSerializeTests" dts:id="2" dts:src="true" dts:dim="8">
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="3" dts:src="true" dts:dim="8">
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="4" dts:src="true">
+        <_Type>Rook</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="5" dts:src="true">
+        <_Type>Knight</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="6" dts:src="true">
+        <_Type>Bishop</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="7" dts:src="true">
+        <_Type>Queen</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="8" dts:src="true">
+        <_Type>King</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="9" dts:src="true">
+        <_Type>Bishop</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="10" dts:src="true">
+        <_Type>Knight</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="11" dts:src="true">
+        <_Type>Rook</_Type>
+      </item>
+    </item>
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="12" dts:src="true" dts:dim="8">
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="13" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="14" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="15" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="16" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="17" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="18" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="19" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="20" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+    </item>
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="21" dts:src="true" dts:dim="8">
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+    </item>
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="22" dts:src="true" dts:dim="8">
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+    </item>
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="23" dts:src="true" dts:dim="8">
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+    </item>
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="24" dts:src="true" dts:dim="8">
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+      <item xsi:nil="true" />
+    </item>
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="25" dts:src="true" dts:dim="8">
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="26" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="27" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="28" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="29" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="30" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="31" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="32" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="33" dts:src="true">
+        <_Type>Pawn</_Type>
+      </item>
+    </item>
+    <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[], DotSerializeTests" dts:id="34" dts:src="true" dts:dim="8">
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="35" dts:src="true">
+        <_Type>Rook</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="36" dts:src="true">
+        <_Type>Knight</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="37" dts:src="true">
+        <_Type>Bishop</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="38" dts:src="true">
+        <_Type>Queen</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="39" dts:src="true">
+        <_Type>King</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="40" dts:src="true">
+        <_Type>Bishop</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="41" dts:src="true">
+        <_Type>Knight</_Type>
+      </item>
+      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="42" dts:src="true">
+        <_Type>Rook</_Type>
+      </item>
+    </item>
+  </_Position>
+</JaggedChessBoard>
