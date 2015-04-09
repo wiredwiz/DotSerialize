@@ -97,8 +97,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ChessBoard Tests\ChessBoardTests.cs" />
     <Compile Include="DataTypes\Bone.cs" />
     <Compile Include="DataTypes\Cat.cs" />
+    <Compile Include="DataTypes\ChessBoard.cs" />
+    <Compile Include="DataTypes\ChessPiece.cs" />
     <Compile Include="DataTypes\CompetitionOwner.cs" />
     <Compile Include="DataTypes\DogCollar.cs" />
     <Compile Include="DataTypes\DogCollarFactory.cs" />
@@ -156,6 +159,7 @@
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatWithoutMapResultsInProperOutput.approved.xml" />
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeDogOmittingTypesResultsInProperOutput.approved.xml" />
     <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatDisablingReferentialIntegrityResultsInProperOutput.approved.xml" />
+    <Content Include="ChessBoard Tests\ChessBoardTests.InitialBoardSerializesProperly.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeCatDECultureResultsInProperOutput.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperOutput.approved.xml" />
   </ItemGroup>
