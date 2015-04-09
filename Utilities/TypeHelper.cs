@@ -105,6 +105,23 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          }
       }
 
+      public static object[] GetArrayDimensions(XmlReader reader)
+      {
+         if (reader == null) throw new ArgumentNullException("reader");
+         try
+         {
+            var textDimensions = reader.GetAttribute(Resources.Dimensions, Resources.DotserializeUri).Split(',');
+            var dimensions = new object[textDimensions.Length];
+            for (var i = 0; i < dimensions.Length; i++)
+               dimensions[i] = int.Parse(textDimensions[i]);
+            return dimensions;
+         }
+         catch (ArgumentNullException)
+         {
+            return null;
+         }
+      }
+
       public static bool IsArray(Type type)
       {
          return type.IsArray;

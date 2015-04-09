@@ -1,5 +1,5 @@
 ﻿<ChessBoard xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessBoard, DotSerializeTests" dts:id="1" dts:src="true">
-  <_Position dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[,], DotSerializeTests" dts:id="2" dts:src="true">
+  <_Position dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece[,], DotSerializeTests" dts:id="2" dts:src="true" dts:dim="8,8">
     <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.ChessPiece, DotSerializeTests" dts:id="3" dts:src="true">
       <_Type>Rook</_Type>
     </item>

@@ -145,4 +145,8 @@
     <value>culture</value>
     <comment>Culture description</comment>
   </data>
+  <data name="Dimensions" xml:space="preserve">
+    <value>dim</value>
+    <comment>Dimensions description</comment>
+  </data>
 </root>
