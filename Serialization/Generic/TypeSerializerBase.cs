@@ -201,6 +201,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                                      true.ToString().ToLowerInvariant());
       }
 
+      protected virtual void WriteArrayDimensionsAttribute(XmlWriter writer, string dimensions)
+      {
+         writer.WriteAttributeString(Resources.Dimensions,
+                                     Resources.DotserializeUri,
+                                     dimensions);
+      }
+
       public virtual void Serialize(XmlWriter writer, Type type, object obj)
       {
          if (writer == null) throw new ArgumentNullException("writer");
@@ -461,10 +468,14 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
       protected virtual void SerializeArray(XmlWriter writer, object obj)
       {
-         IEnumerable objArray = obj as IEnumerable;
+         Array objArray = obj as Array;
          Type arrayElementType = obj.GetType().GetElementType();
          if (objArray == null)
             throw new SerializerException("Attempt to serialize non-array as an array");
+         var dimensions = new int[objArray.Rank];
+         for (int i = 0; i < objArray.Rank; i++)
+            dimensions[i] = objArray.GetLength(i);
+         WriteArrayDimensionsAttribute(writer, string.Join(",", dimensions));
 
          foreach (object item in objArray)
          {
@@ -495,8 +506,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
          if (TypeHelper.ReferenceIsNull(reader))
             return null;
-         List<object> items = new List<object>();
-         int counter = 0;
+         var dimensions = TypeHelper.GetArrayDimensions(reader);
+         var items = new List<object>();
+         var counter = 0;
          // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
          while (ReadNextElement(reader))
          {
@@ -504,7 +516,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             counter++;
          }
          ReadToElementEndNode(reader);
-         Array result = Activator.CreateInstance(type, items.Count) as Array;
+         Array result = Activator.CreateInstance(type, dimensions) as Array;
          if (result == null)
             throw new SerializerException(string.Format("Unable to create new instance of \"{0}\"", type.Name()));
          for (int i = 0; i < items.Count; i++)
