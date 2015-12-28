@@ -149,4 +149,12 @@
     <value>dim</value>
     <comment>Dimensions description</comment>
   </data>
+  <data name="ItemIndex" xml:space="preserve">
+    <value>index</value>
+    <comment>Index position within the array</comment>
+  </data>
+  <data name="InvalidArrayItemIndex" xml:space="preserve">
+    <value>Cannot deserialize array item because its index attribute is missing or invalid.</value>
+    <comment>Exeption message for invalid array item index attribute.</comment>
+  </data>
 </root>

@@ -204,7 +204,7 @@ namespace Org.Edgerunner.DotSerialize
             throw new SerializerException("Could not find root node");
          var type = TypeHelper.GetReferenceType(reader);
          if (type != null)
-            if (typeof(T) != type)
+            if (!typeof(T).IsAssignableFrom(type))
                throw new SerializerException(string.Format("Serialized object in file is not of Type {0}", typeof(T).Name));
          var id = TypeHelper.GetReferenceId(reader);
          if (id != 0)

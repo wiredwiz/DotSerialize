@@ -47,13 +47,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 
       #region IReferenceManager Members
 
-      public void CaptureLateBinding(int id, TypeMemberInfo info, int index)
+      public void CaptureLateBinding(int id, TypeMemberInfo info, int[] indices)
       {
          if (id == 0) throw new ArgumentNullException("id");
          if (info == null) throw new ArgumentNullException("info");
-         if (index < 0) throw new ArgumentNullException("index");
+         if (indices == null) throw new ArgumentNullException("indices");
 
-         CaptureStack.Peek().CaptureNodes.Add(new CaptureNode(id, info, index));
+         CaptureStack.Peek().CaptureNodes.Add(new CaptureNode(id, info, indices));
       }
 
       public void CaptureLateBinding(int id, TypeMemberInfo info)
@@ -64,15 +64,15 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          CaptureStack.Peek().CaptureNodes.Add(new CaptureNode(id, info));
       }
 
-      public void CaptureLateBinding(int id, int index)
+      public void CaptureLateBinding(int id, int[] indices)
       {
          if (id == 0) throw new ArgumentNullException("id");
-         if (index < 0) throw new ArgumentNullException("index");
+         if (indices == null) throw new ArgumentNullException("indices");
 
          CaptureSet set = CaptureStack.Peek();
          if (set.CurrentMember == null)
             throw new ReferenceException("CurrentMember of ReferenceManager is null");
-         set.CaptureNodes.Add(new CaptureNode(id, set.CurrentMember, index));
+         set.CaptureNodes.Add(new CaptureNode(id, set.CurrentMember, indices));
       }
 
       public void CaptureLateBinding(int id)
@@ -95,13 +95,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 
          foreach (CaptureNode node in set.CaptureNodes)
          {
-            if (node.Index >= 0)
+            if (node.Indices != null)
             {
                if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Field)
-                  MemberReferences(node.Id).Add(new MemberReference(source, MemberTypes.Field, node.MemberInfo.Name, node.Index));
+                  MemberReferences(node.Id).Add(new MemberReference(source, MemberTypes.Field, node.MemberInfo.Name, node.Indices));
                else if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Property)
                   MemberReferences(node.Id)
-                     .Add(new MemberReference(source, MemberTypes.Property, node.MemberInfo.Name, node.Index));
+                     .Add(new MemberReference(source, MemberTypes.Property, node.MemberInfo.Name, node.Indices));
             }
             else if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Field)
                MemberReferences(node.Id).Add(new MemberReference(source, MemberTypes.Field, node.MemberInfo.Name));

@@ -24,7 +24,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class ObjectExtensions
    {
-      public static void SetArrayFieldValue(this object obj, string name, object value, int index)
+      public static void SetArrayFieldValue(this object obj, string name, object value, int[] indices)
       {
          var type = obj.GetType();
          var fieldInfo = type.Field(name);
@@ -35,10 +35,10 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          Array array = fieldInfo.GetValue(obj) as Array;
          if (array == null)
             throw new TargetException("The value of field \"{0}\" is null.");
-         array.SetValue(value, index);
+         array.SetValue(value, indices);
       }
 
-      public static void SetArrayPropertyValue(this object obj, string name, object value, int index)
+      public static void SetArrayPropertyValue(this object obj, string name, object value, int[] indices)
       {
          var type = obj.GetType();
          var propInfo = type.Property(name);
@@ -49,7 +49,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          Array array = propInfo.GetValue(obj) as Array;
          if (array == null)
             throw new TargetException("The value of property \"{0}\" is null.");
-         array.SetValue(value, index);
+         array.SetValue(value, indices);
       }
    }
 }

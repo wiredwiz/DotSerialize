@@ -24,9 +24,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 {
    public interface IReferenceManager
    {
-      void CaptureLateBinding(int id, TypeMemberInfo info, int index);
+      void CaptureLateBinding(int id, TypeMemberInfo info, int[] indices);
       void CaptureLateBinding(int id, TypeMemberInfo info);
-      void CaptureLateBinding(int id, int index);
+      void CaptureLateBinding(int id, int[] indices);
       void CaptureLateBinding(int id);
       void FinishCaptures(object source);
       object GetObject(int id);

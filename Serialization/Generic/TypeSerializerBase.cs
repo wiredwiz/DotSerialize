@@ -208,6 +208,13 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                                      dimensions);
       }
 
+      protected virtual void WriteArrayItemIndexAttribute(XmlWriter writer, int[] indices)
+      {
+         writer.WriteAttributeString(Resources.ItemIndex,
+                                     Resources.DotserializeUri,
+                                     string.Join(",", indices));
+      }
+
       public virtual void Serialize(XmlWriter writer, Type type, object obj)
       {
          if (writer == null) throw new ArgumentNullException("writer");
@@ -476,12 +483,17 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          for (int i = 0; i < objArray.Rank; i++)
             dimensions[i] = objArray.GetLength(i);
          WriteArrayDimensionsAttribute(writer, string.Join(",", dimensions));
-
-         foreach (object item in objArray)
+         var arrayMap = objArray.CreateAbsoluteIndexArrayMap();
+         foreach (var indices in arrayMap)
          {
+            var item = objArray.GetValue(indices);
+
+            if (item == arrayElementType.GetDefaultValue())
+               continue;
+
             writer.WriteStartElement("item");
-            Type type;
-            type = item == null ? arrayElementType : item.GetType();
+            WriteArrayItemIndexAttribute(writer, indices);
+            var type = item?.GetType() ?? arrayElementType;
             // now we resolve a type serializer to do the work
             ITypeSerializer typeSerializer =
                Factory.CallMethod(new[] { arrayElementType }, "GetTypeSerializer") as ITypeSerializer;
@@ -507,29 +519,36 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          if (TypeHelper.ReferenceIsNull(reader))
             return null;
          var dimensions = TypeHelper.GetArrayDimensions(reader);
-         var items = new List<object>();
-         var counter = 0;
+         var items = new Dictionary<int[], object>();
+         Array result;
+         if (dimensions.Length == 1)
+            result = Activator.CreateInstance(type, dimensions[0]) as Array;
+         else
+            result = Activator.CreateInstance(type, dimensions) as Array;
+
+         if (result == null)
+            throw new SerializerException($"Unable to create new instance of \"{type.Name()}\"");
+
          // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
          while (ReadNextElement(reader))
          {
-            items.Add(DeserializeArrayItem(type, reader, counter));
-            counter++;
+            int[] indices;
+            var itemValue = DeserializeArrayItem(type, reader, out indices);
+            items.Add(indices, itemValue);
          }
          ReadToElementEndNode(reader);
-         Array result = Activator.CreateInstance(type, dimensions) as Array;
-         if (result == null)
-            throw new SerializerException(string.Format("Unable to create new instance of \"{0}\"", type.Name()));
-         for (int i = 0; i < items.Count; i++)
-            result.SetValue(items[i], i);
+
+         foreach (var pair in items)
+            result.SetValue(pair.Value, pair.Key);
          return result;
       }
 
-      protected virtual object DeserializeArrayItem(Type arrayType, XmlReader reader, int arrayIndex)
+      protected virtual object DeserializeArrayItem(Type arrayType, XmlReader reader, out int[] indices)
       {
          Type arrayElementType = arrayType.GetElementType();
          Type type;
-         int id = 0;
          bool isReferenceOrStruct = TypeHelper.IsClassOrStruct(arrayElementType);
+         indices = TypeHelper.GetArrayItemIndex(reader);
          if (isReferenceOrStruct)
          {
             type = TypeHelper.GetReferenceType(reader);
@@ -539,7 +558,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                throw new SerializerException(string.Format("Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"",
                                                            type,
                                                            arrayElementType));
-            id = TypeHelper.GetReferenceId(reader);
+            var id = TypeHelper.GetReferenceId(reader);
             if (id != 0)
             {
                if (RefManager.IsRegistered(id) && (RefManager.GetObject(id) != null))
@@ -554,7 +573,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
                if (!TypeHelper.IsReferenceSource(reader))
                {
-                  RefManager.CaptureLateBinding(id, arrayIndex);
+                  RefManager.CaptureLateBinding(id, indices);
                   return null;
                }
             }
@@ -623,7 +642,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                if (isElement)
                   ReadToElementEndNode(reader);
             }
-         }         
+         }
          return result;
       }
 
