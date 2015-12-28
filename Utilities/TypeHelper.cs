@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using System.Xml;
 using Org.Edgerunner.DotSerialize.Properties;
 
@@ -41,8 +42,8 @@ namespace Org.Edgerunner.DotSerialize.Utilities
       public static readonly Type StringType = typeof(String);
       public static readonly Type BooleanType = typeof(Boolean);
       public static readonly Type DateTimeType = typeof(DateTime);
-      private static readonly Dictionary<string, Type> _TypeNameCache = new Dictionary<string, Type>(); 
-      
+      private static readonly Dictionary<string, Type> _TypeNameCache = new Dictionary<string, Type>();
+
       /// <summary>
       ///    Gets the member expression.
       /// </summary>
@@ -86,7 +87,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 
       public static Type GetReferenceType(XmlReader reader)
       {
-         if (reader == null) throw new ArgumentNullException("reader");
+         if (reader == null) throw new ArgumentNullException(nameof(reader));
          try
          {
             var typeName = reader.GetAttribute(Resources.ReferenceType, Resources.DotserializeUri);
@@ -105,13 +106,13 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          }
       }
 
-      public static object[] GetArrayDimensions(XmlReader reader)
+      public static int[] GetArrayDimensions(XmlReader reader)
       {
-         if (reader == null) throw new ArgumentNullException("reader");
+         if (reader == null) throw new ArgumentNullException(nameof(reader));
          try
          {
             var textDimensions = reader.GetAttribute(Resources.Dimensions, Resources.DotserializeUri).Split(',');
-            var dimensions = new object[textDimensions.Length];
+            var dimensions = new int[textDimensions.Length];
             for (var i = 0; i < dimensions.Length; i++)
                dimensions[i] = int.Parse(textDimensions[i]);
             return dimensions;
@@ -119,6 +120,32 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          catch (ArgumentNullException)
          {
             return null;
+         }
+      }
+
+      public static int[] GetArrayItemIndex(XmlReader reader)
+      {
+         if (reader == null) throw new ArgumentNullException(nameof(reader));
+         try
+         {
+            var attribute = reader.GetAttribute(Resources.ItemIndex, Resources.DotserializeUri);
+            if (string.IsNullOrEmpty(attribute))
+               throw new SerializationException(Resources.InvalidArrayItemIndex);
+
+            var indicesText = attribute.Split(',');
+
+            var indices = new int[indicesText.Length];
+            for (var i = 0; i < indices.Length; i++)
+               indices[i] = int.Parse(indicesText[i]);
+            return indices;
+         }
+         catch (ArgumentNullException ex)
+         {
+            throw new SerializationException(Resources.InvalidArrayItemIndex, ex);
+         }
+         catch (OverflowException ex)
+         {
+            throw new SerializationException(Resources.InvalidArrayItemIndex, ex);
          }
       }
 
@@ -139,7 +166,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 
       public static bool IsPrimitive(Type type)
       {
-         return type == StringType || type == Int32Type || type == BooleanType  ||
+         return type == StringType || type == Int32Type || type == BooleanType ||
                 type == Int64Type || type == DateTimeType || type == SingleType || type == DoubleType ||
                 type == DecimalType || type == ByteType || type == Int16Type || type == CharType ||
                 type == UInt16Type || type == UInt32Type || type == UInt64Type || type == SByteType;

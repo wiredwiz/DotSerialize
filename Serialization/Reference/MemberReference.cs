@@ -38,7 +38,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          Type = type;
          Name = name;
          IsIndexReference = false;
-         ArrayIndex = 0;
+         ArrayIndices = null;
       }
 
       /// <summary>
@@ -47,21 +47,21 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       /// <param name="source"></param>
       /// <param name="type"></param>
       /// <param name="name"></param>
-      /// <param name="arrayIndex"></param>
-      public MemberReference(object source, MemberTypes type, string name, int arrayIndex)
+      /// <param name="arrayIndices"></param>
+      public MemberReference(object source, MemberTypes type, string name, int[] arrayIndices)
       {
          Source = source;
          Type = type;
          Name = name;
          IsIndexReference = true;
-         ArrayIndex = arrayIndex;
+         ArrayIndices = arrayIndices;
       }
 
       public object Source { get; set; }
       public MemberTypes Type { get; set; }
       public string Name { get; set; }
       public bool IsIndexReference { get; set; }
-      public int ArrayIndex { get; set; }
+      public int[] ArrayIndices { get; set; }
 
       #region IEquatable<MemberReference> Members
 
@@ -117,12 +117,12 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          if (Type == MemberTypes.Property)
             if (IsIndexReference)
-               Source.SetArrayPropertyValue(Name, newValue, ArrayIndex);
+               Source.SetArrayPropertyValue(Name, newValue, ArrayIndices);
             else
                Source.SetPropertyValue(Name, newValue);
          else if (Type == MemberTypes.Field)
             if (IsIndexReference)
-               Source.SetArrayFieldValue(Name, newValue, ArrayIndex);
+               Source.SetArrayFieldValue(Name, newValue, ArrayIndices);
             else
                Source.SetFieldValue(Name, newValue);
          else

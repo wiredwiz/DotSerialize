@@ -48,9 +48,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          _PendingReferences.Add(new MemberReference(null, type, name));
       }
 
-      public void LogPendingReference(MemberTypes type, string name, int index)
+      public void LogPendingReference(MemberTypes type, string name, int[] indices)
       {
-         _PendingReferences.Add(new MemberReference(null, type, name, index));
+         _PendingReferences.Add(new MemberReference(null, type, name, indices));
       }
 
       public void SavePendingReferences(object source)

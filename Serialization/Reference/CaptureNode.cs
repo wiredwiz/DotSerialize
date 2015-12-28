@@ -29,12 +29,12 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       /// </summary>
       /// <param name="id"></param>
       /// <param name="memberInfo"></param>
-      /// <param name="index"></param>
-      public CaptureNode(int id, TypeMemberInfo memberInfo, int index)
+      /// <param name="indices"></param>
+      public CaptureNode(int id, TypeMemberInfo memberInfo, int[] indices)
       {
          Id = id;
          MemberInfo = memberInfo;
-         Index = index;
+         Indices = indices;
       }
 
       /// <summary>
@@ -46,11 +46,11 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
       {
          Id = id;
          MemberInfo = memberInfo;
-         Index = -1;
+         Indices = null;
       }
 
       public int Id { get; set; }
       public TypeMemberInfo MemberInfo { get; set; }
-      public int Index { get; set; }
+      public int[] Indices { get; set; }
    }
 }
