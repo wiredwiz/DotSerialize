@@ -23,6 +23,7 @@ using ApprovalTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.Edgerunner.DotSerialize.Tests.DataTypes;
 using Org.Edgerunner.DotSerialize.Tests.Maps;
+using Org.Edgerunner.DotSerialize.Utilities;
 
 // ReSharper disable InconsistentNaming
 
@@ -103,23 +104,23 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       public void SerializeCatDECultureResultsInProperOutput()
       {
          var cat = new Cat
-                   {
-                      Name = "Puss",
-                      Breed = "Saimese",
-                      Selfish = true,
-                      BirthDate = new DateTime(2000, 12, 5),
-                      Height = 30.48,
-                      Weight = 2.26796
-                   };
+         {
+            Name = "Puss",
+            Breed = "Saimese",
+            Selfish = true,
+            BirthDate = new DateTime(2000, 12, 5),
+            Height = 30.48,
+            Weight = 2.26796
+         };
          var serializer = new Serializer
-                          {
-                             Settings =
+         {
+            Settings =
                              {
                                 DisableReferentialIntegrity = true,
                                 OmitTypeWhenPossible = true,
                                 Culture = CultureInfo.GetCultureInfo("de-DE")
                              }
-                          };
+         };
          string xml = serializer.SerializeObject(cat);
          Approvals.VerifyXml(xml);
       }
@@ -128,14 +129,14 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       public void SerializeCatDisablingReferentialIntegrityResultsInProperOutput()
       {
          var cat = new Cat
-                   {
-                      Name = "Puss",
-                      Breed = "Saimese",
-                      Selfish = true,
-                      BirthDate = new DateTime(2000, 12, 5),
-                      Height = 30.48,
-                      Weight = 2.26796
-                   };
+         {
+            Name = "Puss",
+            Breed = "Saimese",
+            Selfish = true,
+            BirthDate = new DateTime(2000, 12, 5),
+            Height = 30.48,
+            Weight = 2.26796
+         };
          var serializer = new Serializer { Settings = { DisableReferentialIntegrity = true, OmitTypeWhenPossible = true } };
          string xml = serializer.SerializeObject(cat);
          Approvals.VerifyXml(xml);
@@ -186,10 +187,10 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          child1.Father = owner;
          child2.Father = owner;
          var dog = new Dog("Fido", "Golden Retriever", true, owner)
-                   {
-                      BirthDate = new DateTime(2003, 5, 10),
-                      Collar = DogCollarFactory.GetCollar(20, true)
-                   };
+         {
+            BirthDate = new DateTime(2003, 5, 10),
+            Collar = DogCollarFactory.GetCollar(20, true)
+         };
          owner.Pets = new Pet[] { dog };
          child1.Pets = new Pet[] { dog };
          child2.Pets = new Pet[] { dog };
@@ -214,10 +215,10 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          child1.Father = owner;
          child2.Father = owner;
          var dog = new Dog("Fido", "Golden Retriever", true, owner)
-                   {
-                      BirthDate = new DateTime(2003, 5, 10),
-                      Collar = DogCollarFactory.GetCollar(20, true)
-                   };
+         {
+            BirthDate = new DateTime(2003, 5, 10),
+            Collar = DogCollarFactory.GetCollar(20, true)
+         };
          owner.Pets = new Pet[] { dog };
          child1.Pets = new Pet[] { dog };
          child2.Pets = new Pet[] { dog };
@@ -388,6 +389,45 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          Assert.AreEqual(prim.UInt64Dat, newPrim.UInt64Dat);
          Assert.AreEqual(prim.DateTimeDat, newPrim.DateTimeDat);
          Assert.AreEqual(prim.BooleanDat, newPrim.BooleanDat);
+      }
+
+      [TestMethod]
+      public void SerializeSingleDimensionArrayDeserializesCorrectly()
+      {
+         var data = new int[] { 1, 2, 3, 4, 5 };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(data);
+         var data2 = serializer.DeserializeObject<int[]>(xml);
+         for (int i = 0; i < data.Length; i++)
+            Assert.AreEqual(data[i], data2[i]);
+      }
+
+      [TestMethod]
+      public void SerializeSingleDimensionArrayOfPetsDeserializesCorrectly()
+      {
+         var data = new Pet[] 
+         {
+            new Dog("Fido", "Collie", false, null),
+            new Cat() {Name = "Jules"},
+            new Dog("2Ton", "Mastif", false, null)
+         };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(data);
+         var data2 = serializer.DeserializeObject<Pet[]>(xml);
+         for (int i = 0; i < data.Length; i++)
+            Assert.AreEqual(data[i], data2[i]);
+      }
+
+      [TestMethod]
+      public void SerializeMultiDimensionArrayDeserializesCorrectly()
+      {
+         var data = new int[,] { { 1, 2, 3, 4, 5 }, { 10, 11, 12, 13, 14 } };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(data);
+         var data2 = serializer.DeserializeObject<int[,]>(xml);
+         for (int i = 0; i < data.GetLength(0); i++)
+            for (int j = 0; j < data.GetLength(1); j++)
+               Assert.AreEqual(data[i, j], data2[i, j]);
       }
 
       [TestInitialize]

@@ -520,26 +520,27 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             return null;
          var dimensions = TypeHelper.GetArrayDimensions(reader);
          var items = new Dictionary<int[], object>();
-         Array result;
-         if (dimensions.Length == 1)
-            result = Activator.CreateInstance(type, dimensions[0]) as Array;
-         else
-            result = Activator.CreateInstance(type, dimensions) as Array;
-
+         var result = Array.CreateInstance(type.GetElementType(), dimensions);
+                  
          if (result == null)
             throw new SerializerException($"Unable to create new instance of \"{type.Name()}\"");
 
-         // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
-         while (ReadNextElement(reader))
+         if (!reader.IsEmptyElement)
          {
-            int[] indices;
-            var itemValue = DeserializeArrayItem(type, reader, out indices);
-            items.Add(indices, itemValue);
+            // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+            while (ReadNextElement(reader))
+            {
+               int[] indices;
+               var itemValue = DeserializeArrayItem(type, reader, out indices);
+               items.Add(indices, itemValue);
+            }
+            ReadToElementEndNode(reader);
          }
-         ReadToElementEndNode(reader);
 
          foreach (var pair in items)
+         {
             result.SetValue(pair.Value, pair.Key);
+         }
          return result;
       }
 
