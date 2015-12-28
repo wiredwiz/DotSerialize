@@ -7,8 +7,8 @@
     <Studded>True</Studded>
   </Collar>
   <_Owner dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="3" dts:src="true">
-    <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[], DotSerializeTests" dts:id="4" dts:src="true">
-      <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog, DotSerializeTests" dts:id="1" />
+    <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[], DotSerializeTests" dts:id="4" dts:src="true" dts:dim="1">
+      <item dts:index="0" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog, DotSerializeTests" dts:id="1" />
     </Pets>
     <BirthDate>1970-03-20T00:00:00.0000000</BirthDate>
     <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="5" dts:src="true">
@@ -17,11 +17,8 @@
       <Father xsi:nil="true" />
       <Mother xsi:nil="true" />
       <Children dts:type="System.Collections.Generic.List`1[[Org.Edgerunner.DotSerialize.Tests.DataTypes.Person, DotSerializeTests]], mscorlib" dts:id="6" dts:src="true">
-        <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[], DotSerializeTests" dts:id="7" dts:src="true">
-          <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="3" />
-          <item xsi:nil="true" />
-          <item xsi:nil="true" />
-          <item xsi:nil="true" />
+        <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[], DotSerializeTests" dts:id="7" dts:src="true" dts:dim="4">
+          <item dts:index="0" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="3" />
         </_items>
         <_size>1</_size>
         <_version>1</_version>
@@ -35,11 +32,8 @@
       <Father xsi:nil="true" />
       <Mother xsi:nil="true" />
       <Children dts:type="System.Collections.Generic.List`1[[Org.Edgerunner.DotSerialize.Tests.DataTypes.Person, DotSerializeTests]], mscorlib" dts:id="9" dts:src="true">
-        <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[], DotSerializeTests" dts:id="10" dts:src="true">
-          <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="3" />
-          <item xsi:nil="true" />
-          <item xsi:nil="true" />
-          <item xsi:nil="true" />
+        <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[], DotSerializeTests" dts:id="10" dts:src="true" dts:dim="4">
+          <item dts:index="0" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="3" />
         </_items>
         <_size>1</_size>
         <_version>1</_version>
@@ -48,10 +42,10 @@
       <FullName>Jane M Smith</FullName>
     </Mother>
     <Children dts:type="System.Collections.Generic.List`1[[Org.Edgerunner.DotSerialize.Tests.DataTypes.Person, DotSerializeTests]], mscorlib" dts:id="11" dts:src="true">
-      <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[], DotSerializeTests" dts:id="12" dts:src="true">
-        <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="13" dts:src="true">
-          <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[], DotSerializeTests" dts:id="14" dts:src="true">
-            <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog, DotSerializeTests" dts:id="1" />
+      <_items dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Person[], DotSerializeTests" dts:id="12" dts:src="true" dts:dim="4">
+        <item dts:index="0" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="13" dts:src="true">
+          <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[], DotSerializeTests" dts:id="14" dts:src="true" dts:dim="1">
+            <item dts:index="0" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog, DotSerializeTests" dts:id="1" />
           </Pets>
           <BirthDate>2000-03-22T00:00:00.0000000</BirthDate>
           <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="3" />
@@ -59,9 +53,9 @@
           <Children xsi:nil="true" />
           <FullName>Simon P Smith</FullName>
         </item>
-        <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="15" dts:src="true">
-          <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[], DotSerializeTests" dts:id="16" dts:src="true">
-            <item dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog, DotSerializeTests" dts:id="1" />
+        <item dts:index="1" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="15" dts:src="true">
+          <Pets dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Pet[], DotSerializeTests" dts:id="16" dts:src="true" dts:dim="1">
+            <item dts:index="0" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Dog, DotSerializeTests" dts:id="1" />
           </Pets>
           <BirthDate>2001-01-01T00:00:00.0000000</BirthDate>
           <Father dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.Owner, DotSerializeTests" dts:id="3" />
@@ -69,8 +63,6 @@
           <Children xsi:nil="true" />
           <FullName>Sally P Smith</FullName>
         </item>
-        <item xsi:nil="true" />
-        <item xsi:nil="true" />
       </_items>
       <_size>2</_size>
       <_version>2</_version>
