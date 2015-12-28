@@ -1,4 +1,4 @@
-﻿DotSerialize 1.2.6 Beta
+﻿DotSerialize 1.2.7 Beta
 -------------------------
 DotSerialize is a .Net Xml serialization library that is designed to "just work".  What do I mean by "just work"?  Well I mean exactly that, 
 which means you should be able to take just about any class or struct instance and use it with DotSerialize without any special attributes 
