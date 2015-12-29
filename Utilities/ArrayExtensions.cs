@@ -1,5 +1,6 @@
-﻿#region Apache License 2.0
+﻿#region Apapche License 2.0
 
+// <copyright file="ArrayExtensions.cs" company="Edgerunner.org">
 // Copyright 2015 Thaddeus Ryker
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// </copyright>
 #endregion
 
 using System;
@@ -23,7 +24,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
    public static class ArrayExtensions
    {
       /// <summary>
-      /// Creates and returns an array that maps an absolute index to the individual indexes in a multi-dimensional array.
+      ///    Creates and returns an array that maps an absolute index to the individual indexes in a multi-dimensional array.
       /// </summary>
       /// <param name="arrayObject">The array to create a map for.</param>
       /// <returns>The array of array indices that is the map.</returns>
@@ -35,12 +36,14 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          var storage = new int[max][];
          var position = new int[dimensions];
          var maxDimension = dimensions - 1;
-         
+
          for (var absoluteIndex = 0; absoluteIndex < max; absoluteIndex++)
          {
             var curPosition = new int[dimensions];
+
             // ReSharper disable ExceptionNotDocumented
             position.CopyTo(curPosition, 0);
+
             // ReSharper restore ExceptionNotDocumented
             storage[absoluteIndex] = curPosition;
 

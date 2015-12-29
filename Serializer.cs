@@ -1,19 +1,17 @@
-﻿#region Apache License 2.0
+﻿#region Apapche License 2.0
 
+// <copyright file="Serializer.cs" company="Edgerunner.org">
 // Copyright 2015 Thaddeus Ryker
-// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// </copyright>
 #endregion
 
 using System;
@@ -27,7 +25,6 @@ using Ninject.Syntax;
 using Org.Edgerunner.DotSerialize.Exceptions;
 using Org.Edgerunner.DotSerialize.Mapping;
 using Org.Edgerunner.DotSerialize.Properties;
-using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Caching;
 using Org.Edgerunner.DotSerialize.Reflection.Types;
 using Org.Edgerunner.DotSerialize.Serialization;
@@ -38,7 +35,6 @@ using Org.Edgerunner.DotSerialize.Serialization.Registration;
 using Org.Edgerunner.DotSerialize.Utilities;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
-
 namespace Org.Edgerunner.DotSerialize
 {
    /// <summary>
@@ -216,6 +212,7 @@ namespace Org.Edgerunner.DotSerialize
          if (typeSerializer != null)
             result = typeSerializer.Deserialize(reader);
          else
+
          // Since there was no bound custom type serializer we default to the GenericTypeSerializer
          {
             var defaultSerializer = factory.GetDefaultSerializer();
@@ -364,8 +361,10 @@ namespace Org.Edgerunner.DotSerialize
          writer.WriteStartElement(info.EntityName);
          if (!string.IsNullOrEmpty(info.Namespace))
             writer.WriteAttributeString("xmlns", info.Namespace);
+
          // ReSharper disable once AssignNullToNotNullAttribute
          writer.WriteAttributeString("xmlns", "dts", null, Resources.DotserializeUri);
+
          // ReSharper disable once AssignNullToNotNullAttribute
          writer.WriteAttributeString("xmlns", "xsi", null, Resources.XsiUri);
          if (!string.IsNullOrEmpty(Settings.Culture.Name))
@@ -379,6 +378,7 @@ namespace Org.Edgerunner.DotSerialize
             if (typeSerializer != null)
                typeSerializer.Serialize(writer, obj);
             else
+
             // Since there was no bound custom type serializer we default to the GenericTypeSerializer
             {
                var defaultSerializer = factory.GetDefaultSerializer();
@@ -389,11 +389,12 @@ namespace Org.Edgerunner.DotSerialize
          {
             if (Settings.DisableReferentialIntegrity)
                throw new SerializerException("Non-ending recursive loop encountered during serialization.\n" +
-                                             "This is likely due to a circular reference in the object graph, try enabling the referential integrity setting.",
+                                             "This is likely due to a circular reference in the object graph, try enabling the referential integrity setting.", 
                                              ex);
 
             throw;
          }
+
          writer.WriteEndDocument();
          Kernel.Release(mgr);
          BindITypeSerializationFactory();

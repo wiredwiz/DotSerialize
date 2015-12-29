@@ -1,19 +1,17 @@
-﻿#region Apache License 2.0
+﻿#region Apapche License 2.0
 
+// <copyright file="TypeFactory.cs" company="Edgerunner.org">
 // Copyright 2015 Thaddeus Ryker
-// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// </copyright>
 #endregion
 
 using System;
@@ -38,10 +36,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       private static TypeConstructorCache Cache { get; set; }
       private static Dictionary<Type, IHelperFactory> Helpers { get; set; }
 
-      private static bool AttemptConstructorMatch(Type type,
-                                                  ConstructorInfo constructor,
-                                                  List<TypeMemberInfo> memberInfoList,
-                                                  IDictionary<TypeMemberInfo, object> data,
+      private static bool AttemptConstructorMatch(Type type, 
+                                                  ConstructorInfo constructor, 
+                                                  List<TypeMemberInfo> memberInfoList, 
+                                                  IDictionary<TypeMemberInfo, object> data, 
                                                   out object result)
       {
          Dictionary<ParameterInfo, TypeMemberInfo> paramMap;
@@ -64,12 +62,13 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
                paramValues = BuildParameterValues(paramMap.Keys.ToList(), paramMap.Values.ToList(), data);
                result = AttemptCreation(constructor, paramValues);
             }
+
             if (result == null)
                return false;
          }
 
-         Cache.AddMappingFor(type,
-                             memberInfoList,
+         Cache.AddMappingFor(type, 
+                             memberInfoList, 
                              new ConstructorMap(constructor, paramMap.Keys.ToList(), paramMap.Values.ToList()));
          return true;
       }
@@ -86,8 +85,8 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          }
       }
 
-      private static object[] BuildParameterValues(IList<ParameterInfo> parameters,
-                                                   IList<TypeMemberInfo> members,
+      private static object[] BuildParameterValues(IList<ParameterInfo> parameters, 
+                                                   IList<TypeMemberInfo> members, 
                                                    IDictionary<TypeMemberInfo, object> data)
       {
          if (parameters.Count != members.Count)
@@ -112,7 +111,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <typeparam name="T">Type of instance to be created.</typeparam>
       /// <param name="data">
       ///    IDictionary containing mappings of
-      /// <see cref="TypeMemberInfo"/> instances to object data.
+      ///    <see cref="TypeMemberInfo" /> instances to object data.
       /// </param>
       /// <param name="useConstructor">Specifies whether an object's constructor should be used when creating a new instance.</param>
       /// <returns>A new instance of type T populated with the data from the data argument.</returns>
@@ -131,7 +130,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
       /// <param name="type">Type of instance to be created.</param>
       /// <param name="data">
       ///    IDictionary containing mappings of
-      /// <see cref="TypeMemberInfo"/> instances to object data.
+      ///    <see cref="TypeMemberInfo" /> instances to object data.
       /// </param>
       /// <param name="useConstructor">Specifies whether an object's constructor should be used when creating a new instance.</param>
       /// <returns>A new instance of type Type populated with the data from the data argument.</returns>
@@ -152,30 +151,31 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
          {
             if (useConstructor)
             {
-         var memberInfoList = data.Keys.ToList();
-         var cachedMap = Cache.GetMappingFor(type, memberInfoList);
-         if (cachedMap != null)
-            if (cachedMap.Parameters.Count == 0)
-               result = AttemptCreation(cachedMap.Constructor);
-            else
-            {
-               object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
-               result = AttemptCreation(cachedMap.Constructor, paramValues);
-            }
-         // If there was no cached mapping or if the mapping no longer works, we try to find a new one
-         if (result == null)
-         {
-            var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
-            if (constructors.Count == 0)
-               result = Activator.CreateInstance(type);
-            else
-               foreach (var constructor in constructors)
-                  if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
-                     break;
-         }
+               var memberInfoList = data.Keys.ToList();
+               var cachedMap = Cache.GetMappingFor(type, memberInfoList);
+               if (cachedMap != null)
+                  if (cachedMap.Parameters.Count == 0)
+                     result = AttemptCreation(cachedMap.Constructor);
+                  else
+                  {
+                     object[] paramValues = BuildParameterValues(cachedMap.Parameters, cachedMap.Members, data);
+                     result = AttemptCreation(cachedMap.Constructor, paramValues);
+                  }
+
+               // If there was no cached mapping or if the mapping no longer works, we try to find a new one
+               if (result == null)
+               {
+                  var constructors = type.Constructors().OrderBy(x => x.Parameters().Count).ToList();
+                  if (constructors.Count == 0)
+                     result = Activator.CreateInstance(type);
+                  else
+                     foreach (var constructor in constructors)
+                        if (AttemptConstructorMatch(type, constructor, memberInfoList, data, out result))
+                           break;
+               }
             }
 
-         if (result == null)
+            if (result == null)
                result = FormatterServices.GetUninitializedObject(type);
          }
 
@@ -190,6 +190,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Construction
                   result.SetPropertyValue(memberInfo.Name, data[memberInfo]);
                   break;
             }
+
          result = result.UnwrapIfWrapped();
          return result;
       }
