@@ -1,18 +1,31 @@
-﻿using System;
+﻿#region Apapche License 2.0
+
+// <copyright file="AssemblyQualifiedNameParser.cs" company="Edgerunner.org">
+// Copyright 2015 Thaddeus Ryker
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//     http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
+#endregion
+
+using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Org.Edgerunner.DotSerialize.Exceptions;
 
 namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
 {
    public class AssemblyQualifiedNameParser
    {
+      protected const char Eof = '\0';
       protected string _Buffer;
       protected int _Position;
-      protected const char Eof = '\0';
 
       public AssemblyQualifiedName Parse(string name)
       {
@@ -41,6 +54,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
             _Position = _Buffer.Length;
             return result;
          }
+
          result = _Buffer.Substring(_Position, length);
          _Position += length;
          return result;
@@ -125,9 +139,11 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
                default:
                   throw InvalidNameException(_Position);
             }
+
             if (d == ']')
                break;
          }
+
          return dimensions;
       }
 
@@ -163,6 +179,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
                escape = true;
             d = Read();
          }
+
          Back();
          return sb;
       }
@@ -174,7 +191,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
 
       protected ParserException InvalidNameException(int position, Exception ex)
       {
-         return new ParserException(string.Format("\"{0}\" is not a valid AssemblyQualifiedName.  Parse error at position {1}", _Buffer, position), ex);
+         return
+            new ParserException(
+               string.Format("\"{0}\" is not a valid AssemblyQualifiedName.  Parse error at position {1}", _Buffer, position), 
+               ex);
       }
 
       protected AssemblyQualifiedName ReadAssemblyQualifiedName()
@@ -204,6 +224,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
             throw InvalidNameException(_Position);
          return true;
       }
+
       protected AssemblyQualifiedName.TypeInfo ReadTypeName()
       {
          var sb = ReadNonSpecialText();
@@ -232,6 +253,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
             Back();
             result = new AssemblyQualifiedName.TypeInfo(sb.ToString(), ReadArrayDimensions());
          }
+
          return result;
       }
 
@@ -254,6 +276,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
                SkipWhiteSpace();
             }
          }
+
          if (Read() != ']')
             throw InvalidNameException(_Position);
          return subs;
@@ -283,6 +306,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          if (Read() != '=')
             throw InvalidNameException(_Position);
       }
+
       protected Version ReadVersion()
       {
          SkipWhiteSpace();
@@ -304,6 +328,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types.Naming
          {
             throw InvalidNameException(_Position + 1, ex);
          }
+
          return vers;
       }
 

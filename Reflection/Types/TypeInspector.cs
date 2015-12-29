@@ -1,19 +1,17 @@
-﻿#region Apache License 2.0
+﻿#region Apapche License 2.0
 
+// <copyright file="TypeInspector.cs" company="Edgerunner.org">
 // Copyright 2015 Thaddeus Ryker
-// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// </copyright>
 #endregion
 
 using System;
@@ -63,81 +61,6 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
       protected bool WhiteListMode { get; set; }
       public List<string> PropertiesToExclude { get; set; }
 
-      #region ITypeInspector Members
-
-      public virtual TypeInfo GetInfo(string fullyQualifiedTypeName)
-      {
-         return GetInfo(Type.GetType(fullyQualifiedTypeName, true));
-      }
-
-      public virtual TypeInfo GetInfo(Type type)
-      {
-         WhiteListMode = false;
-         PropertiesToExclude.Clear();
-         TypeInfo result = _Cache.GetInfo(type);
-         if (result != null)
-            return result;
-         string rootName = null;
-         string @namespace = null;
-         List<TypeMemberInfo> infoList = null;
-         XmlRootAttribute rootNode = GetRootNodeInfo(type);
-         Type workingType = type;
-         while (rootNode == null)
-         {
-            workingType = workingType.BaseType;
-            if ((workingType == null) || (workingType == typeof(object)))
-               break;
-            rootNode = GetRootNodeInfo(workingType);
-         }
-         if (rootNode == null)
-         {
-            rootName = CleanNodeName(type.Name());
-            @namespace = string.Empty;
-         }
-         else
-         {
-            rootName = rootNode.Name;
-            @namespace = rootNode.Namespace;
-         }
-         infoList = GetFieldMembersInfo(type);
-         infoList.AddRange(GetPropertyMembersInfo(type));
-         var duplicateElements = from x in infoList
-                                 where !x.IsAttribute
-                                 group x by x.EntityName
-                                 into grouped
-                                 where (grouped.Count() > 1)
-                                 select grouped.Key;
-         if (duplicateElements.Count() != 0)
-            throw new TypeLayoutException(string.Format("Element node name \"{0}\" is used for more than one member of Type {1}",
-                                                        duplicateElements.First(),
-                                                        type.Name()));
-         var duplicateAttribs = from x in infoList
-                                where x.IsAttribute
-                                group x by x.EntityName
-                                into grouped
-                                where (grouped.Count() > 1)
-                                select grouped.Key;
-         if (duplicateAttribs.Count() != 0)
-            throw new TypeLayoutException(string.Format(
-                                                        "Attribute node name \"{0}\" is used for more than one member of Type {1}",
-                                                        duplicateAttribs.First(),
-                                                        type.Name()));
-         result = new TypeInfo(type.Name, type, rootName, @namespace, infoList);
-         _Cache.AddInfo(result);
-         return result;
-      }
-
-      /// <summary>
-      ///    Extracts a <see cref="TypeInfo" /> instance from an class map and adds it to the internal cache.
-      /// </summary>
-      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.ClassMapBase" /> instance to register.</param>
-      public void RegisterMap(ClassMapBase map)
-      {
-         _Cache.AddInfo(map.GetTypeInfo());
-      }
-
-      #endregion
-
       public static string CleanNodeName(string name)
       {
          StringBuilder builder = new StringBuilder(name.Length);
@@ -172,10 +95,10 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
                   memberInfo.Type = TypeMemberInfo.MemberType.Field;
                }
                else if (!ignore && !WhiteListMode)
-                  memberInfo = new TypeMemberInfo(field.Name,
-                                                  TypeMemberInfo.MemberType.Field,
-                                                  autoProperty.Name,
-                                                  field.FieldType,
+                  memberInfo = new TypeMemberInfo(field.Name, 
+                                                  TypeMemberInfo.MemberType.Field, 
+                                                  autoProperty.Name, 
+                                                  field.FieldType, 
                                                   false) { Order = ordering };
                break;
             }
@@ -205,21 +128,23 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
                      entityName = dataMemberAttribute.GetPropertyValue("Name").ToString();
                      ordering = (int)dataMemberAttribute.GetPropertyValue("Order");
                   }
+
                   entityName = string.IsNullOrEmpty(entityName) ? field.Name : entityName;
                   ordering = ordering == 0 ? 999 : ordering;
-                  memberInfo = new TypeMemberInfo(field.Name,
-                                                  TypeMemberInfo.MemberType.Field,
-                                                  entityName,
-                                                  field.FieldType,
-                                                  (attribAttribute != null)) { Order = ordering };
+                  memberInfo = new TypeMemberInfo(field.Name, 
+                                                  TypeMemberInfo.MemberType.Field, 
+                                                  entityName, 
+                                                  field.FieldType, 
+                                                  attribAttribute != null) { Order = ordering };
                   break;
                }
             }
+
          if ((memberInfo == null) && !ignore && !WhiteListMode)
-            memberInfo = new TypeMemberInfo(topLevelField.Name,
-                                            TypeMemberInfo.MemberType.Field,
-                                            topLevelField.Name,
-                                            topLevelField.FieldType,
+            memberInfo = new TypeMemberInfo(topLevelField.Name, 
+                                            TypeMemberInfo.MemberType.Field, 
+                                            topLevelField.Name, 
+                                            topLevelField.FieldType, 
                                             false) { Order = ordering };
          return memberInfo;
       }
@@ -227,6 +152,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
       protected virtual List<TypeMemberInfo> GetFieldMembersInfo(Type type)
       {
          List<TypeMemberInfo> infoList = new List<TypeMemberInfo>();
+
          // Get information for fields
          var allFields = type.Fields(Flags.InstanceAnyVisibility);
          var results = from p in allFields
@@ -267,6 +193,7 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
             // If we are set to explicitly ignore then we break out now
             if (ignore && (elementAttrib == null) && (attribAttribute == null) && (dataMemberAttribute == null))
                break; // skip the current field
+
             // If we found an element, attribute ot datamember attribute then we build type member info from
             if ((elementAttrib != null) || (attribAttribute != null) || (dataMemberAttribute != null))
             {
@@ -284,13 +211,14 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
                   entityName = dataMemberAttribute.Name ?? string.Empty;
                   ordering = dataMemberAttribute.Order;
                }
+
                entityName = string.IsNullOrEmpty(entityName) ? property.Name : entityName;
                ordering = ordering == -1 ? 999 : ordering;
-               memberInfo = new TypeMemberInfo(property.Name,
-                                               TypeMemberInfo.MemberType.Property,
-                                               entityName,
-                                               property.PropertyType,
-                                               (attribAttribute != null)) { Order = ordering };
+               memberInfo = new TypeMemberInfo(property.Name, 
+                                               TypeMemberInfo.MemberType.Property, 
+                                               entityName, 
+                                               property.PropertyType, 
+                                               attribAttribute != null) { Order = ordering };
                break;
             }
          }
@@ -339,7 +267,85 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
                ? dcAttrib.Namespace
                : string.Empty;
          }
+
          return rootAttrib;
       }
+
+      #region ITypeInspector Members
+
+      public virtual TypeInfo GetInfo(string fullyQualifiedTypeName)
+      {
+         return GetInfo(Type.GetType(fullyQualifiedTypeName, true));
+      }
+
+      public virtual TypeInfo GetInfo(Type type)
+      {
+         WhiteListMode = false;
+         PropertiesToExclude.Clear();
+         TypeInfo result = _Cache.GetInfo(type);
+         if (result != null)
+            return result;
+         string rootName = null;
+         string @namespace = null;
+         List<TypeMemberInfo> infoList = null;
+         XmlRootAttribute rootNode = GetRootNodeInfo(type);
+         Type workingType = type;
+         while (rootNode == null)
+         {
+            workingType = workingType.BaseType;
+            if ((workingType == null) || (workingType == typeof(object)))
+               break;
+            rootNode = GetRootNodeInfo(workingType);
+         }
+
+         if (rootNode == null)
+         {
+            rootName = CleanNodeName(type.Name());
+            @namespace = string.Empty;
+         }
+         else
+         {
+            rootName = rootNode.Name;
+            @namespace = rootNode.Namespace;
+         }
+
+         infoList = GetFieldMembersInfo(type);
+         infoList.AddRange(GetPropertyMembersInfo(type));
+         var duplicateElements = from x in infoList
+                                 where !x.IsAttribute
+                                 group x by x.EntityName
+                                 into grouped
+                                 where grouped.Count() > 1
+                                 select grouped.Key;
+         if (duplicateElements.Count() != 0)
+            throw new TypeLayoutException(string.Format("Element node name \"{0}\" is used for more than one member of Type {1}", 
+                                                        duplicateElements.First(), 
+                                                        type.Name()));
+         var duplicateAttribs = from x in infoList
+                                where x.IsAttribute
+                                group x by x.EntityName
+                                into grouped
+                                where grouped.Count() > 1
+                                select grouped.Key;
+         if (duplicateAttribs.Count() != 0)
+            throw new TypeLayoutException(string.Format(
+                                                        "Attribute node name \"{0}\" is used for more than one member of Type {1}", 
+                                                        duplicateAttribs.First(), 
+                                                        type.Name()));
+         result = new TypeInfo(type.Name, type, rootName, @namespace, infoList);
+         _Cache.AddInfo(result);
+         return result;
+      }
+
+      /// <summary>
+      ///    Extracts a <see cref="TypeInfo" /> instance from an class map and adds it to the internal cache.
+      /// </summary>
+      /// <param name="map"><see cref="Org.Edgerunner.DotSerialize.Mapping.ClassMapBase" /> instance to register.</param>
+      public void RegisterMap(ClassMapBase map)
+      {
+         _Cache.AddInfo(map.GetTypeInfo());
+      }
+
+      #endregion
    }
 }

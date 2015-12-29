@@ -1,19 +1,17 @@
-﻿#region Apache License 2.0
+﻿#region Apapche License 2.0
 
+// <copyright file="TypeHelper.cs" company="Edgerunner.org">
 // Copyright 2015 Thaddeus Ryker
-// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// </copyright>
 #endregion
 
 using System;
@@ -56,7 +54,6 @@ namespace Org.Edgerunner.DotSerialize.Utilities
          // This method was taken from CsvHelper which was taken from FluentNHibernate.Utils.ReflectionHelper.cs and modified.
          // http://joshclose.github.io/CsvHelper/
          // http://fluentnhibernate.org/
-
          MemberExpression memberExpression = null;
          if (expression.Body.NodeType == ExpressionType.Convert)
          {
@@ -187,7 +184,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 
       public static bool IsStruct(Type type)
       {
-         return (!type.IsEnum && !type.IsArray && !IsPrimitive(type) && type.IsValueType);
+         return !type.IsEnum && !type.IsArray && !IsPrimitive(type) && type.IsValueType;
       }
 
       public static bool ReferenceIsNull(XmlReader reader)

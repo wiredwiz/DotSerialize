@@ -1,19 +1,17 @@
-﻿#region Apache License 2.0
+﻿#region Apapche License 2.0
 
+// <copyright file="ReferenceManager.cs" company="Edgerunner.org">
 // Copyright 2015 Thaddeus Ryker
-// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+// </copyright>
 #endregion
 
 using System;
@@ -22,7 +20,6 @@ using System.Linq;
 using System.Reflection;
 using Fasterflect;
 using Org.Edgerunner.DotSerialize.Exceptions;
-using Org.Edgerunner.DotSerialize.Reflection;
 using Org.Edgerunner.DotSerialize.Reflection.Types;
 
 namespace Org.Edgerunner.DotSerialize.Serialization.Reference
@@ -90,7 +87,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
          var set = CaptureStack.Pop();
          if (source.GetType() != set.Type)
             throw new ReferenceException(
-               string.Format("Source object does not match type \"{0}\" specified at the start of the capture.",
+               string.Format("Source object does not match type \"{0}\" specified at the start of the capture.", 
                              set.Type.Name()));
 
          foreach (CaptureNode node in set.CaptureNodes)
@@ -98,7 +95,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
             if (node.Indices != null)
             {
                if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Field)
-                  MemberReferences(node.Id).Add(new MemberReference(source, MemberTypes.Field, node.MemberInfo.Name, node.Indices));
+                  MemberReferences(node.Id)
+                     .Add(new MemberReference(source, MemberTypes.Field, node.MemberInfo.Name, node.Indices));
                else if (node.MemberInfo.Type == TypeMemberInfo.MemberType.Property)
                   MemberReferences(node.Id)
                      .Add(new MemberReference(source, MemberTypes.Property, node.MemberInfo.Name, node.Indices));
@@ -214,6 +212,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Reference
 
          var node = ReferencesByGuid[id];
          node.SourceObject = newObject;
+
          // Now that we updated all references, we clear the current list of latebound references
          node.References.Clear();
       }
