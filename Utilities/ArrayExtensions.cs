@@ -22,17 +22,16 @@ namespace Org.Edgerunner.DotSerialize.Utilities
    /// </summary>
    public static class ArrayExtensions
    {
-
       /// <summary>
       /// Creates and returns an array that maps an absolute index to the individual indexes in a multi-dimensional array.
       /// </summary>
       /// <param name="arrayObject">The array to create a map for.</param>
       /// <returns>The array of array indices that is the map.</returns>
-      /// <exception cref="IndexOutOfRangeException">Cannot map an array with a 0 length dimension.</exception>
       public static int[][] CreateAbsoluteIndexArrayMap(this Array arrayObject)
       {
-         int max = arrayObject.Length;
-         int dimensions = arrayObject.Rank;
+         // ReSharper disable once ExceptionNotDocumented
+         var max = arrayObject.Length;
+         var dimensions = arrayObject.Rank;
          var storage = new int[max][];
          var position = new int[dimensions];
          var maxDimension = dimensions - 1;
@@ -55,9 +54,7 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 
             position[workingDimension]++;
             for (var i = workingDimension + 1; i < dimensions; i++)
-            {
                position[i] = 0;
-            }
          }
 
          return storage;
