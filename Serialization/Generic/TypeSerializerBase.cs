@@ -36,7 +36,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
    {
       /// <summary>
       /// Initializes a new instance of the <see cref="TypeSerializerBase{T}"/> class. 
-      ///    Initializes a new instance of the <see cref="TypeSerializerBase"/> class.
       /// </summary>
       /// <param name="settings">
       /// </param>
@@ -46,9 +45,9 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
       /// </param>
       /// <param name="refManager">
       /// </param>
-      protected TypeSerializerBase(Settings settings, 
-                                   ITypeSerializerFactory factory, 
-                                   ITypeInspector inspector, 
+      protected TypeSerializerBase(Settings settings,
+                                   ITypeSerializerFactory factory,
+                                   ITypeInspector inspector,
                                    IReferenceManager refManager)
       {
          Factory = factory;
@@ -78,7 +77,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          throw new SerializerException(
             string.Format("Reader was not positioned on a node of type Attribute or Element.\r\n" +
                           "A custom type serializer probably positioned the reader incorrectly." +
-                          "Unable to deserialize type \"{0}\".", 
+                          "Unable to deserialize type \"{0}\".",
                           type.Name()));
       }
 
@@ -172,7 +171,7 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          else if (TypeHelper.IsEnum(type))
             result = DeserializeEnum(type, reader);
          else
-            throw new SerializerException(string.Format("Unable to deserialize unexpected type \"{0}\" from an attribute.", 
+            throw new SerializerException(string.Format("Unable to deserialize unexpected type \"{0}\" from an attribute.",
                                                         type.Name()));
          return result;
       }
@@ -222,8 +221,12 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
       protected virtual void SerializeAttribute(XmlWriter writer, object obj, TypeMemberInfo attribute)
       {
-         writer.WriteStartAttribute(attribute.EntityName);
          object entityValue = GetEntityValue(obj, attribute);
+         if (Settings.OmitMembersWithDefaultValues)
+            if (attribute.HasDefaultValue(entityValue))
+               return;
+
+         writer.WriteStartAttribute(attribute.EntityName);
 
          // now we resolve a type serializer to do the work
          ITypeSerializer typeSerializer =
@@ -243,12 +246,16 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
       protected virtual void SerializeElement(XmlWriter writer, object obj, TypeMemberInfo element)
       {
+         object entityValue = GetEntityValue(obj, element);
+         if (Settings.OmitMembersWithDefaultValues)
+            if (element.HasDefaultValue(entityValue))
+               return;
+
          writer.WriteStartElement(element.EntityName);
 
          // now we resolve a type serializer to do the work
          ITypeSerializer typeSerializer =
             Factory.CallMethod(new[] { element.DataType }, "GetTypeSerializer") as ITypeSerializer;
-         object entityValue = GetEntityValue(obj, element);
          if (typeSerializer != null)
             typeSerializer.Serialize(writer, element.DataType, entityValue);
          else
@@ -264,15 +271,15 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
       protected virtual void WriteReferenceIsNullAttribute(XmlWriter writer)
       {
-         writer.WriteAttributeString(Resources.ReferenceisNull, 
-                                     Resources.XsiUri, 
+         writer.WriteAttributeString(Resources.ReferenceisNull,
+                                     Resources.XsiUri,
                                      true.ToString().ToLowerInvariant());
       }
 
       protected virtual void WriteReferenceTypeAttribute(XmlWriter writer, Type actualType)
       {
-         writer.WriteAttributeString(Resources.ReferenceType, 
-                                     Resources.DotserializeUri, 
+         writer.WriteAttributeString(Resources.ReferenceType,
+                                     Resources.DotserializeUri,
                                      FormatType(actualType.AssemblyQualifiedName));
       }
 
@@ -283,27 +290,27 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
 
       protected virtual void WriteReferenceIsSourceAttribute(XmlWriter writer)
       {
-         writer.WriteAttributeString(Resources.ReferenceSource, 
-                                     Resources.DotserializeUri, 
+         writer.WriteAttributeString(Resources.ReferenceSource,
+                                     Resources.DotserializeUri,
                                      true.ToString().ToLowerInvariant());
       }
 
       protected virtual void WriteArrayDimensionsAttribute(XmlWriter writer, string dimensions)
       {
-         writer.WriteAttributeString(Resources.Dimensions, 
-                                     Resources.DotserializeUri, 
+         writer.WriteAttributeString(Resources.Dimensions,
+                                     Resources.DotserializeUri,
                                      dimensions);
       }
 
       protected virtual void WriteArrayItemIndexAttribute(XmlWriter writer, int[] indices)
       {
-         writer.WriteAttributeString(Resources.ItemIndex, 
-                                     Resources.DotserializeUri, 
+         writer.WriteAttributeString(Resources.ItemIndex,
+                                     Resources.DotserializeUri,
                                      string.Join(",", indices));
       }
 
-      protected virtual void DeserializeAttribMember(XmlReader reader, 
-                                                     TypeInfo info, 
+      protected virtual void DeserializeAttribMember(XmlReader reader,
+                                                     TypeInfo info,
                                                      Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
@@ -329,8 +336,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          }
       }
 
-      protected virtual void DeserializeElementMember(XmlReader reader, 
-                                                      TypeInfo info, 
+      protected virtual void DeserializeElementMember(XmlReader reader,
+                                                      TypeInfo info,
                                                       Dictionary<TypeMemberInfo, object> memberValues)
       {
          if (reader == null) throw new ArgumentNullException("reader");
@@ -351,8 +358,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                type = memberInfo.DataType;
             else if (!memberInfo.DataType.IsAssignableFrom(type))
                throw new SerializerException(
-                  string.Format("Type attribute of element {0} is not compatible with the object's actual member type of {1}.", 
-                                reader.Name, 
+                  string.Format("Type attribute of element {0} is not compatible with the object's actual member type of {1}.",
+                                reader.Name,
                                 memberInfo.DataType));
 
             id = TypeHelper.GetReferenceId(reader);
@@ -577,8 +584,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
             if (type == null)
                type = arrayElementType;
             else if (!arrayElementType.IsAssignableFrom(type))
-               throw new SerializerException(string.Format("Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"", 
-                                                           type, 
+               throw new SerializerException(string.Format("Cannot deserialize an instance of \"{0}\" into an array of \"{1}\"",
+                                                           type,
                                                            arrayElementType));
             var id = TypeHelper.GetReferenceId(reader);
             if (id != 0)

@@ -147,5 +147,18 @@ namespace Org.Edgerunner.DotSerialize.Reflection.Types
             return hashCode;
          }
       }
+
+      /// <summary>
+      /// Determines whether the specified value is the default for this member's data type.
+      /// </summary>
+      /// <param name="value">The value to compare.</param>
+      /// <returns><c>true</c> if the specified value is the default; otherwise, <c>false</c>.</returns>
+      public bool HasDefaultValue(object value)
+      {
+         if (!DataType.IsValueType)
+            return value == null;
+
+         return value.Equals(DataType.GetDefaultValue());
+      }
    }
 }
