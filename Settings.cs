@@ -68,6 +68,12 @@ namespace Org.Edgerunner.DotSerialize
       public bool OmitTypeWhenPossible { get; set; }
 
       /// <summary>
+      /// Gets or sets a value indicating whether to omit members with default values.
+      /// </summary>
+      /// <value><c>true</c> if members with default values should be omitted; otherwise, <c>false</c>.</value>
+      public bool OmitMembersWithDefaultValues { get; set; }
+
+      /// <summary>
       ///    Specifies whether the Version of assembly that the type resides within should be written out in the type
       ///    attribute of the serialized data.
       /// </summary>
