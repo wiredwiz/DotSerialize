@@ -56,11 +56,15 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       private const string SerializeCatWithMap2ResultsInProperOutput_Approved =
          "SerializerTests.SerializeCatWithMap2ResultsInProperOutput.approved.xml";
 
+      private const string SerializeCatOmittingDefaultValuesResultsInProperOutput_Approved =
+         "SerializerTests.SerializeCatOmittingDefaultValuesResultsInProperOutput.approved.xml";
+
       [TestCleanup]
       private void CleanUp()
       {
          Utilities.DeleteFile(SerializeDogResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeDogOmittingTypesResultsInProperOutput_Approved);
+         Utilities.DeleteFile(SerializeCatOmittingDefaultValuesResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatOmittingReferentialIntegrityResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatDECultureResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithoutMapResultsInProperOutput_Approved);
@@ -138,6 +142,39 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
             Weight = 2.26796
          };
          var serializer = new Serializer { Settings = { DisableReferentialIntegrity = true, OmitTypeWhenPossible = true } };
+         string xml = serializer.SerializeObject(cat);
+         Approvals.VerifyXml(xml);
+      }
+
+      [TestMethod]
+      public void SerializeCatDisablingReferentialIntegrityDeserializesCorrectly()
+      {
+         var cat = new Cat
+         {
+            Name = "Puss",
+            Breed = null,
+            BirthDate = new DateTime(2000, 12, 5),
+            Height = 30.48,
+            Weight = 2.26796
+         };
+         var serializer = new Serializer { Settings = { OmitMembersWithDefaultValues = true, OmitTypeWhenPossible = true } };
+         string xml = serializer.SerializeObject(cat);
+         var newCat = serializer.DeserializeObject<Cat>(xml);
+         Assert.AreEqual(cat, newCat);
+      }
+
+      [TestMethod]
+      public void SerializeCatOmittingDefaultValuesResultsInProperOutput()
+      {
+         var cat = new Cat
+         {
+            Name = "Puss",
+            Breed = null,
+            BirthDate = new DateTime(2000, 12, 5),
+            Height = 30.48,
+            Weight = 2.26796
+         };
+         var serializer = new Serializer { Settings = { OmitMembersWithDefaultValues = true, OmitTypeWhenPossible = true } };
          string xml = serializer.SerializeObject(cat);
          Approvals.VerifyXml(xml);
       }
@@ -435,6 +472,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       {
          Utilities.ExtractEmbeddedFile(SerializeDogResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeDogOmittingTypesResultsInProperOutput_Approved);
+         Utilities.ExtractEmbeddedFile(SerializeCatOmittingDefaultValuesResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatOmittingReferentialIntegrityResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatDECultureResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithoutMapResultsInProperOutput_Approved);

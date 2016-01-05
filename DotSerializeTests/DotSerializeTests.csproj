@@ -41,6 +41,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <AssemblyVersion>1.1.8.1</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -163,6 +164,7 @@
     <Content Include="ChessBoard Tests\ChessBoardTests.InitialBoardSerializesProperly.approved.xml" />
     <Content Include="ChessBoard Tests\ChessBoardTests.InitialJaggedBoardSerializesProperly.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeCatDECultureResultsInProperOutput.approved.xml" />
+    <EmbeddedResource Include="SerializerTests\SerializerTests.SerializeCatOmittingDefaultValuesResultsInProperOutput.approved.xml" />
     <Content Include="SerializerTests\SerializerTests.SerializeDogResultsInProperOutput.approved.xml" />
   </ItemGroup>
   <ItemGroup />
