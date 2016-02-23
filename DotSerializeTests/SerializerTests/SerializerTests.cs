@@ -59,6 +59,9 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
       private const string SerializeCatOmittingDefaultValuesResultsInProperOutput_Approved =
          "SerializerTests.SerializeCatOmittingDefaultValuesResultsInProperOutput.approved.xml";
 
+      private const string SerializeSimplePersonResultsInProperOutput_Approved = 
+         "SerializerTests.SerializeSimplePersonResultsInProperOutput.approved.xml";
+
       [TestCleanup]
       private void CleanUp()
       {
@@ -70,6 +73,17 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          Utilities.DeleteFile(SerializeCatWithoutMapResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithMap1ResultsInProperOutput_Approved);
          Utilities.DeleteFile(SerializeCatWithMap2ResultsInProperOutput_Approved);
+         Utilities.DeleteFile(SerializeSimplePersonResultsInProperOutput_Approved);
+      }
+
+      [TestMethod]
+      public void DeserializeSimplePersonSucceeds()
+      {
+         var guy = new SimplePerson { Name = "Joe Average" };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(guy);
+         var guy2 = serializer.DeserializeObject<SimplePerson>(xml);
+         Assert.AreEqual(guy, guy2);
       }
 
       [TestMethod]
@@ -186,6 +200,15 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          var serializer = new Serializer();
          serializer.RegisterClassMap<CatMap1>();
          string xml = serializer.SerializeObject(cat);
+         Approvals.VerifyXml(xml);
+      }
+
+      [TestMethod]
+      public void SerializeSimplePersonResultsInProperOutput()
+      {
+         var guy = new SimplePerson { Name = "Joe Average" };
+         var serializer = new Serializer();
+         string xml = serializer.SerializeObject(guy);
          Approvals.VerifyXml(xml);
       }
 
@@ -478,6 +501,7 @@ namespace Org.Edgerunner.DotSerialize.Tests.SerializerTests
          Utilities.ExtractEmbeddedFile(SerializeCatWithoutMapResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithMap1ResultsInProperOutput_Approved);
          Utilities.ExtractEmbeddedFile(SerializeCatWithMap2ResultsInProperOutput_Approved);
+         Utilities.ExtractEmbeddedFile(SerializeSimplePersonResultsInProperOutput_Approved);
       }
    }
 }
