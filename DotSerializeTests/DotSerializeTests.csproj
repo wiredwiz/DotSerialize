@@ -112,6 +112,7 @@
     <Compile Include="DataTypes\Person.cs" />
     <Compile Include="DataTypes\Pet.cs" />
     <Compile Include="DataTypes\PrimitiveTypesTester.cs" />
+    <Compile Include="DataTypes\SimplePerson.cs" />
     <Compile Include="DataTypes\Widget.cs" />
     <Compile Include="DataTypes\HazardousWidget.cs" />
     <Compile Include="DataTypes\SellableWidget.cs" />

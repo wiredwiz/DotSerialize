@@ -25,20 +25,20 @@ namespace Org.Edgerunner.DotSerialize.Utilities
 {
    public static class TypeHelper
    {
-      public static readonly Type ByteType = typeof(Byte);
-      public static readonly Type SByteType = typeof(SByte);
-      public static readonly Type Int16Type = typeof(Int16);
-      public static readonly Type Int32Type = typeof(Int32);
-      public static readonly Type Int64Type = typeof(Int64);
-      public static readonly Type UInt16Type = typeof(UInt16);
-      public static readonly Type UInt32Type = typeof(UInt32);
-      public static readonly Type UInt64Type = typeof(UInt64);
-      public static readonly Type SingleType = typeof(Single);
-      public static readonly Type DoubleType = typeof(Double);
-      public static readonly Type DecimalType = typeof(Decimal);
-      public static readonly Type CharType = typeof(Char);
-      public static readonly Type StringType = typeof(String);
-      public static readonly Type BooleanType = typeof(Boolean);
+      public static readonly Type ByteType = typeof(byte);
+      public static readonly Type SByteType = typeof(sbyte);
+      public static readonly Type Int16Type = typeof(short);
+      public static readonly Type Int32Type = typeof(int);
+      public static readonly Type Int64Type = typeof(long);
+      public static readonly Type UInt16Type = typeof(ushort);
+      public static readonly Type UInt32Type = typeof(uint);
+      public static readonly Type UInt64Type = typeof(ulong);
+      public static readonly Type SingleType = typeof(float);
+      public static readonly Type DoubleType = typeof(double);
+      public static readonly Type DecimalType = typeof(decimal);
+      public static readonly Type CharType = typeof(char);
+      public static readonly Type StringType = typeof(string);
+      public static readonly Type BooleanType = typeof(bool);
       public static readonly Type DateTimeType = typeof(DateTime);
       private static readonly Dictionary<string, Type> _TypeNameCache = new Dictionary<string, Type>();
 

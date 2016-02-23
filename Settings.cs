@@ -99,7 +99,7 @@ namespace Org.Edgerunner.DotSerialize
       ///    reference types.
       /// </summary>
       /// <remarks>
-      ///    This setting only effects the process of serialization. Deserialization will maintain referential intregrity
+      ///    This setting only effects the process of serialization. Deserialization will maintain referential integrity
       ///    regardless of this setting as long as the xml
       ///    includes id attributes.  It is highly recommended that referential integrity not be disabled unless you can be 100%
       ///    certain that your object graph does

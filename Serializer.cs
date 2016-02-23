@@ -223,9 +223,6 @@ namespace Org.Edgerunner.DotSerialize
          if (id != 0)
             manager.UpdateObject(id, result);
 
-         if (ReadUntilElement(reader))
-            throw new SerializerException("Document cannot contain more than one root node");
-
          Kernel.Release(mgr);
          BindITypeSerializationFactory();
          return result;
