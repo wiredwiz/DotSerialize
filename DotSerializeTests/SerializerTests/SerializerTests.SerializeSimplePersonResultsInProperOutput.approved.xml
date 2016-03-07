@@ -1,0 +1,1 @@
+﻿<SimplePerson xmlns:dts="http://www.dotserialize.com/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dts:type="Org.Edgerunner.DotSerialize.Tests.DataTypes.SimplePerson, DotSerializeTests" dts:id="1" dts:src="true" Name="Joe Average" />
