@@ -82,27 +82,24 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
       }
 
       public virtual void Serialize(XmlWriter writer, Type type, object obj)
-      {
+      {         
          if (writer == null) throw new ArgumentNullException("writer");
          if (type == null) throw new ArgumentNullException("type");
 
-         if (TypeHelper.IsPrimitive(type))
-            writer.WriteValue(FormatPrimitive(type, obj, Settings.Culture));
-         else if (TypeHelper.IsEnum(type))
+         Type actualType = obj?.GetType() ?? type;
+         if (TypeHelper.IsPrimitive(actualType))
+            writer.WriteValue(FormatPrimitive(actualType, obj, Settings.Culture));
+         else if (TypeHelper.IsEnum(actualType))
             writer.WriteValue(obj.ToString());
          else
          {
-            Type actualType = null;
-
             // check for null value
             if (obj == null)
             {
-               actualType = type;
                WriteReferenceIsNullAttribute(writer);
                return;
             }
 
-            actualType = obj.GetType();
             if ((actualType != type) || (!Settings.OmitTypeWhenPossible))
                WriteReferenceTypeAttribute(writer, actualType);
 

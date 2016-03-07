@@ -30,9 +30,9 @@ Global
 		UpdateAssemblyVersion = True
 		UpdateAssemblyFileVersion = True
 		UpdateAssemblyInfoVersion = True
-		AssemblyVersionSettings = None.None.None.Increment
-		AssemblyFileVersionSettings = None.None.None.Increment
-		AssemblyInfoVersionSettings = None.None.None.Increment
+		AssemblyVersionSettings = None.None.DateStamp.None
+		AssemblyFileVersionSettings = None.None.DateStamp.None
+		AssemblyInfoVersionSettings = None.None.DateStamp.None
 	EndGlobalSection
 	GlobalSection(MercurialSourceControlSolutionProperties) = preSolution
 		SolutionIsControlled = True
