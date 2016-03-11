@@ -87,6 +87,8 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
          if (type == null) throw new ArgumentNullException("type");
 
          Type actualType = obj?.GetType() ?? type;
+         if ((actualType != type) || (!Settings.OmitTypeWhenPossible))
+            WriteReferenceTypeAttribute(writer, actualType);
          if (TypeHelper.IsPrimitive(actualType))
             writer.WriteValue(FormatPrimitive(actualType, obj, Settings.Culture));
          else if (TypeHelper.IsEnum(actualType))
@@ -99,9 +101,6 @@ namespace Org.Edgerunner.DotSerialize.Serialization.Generic
                WriteReferenceIsNullAttribute(writer);
                return;
             }
-
-            if ((actualType != type) || (!Settings.OmitTypeWhenPossible))
-               WriteReferenceTypeAttribute(writer, actualType);
 
             // check for struct before writing reference id
             if (!type.IsValueType && !Settings.DisableReferentialIntegrity)
